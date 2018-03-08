@@ -1,5 +1,0 @@
----
-
-- import_playbook: aws/start.yml
-  when:
-  - hosting_infrastructure == 'aws'

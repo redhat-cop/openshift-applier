@@ -1,5 +1,0 @@
----
-
-- hosts: openshift
-  roles:
-    - openshift-management

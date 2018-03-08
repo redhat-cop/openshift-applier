@@ -1,3 +1,0 @@
----
-
-- import_playbook: "{{ openshift_ansible_path | default('../../roles/openshift-ansible') }}/playbooks/byo/config.yml"

@@ -1,5 +1,0 @@
----
-
-- import_playbook: aws/stop.yml
-  when:
-  - hosting_infrastructure == 'aws'
