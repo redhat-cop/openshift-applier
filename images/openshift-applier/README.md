@@ -32,7 +32,7 @@ docker run  \
       -v $HOME/.kube:/root/.kube \
       -v $HOME/src/:/tmp/src \
       -t redhatcop/openshift-applier \
-      ansible-playbook -i /tmp/src/<inventory> /tmp/src/casl-ansible/playbooks/openshift-cluster-seed.yml
+      ansible-playbook -i /tmp/src/<inventory> /tmp/src/openshift-applier/playbooks/openshift-cluster-seed.yml
 ```
 
 NOTE: The above commands expects the following inputs:
@@ -47,7 +47,7 @@ NOTE: The above commands expects the following inputs:
 This image is built and published to docker.io, so there's no reason to build it if you're just wanting to use the latest stable version. However, if you need to build it for development reasons, here's how:
 
 ```
-cd ./casl-ansible
+cd ./openshift-applier
 docker build -t redhatcop/openshift-applier images/openshift-applier
 ```
 
