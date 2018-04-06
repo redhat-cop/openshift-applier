@@ -17,4 +17,4 @@ To ensure that your execution environment meets all requirements, it is recommen
 
 ## Release
 
-As these repos are under active development, it is **strongly** recommended to use one of the [releases](releases) to avoid interruption to your work.
+As these repos are under active development, it is **strongly** recommended to use one of the [releases](../../releases) to avoid interruption to your work.
