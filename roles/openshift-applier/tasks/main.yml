@@ -15,6 +15,9 @@
   when:
   - ansible_connection != 'local'
 
+- name: "Prep Access to OpenShift environment(s)"
+  import_tasks: prep-access.yml
+
 - name: "Create OpenShift objects"
   include_tasks: process-content.yml
   with_items:

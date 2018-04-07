@@ -1,0 +1,15 @@
+---
+
+ansible_connection: local
+
+openshift_login_url: https://console.cluster2.example.com
+openshift_token: ssdflsdkf34l5jk34l5kjvdf
+# openshift_insecure: true
+
+openshift_cluster_content:
+- object: projects
+  content:
+  - name: "your project 1"
+    template: https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml
+    params: "{{ inventory_dir }}/../files/cluster2/projects/your-project1.param"
+    template_action: create

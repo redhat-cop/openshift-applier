@@ -86,6 +86,8 @@
 - name: "{{ file_action | capitalize }} OpenShift objects based on static files for '{{ entry.object}} : {{ content.name | default(file | basename) }}'"
   command: >
     oc {{ file_action }} {{ target_namespace }} -f {{ file }} {{ (file_action == 'delete') | ternary(' --ignore-not-found', '') }}
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
   register: command_result
   failed_when:
   - command_result.rc != 0
@@ -101,6 +103,8 @@
       {{ target_namespace }} \
       --param-file={{ tmp_inv_dir }}{{ content.params }} | \
     oc {{ template_action }} {{ target_namespace }} -f - {{ (template_action == 'delete') | ternary(' --ignore-not-found', '') }}
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
   register: command_result
   failed_when:
   - command_result.rc != 0
@@ -118,6 +122,8 @@
       {{ target_namespace }} \
       --param-file={{ item }} | \
     oc {{ template_action }} {{ target_namespace }} -f - {{ (template_action == 'delete') | ternary(' --ignore-not-found', '') }}
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
   register: command_result
   failed_when:
   - command_result.rc != 0

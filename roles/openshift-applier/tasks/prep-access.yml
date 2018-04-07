@@ -1,0 +1,19 @@
+---
+
+- name: "Create temporary dir"
+  tempfile:
+    state: directory
+    prefix: "openshift-{{ ansible_host }}"
+  register: openshift_config_tempdir
+  notify: 
+    - "Cleanup OpenShift config"
+
+- name: "Define temporary config dir"
+  set_fact:
+    kubeconfig: "{{ openshift_config_tempdir.path }}/config"
+
+- name: "Capture OpenShift Config based on token"
+  command: >
+    oc login --token={{ openshift_token }} {{ openshift_insecure | ternary('--insecure-skip-tls-verify', '') }} {{ openshift_login_url }}
+  environment: 
+    KUBECONFIG: "{{ kubeconfig }}"

@@ -14,3 +14,7 @@
   with_items:
   - "{{ tmp_dep_dir }}"
 
+- name: "Cleanup OpenShift config"
+  file:
+    path: "{{ openshift_config_tempdir.path }}"
+    state: absent
