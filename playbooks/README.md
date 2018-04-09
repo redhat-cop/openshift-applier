@@ -1,4 +1,4 @@
-# The openshift-applierl playbooks
+# The openshift-applier playbooks
 
 ## openshift-cluster-seed.yml (openshift-applier)
 This playbook is mainly here to serve as the execution point for the [openshift-applier](../roles/openshift-applier). There are few important notes to make about how this is executed:
