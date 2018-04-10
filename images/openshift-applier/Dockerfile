@@ -6,7 +6,9 @@ ENV ANSIBLE_RPM http://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/an
 USER root
 
 # Install Ansible and the 'oc' client
-RUN yum install -y $ANSIBLE_RPM ;\
+RUN INSTALL_PKGS="git" && \
+    yum install -y $INSTALL_PKGS ;\
+    yum install -y $ANSIBLE_RPM ;\
     curl $OC_CLIENT_MIRROR | tar -C /usr/local/bin/ -xzf - ;\
     yum clean all ;\
     rm -rf /var/cache/yum
