@@ -1,0 +1,7 @@
+#!/bin/sh
+
+mkdir -p ${WORK_DIR}/.ssh
+chown ${USER_UID}:0 ${WORK_DIR}/.ssh
+chmod ug+rwx ${WORK_DIR}/.ssh
+
+rm $0

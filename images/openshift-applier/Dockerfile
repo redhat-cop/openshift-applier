@@ -1,8 +1,11 @@
 FROM centos:centos7
 
-ENV OC_CLIENT_MIRROR https://mirror.openshift.com/pub/openshift-v3/clients/3.9.14/linux/oc.tar.gz
-ENV ANSIBLE_RPM http://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.5.0-1.el7.ans.noarch.rpm
-ENV INSTALL_PKGS "git"
+ENV OC_CLIENT_MIRROR=https://mirror.openshift.com/pub/openshift-v3/clients/3.9.14/linux/oc.tar.gz \
+  ANSIBLE_RPM=http://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.5.0-1.el7.ans.noarch.rpm \
+  INSTALL_PKGS="git" \
+  WORK_DIR=/openshift-applier/ \
+  HOME=${WORK_DIR} \
+  USER_UID=1001
 
 USER root
 
@@ -13,5 +16,12 @@ RUN yum install -y $INSTALL_PKGS ;\
     yum clean all ;\
     rm -rf /var/cache/yum
 
-CMD /bin/sleep infinity
+COPY . ${WORK_DIR}
+COPY images/openshift-applier/root /
+RUN /usr/local/bin/user_setup_casl
 
+USER ${USER_UID}
+
+WORKDIR ${WORK_DIR}
+
+CMD /bin/sleep infinity
