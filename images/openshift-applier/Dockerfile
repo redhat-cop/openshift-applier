@@ -3,7 +3,7 @@ FROM centos:centos7
 ENV OC_CLIENT_MIRROR https://mirror.openshift.com/pub/openshift-v3/clients/3.9.14/linux/oc.tar.gz
 ENV ANSIBLE_RPM http://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.5.0-1.el7.ans.noarch.rpm
 ENV INSTALL_PKGS "git"
-ENV WORK_DIR /openshift-applier/
+ENV WORK_DIR /openshift-applier
 ENV HOME ${WORK_DIR}
 ENV USER_UID 1001
 
@@ -25,4 +25,4 @@ USER ${USER_UID}
 WORKDIR ${WORK_DIR}
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint" ]
-CMD /bin/sleep infinity
+CMD /usr/local/bin/run

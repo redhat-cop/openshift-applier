@@ -28,7 +28,7 @@ systemctl restart docker
 A typical run of the image would look like:
 
 ```
-docker run  \ 
+docker run  \
       -v $HOME/.kube:/root/.kube \
       -v $HOME/src/:/tmp/src \
       -t redhatcop/openshift-applier \
@@ -48,7 +48,7 @@ This image is built and published to docker.io, so there's no reason to build it
 
 ```
 cd ./openshift-applier
-docker build -t redhatcop/openshift-applier images/openshift-applier
+docker build -t redhatcop/openshift-applier -f images/openshift-applier/Dockerfile .
 ```
 
 ## Troubleshooting
