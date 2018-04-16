@@ -4,4 +4,4 @@ DEFAULT_PLAYBOOK=$HOME/playbooks/openshift-cluster-seed.yml
 
 cmd="/usr/bin/ansible-playbook -i ${INVENTORY_PATH:-$DEFAULT_INV} ${PLAYBOOK:-$DEFAULT_PLAYBOOK}"
 
-exec "${cmd}"
+exec ${cmd}
