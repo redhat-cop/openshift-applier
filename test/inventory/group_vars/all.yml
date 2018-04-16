@@ -1,0 +1,8 @@
+---
+
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: Create Projects
+    file: "{{ inventory_dir }}/../files/projects/projects.yml"
+    file_action: create

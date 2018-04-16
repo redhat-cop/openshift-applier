@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: List
+items:
+- kind: ProjectRequest
+  apiVersion: v1
+  metadata:
+    name: applier-ci-1
+  displayName: OpenShift Applier Test 1
+- kind: ProjectRequest
+  apiVersion: v1
+  metadata:
+    name: applier-ci-2
+  displayName: OpenShift Applier Test 2
