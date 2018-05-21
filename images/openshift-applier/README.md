@@ -25,22 +25,46 @@ systemctl restart docker
 
 ## Running
 
-A typical run of the image would look like:
+The simplest possible run of the image would look like:
 
 ```
-docker run  \ 
-      -v $HOME/.kube:/root/.kube \
-      -v $HOME/src/:/tmp/src \
-      -t redhatcop/openshift-applier \
-      ansible-playbook -i /tmp/src/<inventory> /tmp/src/openshift-applier/playbooks/openshift-cluster-seed.yml
+docker run  \
+  -v $HOME/.kube/config:/openshift-applier/.kube/config:z
+  -t redhatcop/openshift-applier
 ```
 
 NOTE: The above commands expects the following inputs:
-* You already have a valid session with the OpenShift cluster (i.e.: using `oc login`) with the session data stored in the default directory of `$HOME/.kube`
-* Your ansible inventories and playbooks repos to exist in `$HOME/src`
-* Your ansible inventories and playbooks repos to live within the same directory, mounted at `/tmp/src`
+* You already have a valid session with the OpenShift cluster (i.e.: using `oc login`) with the session data stored at `$HOME/.kube/config`
 
-**_TIP:_** If your inventories, playbooks, etc. do not exist at the above mentioned paths, make sure to adjust the arguments to the `-v` parameters accordingly
+Running the above command will kick off an openshift-applier run that will execute against a [Test inventory](../../test/) by default. This however doesn't account for inventories or changes you've made locally. The following subsections cover alternate uses of the image for these scenarios
+
+### Running a local inventory
+
+Running an openshift-applier inventory that you may have locally requires two things:
+
+```
+docker run \
+  -v $HOME/.kube/config:/openshift-applier/.kube/config:z
+  -v $HOME/src/my-inventory/:/tmp/my-inventory <1>
+  -e INVENTORY_PATH=/tmp/my-inventory <2>
+  -t redhatcop/openshift-applier
+```
+1. Your inventory must be mounted into the container
+2. You need to tell the container's run script about the inventory
+
+### Testing local changes to OpenShift Applier
+
+For convenience, the container image packages the openshift-applier ansible code inside of the container file system at `/openshift-applier/`. By default, the run script will run the basic applier playbook at `/openshift-applier/playbooks/openshift-cluster-seed.yml`. If you would like to run your local version of applier, you can override this default by adding the following:
+
+```
+docker run  \
+  -v $HOME/.kube/config:/openshift-applier/.kube/config:z
+  -v $HOME/src/openshift-applier/:/tmp/openshift-applier <1>
+  -e PLAYBOOK=/tmp/openshift-applier/playbooks/my-new-playbook.yml <2>
+  -t redhatcop/openshift-applier
+```
+1. Your copy of openshift-applier must be mounted into the container
+2. You must tell the container's run script which playbook to run
 
 ## Building the Image
 
@@ -48,7 +72,7 @@ This image is built and published to docker.io, so there's no reason to build it
 
 ```
 cd ./openshift-applier
-docker build -t redhatcop/openshift-applier images/openshift-applier
+docker build -t redhatcop/openshift-applier -f images/openshift-applier/Dockerfile .
 ```
 
 ## Troubleshooting

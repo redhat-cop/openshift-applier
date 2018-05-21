@@ -1,0 +1,11 @@
+#!/bin/sh
+
+chmod ug+rw /etc/passwd
+chown -R ${USER_UID}:0 ${WORK_DIR}
+chmod -R ug+rwx ${WORK_DIR}
+
+mkdir -p ${WORK_DIR}/.kube/
+chown -R ${USER_UID}:0 ${WORK_DIR}/.kube/
+chmod -R ug+rwx ${WORK_DIR}/.kube/
+
+rm $0
