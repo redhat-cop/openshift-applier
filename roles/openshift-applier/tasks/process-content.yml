@@ -21,6 +21,8 @@
     ignore_errors: true
   - command: >
       oc apply -f {{ tmp_inv_dir }}{{ entry.content_dir }}
+    environment:
+      KUBECONFIG: "{{ kubeconfig }}"
   when:
   - entry.content_dir is defined
   - entry.content_dir|trim != ''
