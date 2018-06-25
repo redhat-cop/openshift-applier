@@ -1,0 +1,8 @@
+---
+- name: Create param file from vars
+  lineinfile:
+    path: "{{ tmp_inv_dir }}{{ params }}"
+    line: "{{ item.key|upper }}={{ item.value }}"
+    create: yes
+  with_dict:
+    - "{{ params_from_vars }}"

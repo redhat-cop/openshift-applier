@@ -10,6 +10,7 @@
     template_f_option: ''
     template_action: "{{ content.template_action | default(default_template_action) }}"
     params: "{{ content.params | default('') }}"
+    params_from_vars: "{{ content.params_from_vars | default('') }}"
     process_local: ''
 
 - name: "Set file_action and template_action to delete when in deprovision mode"
@@ -21,10 +22,16 @@
 
 - name: "Fail if template but no params is specified"
   fail:
-    msg: "Template specified, but no params file supplied"
+    msg: "Template specified, but no params file or variables supplied"
   when:
   - template|trim != ''
-  - params|trim == ''
+  - params|trim == '' or params_from_vars|trim == ''
+
+- name: "Create params file if there are params from vars"
+  include_tasks: create-one-param-from-vars.yml
+  when:
+  - params|trim != ''
+  - params_from_vars|trim != ''
 
 - name: "Check if params file exists (if applicable)"
   stat:
