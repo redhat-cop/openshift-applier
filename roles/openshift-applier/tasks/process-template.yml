@@ -5,13 +5,8 @@
     msg: "Template specified, but no params file or variables supplied"
   when:
   - template|trim != ''
-  - params|trim == '' or params_from_vars|trim == ''
-
-- name: "Create params file if there are params from vars"
-  include_tasks: create-one-param-from-vars.yml
-  when:
-  - params|trim != ''
-  - params_from_vars|trim != ''
+  - params|trim == ''
+  - params_from_vars|trim == ''
 
 - name: "Check if params file exists (if applicable)"
   stat:
