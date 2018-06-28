@@ -1,5 +1,23 @@
 ---
-#TODO: CHANGE THIS SO IT ENUMERATES THE VARS INTO THE COMMANDLINE
+- name: Change params_from_vars into facts
+  set_fact:
+    param: "-p {{ item.key|upper }}={{ item.value }}"
+  with_dict: "{{ params_from_vars }}"
+  register: params_list_result
+
+- debug: msg={{ params_list_result }}
+
+- name: Create a single list from the params_from_vars facts
+  set_fact:
+    params_list: "{{ params_list_result.results | map(attribute='ansible_facts.param') | list }}"
+
+- debug: msg={{ params_list }}
+
+- name: Concatenate the params_list into a single string
+  set_fact:
+    command_line_params: "{{ params_list | join(' ') }}"
+
+- debug: msg={{ command_line_params }}
 
 - name: "{{ template_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
   shell: >
@@ -7,7 +25,7 @@
       {{ process_local }} \
       {{ template_f_option }} {{ template }} \
       {{ target_namespace }} \
-      --param-file={{ tmp_inv_dir }}{{ content.params }} | \
+      {{ command_line_params }} | \
     oc {{ template_action }} {{ target_namespace }} -f - {{ (template_action == 'delete') | ternary(' --ignore-not-found', '') }}
   register: command_result
   failed_when:
@@ -15,24 +33,4 @@
   - "'AlreadyExists' not in command_result.stderr"
   when:
   - template|trim != ''
-  - params|trim != ''
-  - not params_result.stat.isdir
-
-- name: "{{ template_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
-  shell: >
-    oc process \
-      {{ process_local }} \
-      {{ template_f_option }} {{ template }} \
-      {{ target_namespace }} \
-      --param-file={{ item }} | \
-    oc {{ template_action }} {{ target_namespace }} -f - {{ (template_action == 'delete') | ternary(' --ignore-not-found', '') }}
-  register: command_result
-  failed_when:
-  - command_result.rc != 0
-  - "'AlreadyExists' not in command_result.stderr"
-  with_fileglob:
-  - "{{ tmp_inv_dir }}{{ content.params }}/*"
-  when:
-  - template|trim != ''
-  - params|trim != ''
-  - params_result.stat.isdir
+  - command_line_params|trim != ''
