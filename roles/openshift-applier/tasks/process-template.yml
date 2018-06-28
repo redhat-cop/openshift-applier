@@ -1,0 +1,69 @@
+---
+
+- name: "Fail if template but no params is specified"
+  fail:
+    msg: "Template specified, but no params file or variables supplied"
+  when:
+  - template|trim != ''
+  - params|trim == '' or params_from_vars|trim == ''
+
+- name: "Create params file if there are params from vars"
+  include_tasks: create-one-param-from-vars.yml
+  when:
+  - params|trim != ''
+  - params_from_vars|trim != ''
+
+- name: "Check if params file exists (if applicable)"
+  stat:
+    path: "{{ tmp_inv_dir }}{{ params }}"
+  ignore_errors: yes
+  register: params_result
+  when:
+  - params|trim != ''
+
+- name: "Fail if params file doesn't exist (if applicable)"
+  fail:
+    msg: "{{ params }} - params file doesn't exist."
+  when:
+  - params|trim != ''
+  - params_result.stat.exists == False
+
+- name: "Determine location for the 'template' (if applicable)"
+  vars:
+    path: "{{ template }}"
+  import_tasks: check-file-location.yml
+  when:
+  - template|trim != ''
+
+- name: "Set 'template' values (if applicable)"
+  set_fact:
+    template: "{{ file_path }}"
+    template_f_option: "{{ option_f }}"
+  when:
+  - template|trim != ''
+
+- name: "Include any pre-processing role(s) before applying file and/or template"
+  include_tasks: pre-post-step.yml
+  with_items:
+  - "{{ content.pre_steps | default('') }}"
+  loop_control:
+    loop_var: step
+
+- name: "Process template with params from vars"
+  include_tasks: process-template-with-params-from-vars.yml
+  when:
+  - params|trim == ''
+  - params_from_vars|trim != ''
+
+- name: "Process template with params from a params file"
+  include_tasks: process-template-with-params-from-file.yml
+  when:
+  - params|trim != ''
+  - params_from_vars|trim == ''
+
+- name: "Include any post-processing role(s) after applying file and/or template"
+  include_tasks: pre-post-step.yml
+  with_items:
+  - "{{ content.post_steps | default('') }}"
+  loop_control:
+    loop_var: step
