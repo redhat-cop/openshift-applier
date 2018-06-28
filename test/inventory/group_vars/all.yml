@@ -10,6 +10,5 @@ openshift_cluster_content:
   content:
   - name: Create Projects
     template: "{{ playbook_dir }}/files/secrets/template.yml"
-    params: "{{ playbook_dir }}/params/test-param-file"
     params_from_vars: "{{ secret_params }}"
     namespace: "{{ ci_cd.namespace_1 }}"
