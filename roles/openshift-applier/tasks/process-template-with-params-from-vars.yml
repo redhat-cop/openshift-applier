@@ -5,19 +5,13 @@
   with_dict: "{{ params_from_vars }}"
   register: params_list_result
 
-- debug: msg={{ params_list_result }}
-
 - name: Create a single list from the params_from_vars facts
   set_fact:
     params_list: "{{ params_list_result.results | map(attribute='ansible_facts.param') | list }}"
 
-- debug: msg={{ params_list }}
-
 - name: Concatenate the params_list into a single string
   set_fact:
     command_line_params: "{{ params_list | join(' ') }}"
-
-- debug: msg={{ command_line_params }}
 
 - name: "{{ template_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
   shell: >
