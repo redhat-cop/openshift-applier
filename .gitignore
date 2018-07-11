@@ -3,3 +3,10 @@
 galaxy/
 *.pyc
 /.project
+
+# ignore params directory
+test/params/
+
+#IntelliJ
+.idea/
+*.iml

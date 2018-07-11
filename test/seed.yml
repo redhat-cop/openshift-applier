@@ -1,0 +1,16 @@
+---
+- name: Test Playbook
+  hosts: seed-hosts
+  vars:
+    ci_cd:
+      namespace_1: applier-ci-1
+      namespace_2: applier-ci-2
+    secret_params:
+      USERNAME: testUsername
+      PASSWORD: testPassword
+  tasks:
+    - include_role:
+        name: "{{ playbook_dir }}/../roles/openshift-applier"
+    - name: Delete projects that were created from this test
+      command: >
+        oc delete project {{ ci_cd.namespace_1 }} {{ ci_cd.namespace_2 }}

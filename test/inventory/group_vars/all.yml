@@ -6,3 +6,13 @@ openshift_cluster_content:
   - name: Create Projects
     file: "{{ inventory_dir }}/../files/projects/projects.yml"
     file_action: create
+- object: paramstests
+  content:
+  - name: Create Secrets with params from vars
+    template: "{{ playbook_dir }}/files/secrets/template.yml"
+    params_from_vars: "{{ secret_params }}"
+    namespace: "{{ ci_cd.namespace_1 }}"
+  - name: Create Secrets with params from file
+    template: "{{ playbook_dir }}/files/secrets/template.yml"
+    params: "{{ playbook_dir }}/files/secrets/params"
+    namespace: "{{ ci_cd.namespace_2 }}"
