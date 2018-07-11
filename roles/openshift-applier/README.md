@@ -61,11 +61,12 @@ openshift_cluster_content:
   - name: <definition_name>
     template: <template_source>
     template_action: <apply|create> # Optional: Defaults to 'apply'
-    params: <params_file_source>
+    params: <params_file_source> # ONLY this or 'params_from_vars' allowed
+    params_from_vars: <params_dictionary_variable> # ONLY this or 'params' allowed
     namespace: <target_openshift_namespace>
 ```
 
-You have the choice of sourcing a `file` or a `template`. The `file` definition expects that the sourced file has all definitions set and will NOT accept any parameters (i.e.: static content). The `template` definition expects a `params` file to be sourced along with it which will be passed into the template.
+You have the choice of sourcing a `file` or a `template`. The `file` definition expects that the sourced file has all definitions set and will NOT accept any parameters (i.e.: static content). The `template` definition expects a dictionary variable `params_from_vars` or a `params` file to be sourced along with it which will be passed into the template.
 
 **_TIP:_** Both choices give you the option of defining target namespaces in the template manually, or adding the `namespace` variable alongside the template and params (where applicable)
 
@@ -120,9 +121,9 @@ These objects look like this:
     namespace: <target_namespace>
   - name: <name_of_second_template>
     template: <template_source>
-    params: <params_file_source>
+    params_from_vars: <params_dictionary_variable>
     namespace: <target_namespace>
-  - name: <name_of_second_template>
+  - name: <name_of_file>
     file: <yaml/json_source>
     namespace: <target_namespace>
 - object: <relevant_name>
@@ -152,6 +153,17 @@ openshift_cluster_content:
     template: "my-space-template.yml"
     params: "my-space-paramsfile"
     template_action: create       # Note the template_action set to override the default 'apply' action
+  - name: "my-space3"
+    template: "my-space-template.yml"
+    params_from_vars: "{{ my_space_params_dict }}"
+    template_action: create       # Note the template_action set to override the default 'apply' action
+```
+
+Where the `my_space_params_dict` variable looks like:
+```yaml
+my_space_params_dict:
+  username: USER23
+  password: passw0rd!
 ```
 
 Valid `file_action` and `template_action` values are `apply`, `create`, and `delete`.
