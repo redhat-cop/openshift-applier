@@ -1,7 +1,7 @@
 ---
 - name: Change params_from_vars into facts
   set_fact:
-    param: "-p {{ item.key|upper }}={{ item.value }}"
+    param: "-p {{ item.key }}={{ item.value }}"
   with_dict: "{{ params_from_vars }}"
   register: params_list_result
 
