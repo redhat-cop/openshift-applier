@@ -6,8 +6,8 @@
       namespace_1: applier-ci-1
       namespace_2: applier-ci-2
     secret_params:
-      username: testUsername
-      password: testPassword
+      USERNAME: testUsername
+      PASSWORD: testPassword
   tasks:
     - include_role:
         name: "{{ playbook_dir }}/../roles/openshift-applier"
