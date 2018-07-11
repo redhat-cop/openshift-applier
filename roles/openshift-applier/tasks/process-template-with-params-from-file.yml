@@ -13,8 +13,6 @@
   - command_result.rc != 0
   - "'AlreadyExists' not in command_result.stderr"
   when:
-  - template|trim != ''
-  - params|trim != ''
   - not params_result.stat.isdir
 
 - name: "{{ template_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
@@ -32,6 +30,4 @@
   with_fileglob:
   - "{{ tmp_inv_dir }}{{ content.params }}/*"
   when:
-  - template|trim != ''
-  - params|trim != ''
   - params_result.stat.isdir

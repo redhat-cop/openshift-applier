@@ -7,11 +7,7 @@
 
 - name: Create a single list from the params_from_vars facts
   set_fact:
-    params_list: "{{ params_list_result.results | map(attribute='ansible_facts.param') | list }}"
-
-- name: Concatenate the params_list into a single string
-  set_fact:
-    command_line_params: "{{ params_list | join(' ') }}"
+    command_line_params: "{{ params_list_result.results | map(attribute='ansible_facts.param') | list | join(' ')}}"
 
 - name: "{{ template_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
   shell: >
@@ -26,5 +22,4 @@
   - command_result.rc != 0
   - "'AlreadyExists' not in command_result.stderr"
   when:
-  - template|trim != ''
   - command_line_params|trim != ''

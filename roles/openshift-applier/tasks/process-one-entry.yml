@@ -27,13 +27,27 @@
   - content.namespace is defined
   - content.namespace|trim != ''
 
-- name: "Process Template"
+- name: "Include any pre-processing role(s) before applying file and/or template"
+  include_tasks: pre-post-step.yml
+  with_items:
+  - "{{ content.pre_steps | default('') }}"
+  loop_control:
+    loop_var: step
+
+- name: "Process Template (if applicable)"
   include_tasks: process-template.yml
   when:
   - template|trim != ''
   - params|trim != '' or params_from_vars|trim != ''
 
-- name: "Process File"
+- name: "Process File (if applicable)"
   include_tasks: process-file.yml
   when:
   - file|trim != ''
+
+- name: "Include any post-processing role(s) after applying file and/or template"
+  include_tasks: pre-post-step.yml
+  with_items:
+  - "{{ content.post_steps | default('') }}"
+  loop_control:
+    loop_var: step
