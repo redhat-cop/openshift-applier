@@ -5,14 +5,12 @@
     path: "{{ file }}"
   import_tasks: check-file-location.yml
 
-- name: "Set 'file' values"
-  set_fact:
-    file: "{{ file_path }}"
-    file_f_option: "{{ option_f }}"
-
-- name: "{{ file_action | capitalize }} OpenShift objects based on static files for '{{ entry.object}} : {{ content.name | default(file | basename) }}'"
+- name: "{{ oc_action | capitalize }} OpenShift objects based on static files for '{{ entry.object}} : {{ content.name | default(file | basename) }}'"
   command: >
-    oc {{ file_action }} {{ target_namespace }} -f {{ file }} {{ (file_action == 'delete') | ternary(' --ignore-not-found', '') }}
+    oc {{ oc_action }} \
+       {{ oc_target_namespace }} \
+       -f {{ oc_file_path }} \
+       {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
   register: command_result
   failed_when:
   - command_result.rc != 0

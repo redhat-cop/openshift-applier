@@ -2,27 +2,21 @@
 
 - name: "Set default values"
   set_fact:
-    target_namespace: ''
+    oc_target_namespace: ''
+    oc_action: "{{ content.action | default(default_oc_action) }}"
     file: "{{ content.file | default('') }}"
-    file_f_option: ''
-    file_action: "{{ content.file_action | default(default_file_action) }}"
     template: "{{ content.template | default('') }}"
-    template_f_option: ''
-    template_action: "{{ content.template_action | default(default_template_action) }}"
     params: "{{ content.params | default('') }}"
-    params_from_vars: "{{ content.params_from_vars | default('') }}"
-    process_local: ''
 
-- name: "Set file_action and template_action to delete when in deprovision mode"
+- name: "Set oc_action to delete when in deprovision mode"
   set_fact:
-    file_action: "delete"
-    template_action: "delete"
+    oc_action: "delete"
   when:
   - not provision|bool
 
 - name: "Set the target namespace option if supplied"
   set_fact:
-    target_namespace: "-n {{ content.namespace }}"
+    oc_target_namespace: "-n {{ content.namespace }}"
   when:
   - content.namespace is defined
   - content.namespace|trim != ''
