@@ -1,38 +1,67 @@
 ---
 
-- name: "Check if params file exists (if applicable)"
-  stat:
-    path: "{{ tmp_inv_dir }}{{ params }}"
-  ignore_errors: yes
-  register: params_result
+- name: "Reset Command Line Options"
+  set_fact:
+    oc_param_file_option: []
+    oc_process_local: ''
+    oc_param_option: ''
+
+- name: "Pre-process params file (if applicable)"
+  block:
+  - stat:
+      path: "{{ tmp_inv_dir }}{{ params }}"
+    ignore_errors: yes
+    register: params_result
+  - fail:
+      msg: "{{ params }} - params file doesn't exist."
+    when:
+    - params_result.stat.exists == False
+  # Append '/*' if this is a directory as we'd want it to expand to all files in the dir
+  - set_fact:
+      params: "{{ params }}/*"
+    when:
+    - params_result.stat.isdir
+  # Build a list of '--param-file' command line paramters to iterate
+  - set_fact:
+      oc_param_file_option: "{{ oc_param_file_option + [ ' --param-file=' + item ] }}"
+    with_fileglob:
+    - "{{ tmp_inv_dir }}{{ params }}"
   when:
   - params|trim != ''
 
-- name: "Fail if params file doesn't exist (if applicable)"
-  fail:
-    msg: "{{ params }} - params file doesn't exist."
-  when:
-  - params|trim != ''
-  - params_result.stat.exists == False
+- name: "Change 'params_from_vars' fact (if applicable) into command line parameters"
+  set_fact:
+    oc_param_option: "{{ oc_param_option }} --param={{ item.key }}={{ item.value }}"
+  with_dict:
+  - "{{ params_from_vars }}"
 
+# This call sets the 'oc_process_local', 'oc_option_f' and 'oc_file_path' parameters
 - name: "Determine location for the 'template'"
   vars:
     path: "{{ template }}"
   import_tasks: check-file-location.yml
 
-- name: "Set 'template' values"
-  set_fact:
-    template: "{{ file_path }}"
-    template_f_option: "{{ option_f }}"
-
-- name: "Process template with params from vars"
-  include_tasks: process-template-with-params-from-vars.yml
-  when:
-  - params|trim == ''
-  - params_from_vars|trim != ''
-
-- name: "Process template with params from a params file"
-  include_tasks: process-template-with-params-from-file.yml
-  when:
-  - params|trim != ''
-  - params_from_vars|trim == ''
+- name: "{{ oc_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
+  shell: >
+    oc process \
+       {{ oc_process_local }} \
+       {{ oc_option_f }} {{ oc_file_path }} \
+       {{ oc_target_namespace }} \
+       {{ oc_param_option }} \
+       {{ oc_param_file_item }} \
+       --ignore-unknown-parameters \
+       | \
+    oc {{ oc_action }} \
+       {{ oc_target_namespace }} \
+       -f - \
+       {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
+  register: command_result
+  failed_when:
+  - command_result.rc != 0
+  - "'AlreadyExists' not in command_result.stderr"
+  # If the array is empty, make sure to run the loop at least once
+  # - the "['']" will enforce that it run at least once
+  with_items:
+  - "{{ (oc_param_file_option|length > 0) | ternary(oc_param_file_option, ['']) }}"
+  loop_control:
+    loop_var: 'oc_param_file_item'

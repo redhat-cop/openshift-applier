@@ -2,8 +2,8 @@
 
 - name: "Set default values"
   set_fact:
-    option_f: ''
-    file_path: "{{ path }}"
+    oc_option_f: ''
+    oc_file_path: "{{ path }}"
 
 - name: "Check if the passed in path is a remote location (URL)"
   uri:
@@ -23,19 +23,18 @@
   - (url_result.status is undefined) or
     (url_result.status is defined and url_result.status != 200)
 
-- name: "Set the '-f' option if the template is either a remote or local file"
+- name: "Set the '-f' option if the file or template is either a remote or local file"
   set_fact:
-    option_f: ' -f '
-    process_local: ' --local '
+    oc_option_f: ' -f '
+    oc_process_local: ' --local '
   when:
   - (url_result.status is defined and url_result.status == 200) or
     (file_result.stat.exists)
 
 - name: "Pre-pend the temporary dir if the file exists at the local location"
   set_fact:
-    file_path: "{{ tmp_inv_dir }}{{ path }}"
+    oc_file_path: "{{ tmp_inv_dir }}{{ path }}"
   when:
   - file_result is defined
   - file_result.stat is defined
   - file_result.stat.exists
-
