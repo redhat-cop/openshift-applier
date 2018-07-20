@@ -4,6 +4,7 @@
   set_fact:
     oc_param_file_option: []
     oc_process_local: ''
+    oc_param_option: ''
 
 - name: "Pre-process params file (if applicable)"
   block:
@@ -28,6 +29,12 @@
   when:
   - params|trim != ''
 
+- name: "Change 'params_from_vars' fact (if applicable) into command line parameters"
+  set_fact:
+    oc_param_option: "{{ oc_param_option }} --param={{ item.key }}={{ item.value }}"
+  with_dict:
+  - "{{ params_from_vars }}"
+
 # This call sets the 'oc_process_local', 'oc_option_f' and 'oc_file_path' parameters
 - name: "Determine location for the 'template'"
   vars:
@@ -40,7 +47,7 @@
        {{ oc_process_local }} \
        {{ oc_option_f }} {{ oc_file_path }} \
        {{ oc_target_namespace }} \
-       {{ oc_param_option | default('') }} \
+       {{ oc_param_option }} \
        {{ oc_param_file_item }} \
        --ignore-unknown-parameters \
        | \

@@ -7,6 +7,7 @@
     file: "{{ content.file | default('') }}"
     template: "{{ content.template | default('') }}"
     params: "{{ content.params | default('') }}"
+    params_from_vars: "{{ content.params_from_vars | default({}) }}"
 
 - name: "Set oc_action to delete when in deprovision mode"
   set_fact:
