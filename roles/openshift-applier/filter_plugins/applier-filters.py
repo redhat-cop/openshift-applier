@@ -50,7 +50,7 @@ def check_file_location(path, tmp_inv_dir):
         "oc_process_local": ''
     }
 
-    file_status = os.path.isfile("%s/%s" % (tmp_inv_dir,path))
+    file_status = os.path.isfile("%s%s" % (tmp_inv_dir,path))
 
     if(not file_status):
         try:
@@ -63,7 +63,7 @@ def check_file_location(path, tmp_inv_dir):
         return_vals['oc_process_local'] = ' --local'
 
     if (file_status):
-        return_vals['oc_file_path'] = "%s/%s" % (tmp_inv_dir,path)
+        return_vals['oc_file_path'] = "%s%s" % (tmp_inv_dir,path)
 
     return return_vals
 

@@ -3,7 +3,6 @@
 - name: "Reset Command Line Options"
   set_fact:
     oc_param_file_option: []
-    oc_process_local: ''
     oc_param_option: ''
 
 - name: "Pre-process params file (if applicable)"
@@ -37,15 +36,15 @@
 
 # This call sets the 'oc_process_local', 'oc_option_f' and 'oc_file_path' parameters
 - name: "Determine location for the 'template'"
-  vars:
-    path: "{{ template }}"
-  import_tasks: check-file-location.yml
+  set_fact:
+    file_facts: "{{ template | check_file_location(tmp_inv_dir) }}"
+
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
   shell: >
     oc process \
-       {{ oc_process_local }} \
-       {{ oc_option_f }} {{ oc_file_path }} \
+       {{ file_facts['oc_process_local'] }} \
+       {{ file_facts['oc_option_f'] }} {{ file_facts['oc_file_path'] }} \
        {{ oc_target_namespace }} \
        {{ oc_param_option }} \
        {{ oc_param_file_item }} \
