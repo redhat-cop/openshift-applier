@@ -1,3 +1,5 @@
+import os
+import requests
 
 # Helper function to simplify the 'filter_applier_items' below
 def filter_content(content_dict, outer_list, filter_list):
@@ -41,12 +43,36 @@ def filter_applier_items(applier_list, filter_tags):
 
     return applier_list
 
+def check_file_location(path, tmp_inv_dir):
+    return_vals = {
+        "oc_option_f":  '',
+        "oc_file_path": path,
+        "oc_process_local": ''
+    }
+
+    file_status = os.path.isfile("%s%s" % (tmp_inv_dir,path))
+
+    if(not file_status):
+        try:
+            request_status = requests.head(path)
+        except requests.exceptions.MissingSchema:
+            return return_vals
+
+    if (file_status or request_status.status_code == 200):
+        return_vals['oc_option_f'] = ' -f'
+        return_vals['oc_process_local'] = ' --local'
+
+    if (file_status):
+        return_vals['oc_file_path'] = "%s%s" % (tmp_inv_dir,path)
+
+    return return_vals
 
 
 class FilterModule(object):
     ''' Filters to handle openshift_cluster_content data '''
     def filters(self):
         return {
+            'check_file_location': check_file_location,
             'filter_applier_items': filter_applier_items
         }
 

@@ -1,15 +1,14 @@
 ---
 
-- name: "Determine location for the 'file'"
-  vars:
-    path: "{{ file }}"
-  import_tasks: check-file-location.yml
+- name: "Determine the location for the 'file'"
+  set_fact:
+    file_facts: "{{ file | check_file_location(tmp_inv_dir) }}"
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on static files for '{{ entry.object}} : {{ content.name | default(file | basename) }}'"
   command: >
     oc {{ oc_action }} \
        {{ oc_target_namespace }} \
-       -f {{ oc_file_path }} \
+       -f {{ file_facts['oc_file_path'] }} \
        {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
   register: command_result
   failed_when:
