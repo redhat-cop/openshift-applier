@@ -1,6 +1,6 @@
 ---
 
-- name: "Set default values"
+- name: "Determine the location for the 'file'"
   set_fact:
     file_facts: "{{ file | check_file_location(tmp_inv_dir) }}"
 
