@@ -1,5 +1,8 @@
 ---
 
+- name: "Error out on anything in the inventory that is no longer supported"
+  include_tasks: error-on-unsupported.yml
+
 - name: "Pull in Galaxy requirements - if set"
   include_tasks: install-dependencies.yml
   with_items:
@@ -22,4 +25,4 @@
   loop_control:
     loop_var: entry
   when:
-  - entry.content is defined or entry.content_dir is defined
+  - entry.content is defined

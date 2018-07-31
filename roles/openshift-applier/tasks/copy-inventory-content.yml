@@ -7,11 +7,4 @@
   with_items:
   - "{{ content_entry.content }}"
   when:
-  - content_entry.content is defined 
-
-- name: "Copy 'content_dir' entries"
-  vars:
-    dir: "{{ content_entry.content_dir }}"
-  import_tasks: copy-inventory-dir.yml
-  when:
-  - content_entry.content_dir is defined 
+  - content_entry.content is defined

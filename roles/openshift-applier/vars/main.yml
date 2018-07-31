@@ -1,0 +1,8 @@
+---
+
+unsupported_dict_top_level:
+- content_dir
+
+unsupported_dict_content_level:
+- file_action
+- template_action

@@ -1,0 +1,19 @@
+---
+
+- name: "Look for unsupported top-level dictionary entries"
+  fail:
+    msg: "Unsupported inventory entry found: {{ item }}"
+  when:
+  - openshift_cluster_content | selectattr(item, 'defined')|list|length > 0
+  with_items:
+  - "{{ unsupported_dict_top_level }}"
+
+- name: "Look for unsupported content-level dictionary entries"
+  fail:
+    msg: "Unsupported inventory entry found: {{ item.1 }}"
+  when:
+  - item.0.content is defined
+  - item.0.content | selectattr(item.1, 'defined')|list|length > 0
+  with_nested:
+  - "{{ openshift_cluster_content }}"
+  - "{{ unsupported_dict_content_level }}"
