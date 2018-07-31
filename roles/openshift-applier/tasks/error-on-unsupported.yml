@@ -20,7 +20,7 @@
 
 - name: "Error out if any unsupported items were found"
   fail:
-    msg: "Unsupported inventory entry found: {{ item.key }} ({{ item.value }})"
+    msg: "One or more unsupported inventory entry found for the following key: {{ item.key }}"
   when:
   - unsupported_items is defined
   with_dict: "{{ unsupported_items }}"
