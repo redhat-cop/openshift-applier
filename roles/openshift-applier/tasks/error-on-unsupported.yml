@@ -1,0 +1,26 @@
+---
+
+- name: "Look for unsupported top-level dictionary entries"
+  set_fact:
+    unsupported_items: "{{ unsupported_items | default({}) | combine({item: (openshift_cluster_content|selectattr(item, 'defined')|list|length)}) }}"
+  when:
+  - openshift_cluster_content | selectattr(item, 'defined')|list|length > 0
+  with_items:
+  - "{{ unsupported_dict_top_level }}"
+
+- name: "Look for unsupported content-level dictionary entries"
+  set_fact:
+    unsupported_items: "{{ unsupported_items | default({}) | combine({item.1: (item.0.content|selectattr(item.1, 'defined')|list|length)}) }}"
+  when:
+  - item.0.content is defined
+  - item.0.content | selectattr(item.1, 'defined')|list|length > 0
+  with_nested:
+  - "{{ openshift_cluster_content }}"
+  - "{{ unsupported_dict_content_level }}"
+
+- name: "Error out if any unsupported items were found"
+  fail:
+    msg: "One or more unsupported inventory entry found for the following key: {{ item.key }}"
+  when:
+  - unsupported_items is defined
+  with_dict: "{{ unsupported_items }}"

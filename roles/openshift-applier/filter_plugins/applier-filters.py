@@ -14,7 +14,7 @@ def filter_content(content_dict, outer_list, filter_list):
     # If none of the filter tags exists, remove it from the list
     if len(intersect_list) == 0:
         outer_list.remove(content_dict)
-    
+
 
 # Main 'filter_applier_items' function
 def filter_applier_items(applier_list, filter_tags):
@@ -22,7 +22,7 @@ def filter_applier_items(applier_list, filter_tags):
     if len(filter_tags.strip()) == 0:
         return applier_list
 
-    # Convert comma seperated list to an actual list and strip off whitespaces of each element 
+    # Convert comma seperated list to an actual list and strip off whitespaces of each element
     filter_list = filter_tags.split(",")
     filter_list = [i.strip() for i in filter_list]
 
@@ -35,11 +35,7 @@ def filter_applier_items(applier_list, filter_tags):
                 filter_content(c, a['content'], filter_list)
 
             if len(a['content']) == 0:
-                applier_list.remove(a)		 
-
-        # Handle the 'content_dir' entries
-        elif 'content_dir' in a:
-            filter_content(a, applier_list, filter_list)
+                applier_list.remove(a)
 
     return applier_list
 
@@ -75,4 +71,3 @@ class FilterModule(object):
             'check_file_location': check_file_location,
             'filter_applier_items': filter_applier_items
         }
-

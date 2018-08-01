@@ -78,8 +78,6 @@ The pre/post definitions are a set of pre and post roles to execute before/after
 
 You can source a directory composed of static files (without parameters) using `files` instead of defining each file individually.
 
-NOTE: Formerly, this was done using a separate `content_dir` structure. This has been deprecated.
-
 That would look like this:
 ```yaml
 - object: policy
@@ -171,7 +169,7 @@ Valid `action` values are `apply`, `create`, and `delete`.
 
 ### Filtering content based on tags
 
-The `openshift-applier` supports the use of tags in the inventory (see example above) to allow for filtering which content should be processed and not. The `filter_tags` variable/fact takes a comma separated list of tags that will be processed and only content/content_dir with matching tags will be applied.
+The `openshift-applier` supports the use of tags in the inventory (see example above) to allow for filtering which content should be processed and not. The `filter_tags` variable/fact takes a comma separated list of tags that will be processed and only content with matching tags will be applied.
 
 **_NOTE:_** Entries in the inventory without tags will not be processed when a valid list is supplied with the `filter_tags` option.
 
