@@ -1,7 +1,7 @@
 ---
 
 openshift_cluster_content:
-- galaxy_requirements: "{{ inventory_dir }}/../../files/galaxy/requirements.yml"
+- galaxy_requirements: "{{ inventory_dir }}/../../files/dependency/galaxy_requirements.yml"
 - object: projectrequest
   content:
   - name: "label-test-project"
