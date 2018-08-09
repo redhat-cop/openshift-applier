@@ -1,0 +1,15 @@
+---
+
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: "multi-params-dir-project"
+    template: "{{ inventory_dir }}/../../files/templates/projectrequest.yml"
+    params: "{{ inventory_dir }}/../../files/multi-params-dir/project1.params"
+    action: create
+- object: multi-params-dir-test
+  content:
+  - name: Create multiple routes from template and params files in a directory
+    template: "{{ inventory_dir }}/../../files/multi-params-dir/template1.yml"
+    params: "{{ inventory_dir }}/../../files/multi-params-dir/params/"
+    namespace: oa-ci-multi-params-dir1

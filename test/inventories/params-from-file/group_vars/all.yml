@@ -1,0 +1,24 @@
+---
+
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: Create Secret Projects
+    file: "{{ inventory_dir }}/../../files/secrets/project1.yml"
+    action: create
+  - name: Create Route Projects
+    template: "{{ inventory_dir }}/../../files/templates/projectrequest.yml"
+    params: "{{ inventory_dir }}/../../files/routes/project1.params"
+    action: create
+- object: secret-test
+  content:
+  - name: Create Secrets with params (from file)
+    template: "{{ inventory_dir }}/../../files/secrets/template1.yml"
+    params: "{{ inventory_dir }}/../../files/secrets/secret1.params"
+    namespace: oa-ci-secret2
+- object: route-test
+  content:
+  - name: Create route from template and params (from file)
+    template: "{{ inventory_dir }}/../../files/routes/template1.yml"
+    params: "{{ inventory_dir }}/../../files/routes/route1.params"
+    namespace: oa-ci-route1

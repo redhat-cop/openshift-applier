@@ -1,0 +1,12 @@
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  annotations:
+    description: Route3 for application's service.
+  name: route3
+spec:
+  host: test3.multi-files-dir.com
+  to:
+    kind: Service
+    name: test3

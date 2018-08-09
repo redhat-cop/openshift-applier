@@ -1,0 +1,27 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  creationTimestamp: null
+  name: ${NAME}
+objects:
+- kind: Route
+  apiVersion: v1
+  metadata:
+    annotations:
+      description: Route Test
+    labels:
+      application: ${NAME}
+    name: ${NAME}
+  spec:
+    host: ${FQDN}
+    to:
+      kind: Service
+      name: ${NAME}
+parameters:
+- name: FQDN
+  description: FQDN for route
+  required: true
+- name: NAME
+  description: Name of the Application
+  required: true
