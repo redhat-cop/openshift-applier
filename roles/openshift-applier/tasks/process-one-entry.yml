@@ -2,7 +2,7 @@
 
 - name: "Set default values"
   set_fact:
-    oc_target_namespace: ''
+    target_namespace: ''
     oc_action: "{{ content.action | default(default_oc_action) }}"
     file: "{{ content.file | default('') }}"
     template: "{{ content.template | default('') }}"
@@ -17,7 +17,7 @@
 
 - name: "Set the target namespace option if supplied"
   set_fact:
-    oc_target_namespace: "-n {{ content.namespace }}"
+    target_namespace: "-n {{ content.namespace }}"
   when:
   - content.namespace is defined
   - content.namespace|trim != ''
