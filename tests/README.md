@@ -24,11 +24,11 @@ Each "test case" is built out as an inventory with corresponding files (if appli
 List of example test runs:
 
 ```
-ansible-playbook playbooks/openshift-cluster-seed.yml -i test/inventories/multi-files-dir
-ansible-playbook playbooks/openshift-cluster-seed.yml -i test/inventories/multi-params-dir
-ansible-playbook playbooks/openshift-cluster-seed.yml -i test/inventories/params-from-file
-ansible-playbook playbooks/openshift-cluster-seed.yml -i test/inventories/params-from-vars
-ansible-playbook playbooks/openshift-cluster-seed.yml -i test/inventories/pre-post-steps
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/multi-files-dir
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/multi-params-dir
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/params-from-file
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/params-from-vars
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/pre-post-steps
 ```
 
 
