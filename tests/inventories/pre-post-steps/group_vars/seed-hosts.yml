@@ -1,0 +1,22 @@
+---
+
+openshift_cluster_content:
+- galaxy_requirements: "{{ inventory_dir }}/../../files/dependency/galaxy_requirements.yml"
+- object: projectrequest
+  content:
+  - name: "label-test-project"
+    template: "{{ inventory_dir }}/../../files/templates/projectrequest.yml"
+    params: "{{ inventory_dir }}/../../files/labels/project1.params"
+    action: create
+- object: label-test
+  content:
+  - name: Create route from template and params (from file) and apply label
+    template: "{{ inventory_dir }}/../../files/routes/template1.yml"
+    params: "{{ inventory_dir }}/../../files/routes/route1.params"
+    namespace: 'oa-ci-label1'
+    post_steps:
+    - role: casl-ansible/roles/openshift-labels
+      vars:
+        target_object: "route"
+        target_name: "route1-test"
+        label: "openshift-applier=true"

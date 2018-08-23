@@ -1,0 +1,3 @@
+NAMESPACE=oa-ci-multi-params-dir1
+NAMESPACE_DISPLAY_NAME=OpenShift Applier Multi-Params-Dir Test 1 (displayName)
+NAMESPACE_DESCRIPTION=OpenShift Applier Multi-Params-Dir Test 1 (description)

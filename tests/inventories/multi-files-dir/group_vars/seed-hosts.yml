@@ -1,0 +1,14 @@
+---
+
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: "label-test"
+    template: "{{ inventory_dir }}/../../files/templates/projectrequest.yml"
+    params: "{{ inventory_dir }}/../../files/multi-files-dir/project1.params"
+    action: create
+- object: label-test
+  content:
+  - name: Create multiple routes from multiple static files in a directory
+    file: "{{ inventory_dir }}/../../files/multi-files-dir/files"
+    namespace: 'oa-ci-multi-files-dir1'
