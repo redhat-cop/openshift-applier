@@ -5,3 +5,4 @@ tmp_inv_dir: ''
 filter_tags: ''
 provision: True
 params_from_vars: {}
+oc_ignore_unknown_parameters: true

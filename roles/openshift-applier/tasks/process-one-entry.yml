@@ -8,7 +8,7 @@
     template: "{{ content.template | default('') }}"
     params: "{{ content.params | default('') }}"
     params_from_vars: "{{ content.params_from_vars | default({}) }}"
-    oc_ignore_unknown_parameters: "{{ content.ignore_unknown_parameters | default(true) }}"
+    oc_ignore_unknown_parameters: "{{ content.ignore_unknown_parameters | default(oc_ignore_unknown_parameters) }}"
     no_log: False
 
 - name: "Set oc_action to delete when in deprovision mode"
