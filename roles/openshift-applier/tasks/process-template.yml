@@ -48,7 +48,7 @@
        {{ target_namespace }} \
        {{ oc_param_option }} \
        {{ oc_param_file_item }} \
-       --ignore-unknown-parameters \
+       {{ (oc_ignore_unknown_parameters == 'true') | ternary('', '--ignore-unknown-parameters') }} \
        | \
     oc {{ oc_action }} \
        {{ target_namespace }} \
