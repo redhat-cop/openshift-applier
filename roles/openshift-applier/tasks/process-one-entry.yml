@@ -3,7 +3,7 @@
 - name: "Set default values"
   set_fact:
     target_namespace: ''
-    oc_action: "{{ content.action | default(default_oc_action) }}"
+    oc_action: "{{ content.action | default(oc_action) }}"
     file: "{{ content.file | default('') }}"
     template: "{{ content.template | default('') }}"
     params: "{{ content.params | default('') }}"
