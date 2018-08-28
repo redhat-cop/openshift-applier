@@ -16,7 +16,7 @@
   when:
   - not provision|bool
 
-- name: "Set no_log when speified"
+- name: "Set no_log when specified"
   set_fact:
     no_log: True
   when: (entry.no_log is defined and entry.no_log|bool) or (content.no_log is defined and content.no_log|bool)
