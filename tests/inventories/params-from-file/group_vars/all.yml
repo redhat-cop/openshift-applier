@@ -22,3 +22,4 @@ openshift_cluster_content:
     template: "{{ inventory_dir }}/../../files/routes/template1.yml"
     params: "{{ inventory_dir }}/../../files/routes/route1.params"
     namespace: oa-ci-route1
+    ignore_unknown_parameters: false
