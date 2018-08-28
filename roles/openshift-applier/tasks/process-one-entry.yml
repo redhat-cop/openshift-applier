@@ -8,12 +8,18 @@
     template: "{{ content.template | default('') }}"
     params: "{{ content.params | default('') }}"
     params_from_vars: "{{ content.params_from_vars | default({}) }}"
+    no_log: False
 
 - name: "Set oc_action to delete when in deprovision mode"
   set_fact:
     oc_action: "delete"
   when:
   - not provision|bool
+
+- name: "Set no_log when specified"
+  set_fact:
+    no_log: True
+  when: (entry.no_log is defined and entry.no_log|bool) or (content.no_log is defined and content.no_log|bool)
 
 - name: "Set the target namespace option if supplied"
   set_fact:

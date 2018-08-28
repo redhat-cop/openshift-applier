@@ -55,6 +55,7 @@
        -f - \
        {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
   register: command_result
+  no_log: "{{ no_log }}"
   failed_when:
   - command_result.rc != 0
   - "'AlreadyExists' not in command_result.stderr"

@@ -10,6 +10,7 @@
        {{ target_namespace }} \
        -f {{ file_facts['oc_file_path'] }} \
        {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
+  no_log: "{{ no_log }}"
   register: command_result
   failed_when:
   - command_result.rc != 0

@@ -49,11 +49,13 @@ openshift_cluster_content:
           <key1>: <value1>  
     file: <file source>
     action: <apply|create> # Optional: Defaults to 'apply'
+    no_log: <True|False> # Optional: no_log at content level if functionality desired. Defaults to False
     tags: # Optional: Tags are only needed if `filter_tags` is used
     - tag1
     - tag2
     post_steps: # Optional: post-steps at content level can be added if desired
       - role: <path to an ansible role>
+  no_log: <True|False> # Optional: no_log at object level if functionality desired. Optional: Defaults to False
   post_steps: # Optional: post-steps at object level can be added if desired
     - role: <path to an ansible role>
 - object: <object_type>
@@ -177,6 +179,10 @@ The `openshift-applier` supports the use of tags in the inventory (see example a
 filter_tags=tag1,tag2
 
 ```
+
+### Suppressing Log Output
+
+Output can be suppressed either at the `object` or `content` level when there is a desire to suppress secret values from being displayed.
 
 ### Pre/Post steps
 
