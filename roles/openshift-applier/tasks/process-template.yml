@@ -30,7 +30,7 @@
 
 - name: "Change 'params_from_vars' fact (if applicable) into command line parameters"
   set_fact:
-    oc_param_option: "{{ oc_param_option }} --param={{ item.key }}={{ item.value }}"
+    oc_param_option: "{{ oc_param_option }} --param='{{ item.key }}={{ item.value }}'"
   with_dict:
   - "{{ params_from_vars }}"
 
