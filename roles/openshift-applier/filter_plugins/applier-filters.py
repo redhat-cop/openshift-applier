@@ -50,15 +50,17 @@ def check_file_location(path, tmp_inv_dir):
         "oc_process_local": ''
     }
 
-    # default return status for url and file checks
+    # default return status to false
     url_status = False
-    file_status = False
 
-    # First try to see if this is a URL - if it is not, check for local file
-    try:
-        url_status = urllib.urlopen(path)
-    except:
-        file_status = os.path.isfile("%s%s" % (tmp_inv_dir, path))
+    # First try to see if this is a local file - if it is not, check for a valid URL
+    file_status = os.path.isfile("%s%s" % (tmp_inv_dir, path))
+    if (not file_status):
+        try:
+            url_status = urllib.urlopen(path)
+        except:
+            # Both check failed - return "default" values
+            return return_vals
 
     # If it is a valid URL or local file, set the proper flags
     if ((url_status and url_status.getcode() == 200) or file_status):
