@@ -1,5 +1,7 @@
 import os
-import requests
+import urllib
+from urlparse import urlparse
+
 
 # Helper function to simplify the 'filter_applier_items' below
 def filter_content(content_dict, outer_list, filter_list):
@@ -39,27 +41,35 @@ def filter_applier_items(applier_list, filter_tags):
 
     return applier_list
 
+# Function used to determine a files location - i.e.: URL, local file or "something else"
 def check_file_location(path, tmp_inv_dir):
+    # default return values
     return_vals = {
         "oc_option_f":  '',
         "oc_file_path": path,
         "oc_process_local": ''
     }
 
-    file_status = os.path.isfile("%s%s" % (tmp_inv_dir,path))
+    # default return status to false
+    url_status = False
 
-    if(not file_status):
+    # First try to see if this is a local file - if it is not, check for a valid URL
+    file_status = os.path.isfile("%s%s" % (tmp_inv_dir, path))
+    if (not file_status):
         try:
-            request_status = requests.head(path)
-        except requests.exceptions.MissingSchema:
+            url_status = urllib.urlopen(path)
+        except:
+            # Both check failed - return "default" values
             return return_vals
 
-    if (file_status or request_status.status_code == 200):
+    # If it is a valid URL or local file, set the proper flags
+    if ((url_status and url_status.getcode() == 200) or file_status):
         return_vals['oc_option_f'] = ' -f'
         return_vals['oc_process_local'] = ' --local'
 
+    # Ensure the correct path is used for the file if it is a local file
     if (file_status):
-        return_vals['oc_file_path'] = "%s%s" % (tmp_inv_dir,path)
+        return_vals['oc_file_path'] = "%s%s" % (tmp_inv_dir, path)
 
     return return_vals
 
