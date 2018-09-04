@@ -1,0 +1,49 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+  options:
+    config-file: molecule/yamllint.yml
+platforms:
+  - name: centos
+    image: centos:7
+    groups:
+      - seed-hosts
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      all:
+        use_kube_file: "${USE_KUBE_FILE:-True}"
+        oc_binary_url: "${OC_BINARY_URL:-https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz}"
+        oc_master_url: "${OC_MASTER_URL:-https://localhost:8443}"
+        oc_username: "${OC_USERNAME:-admin}"
+        oc_password: "${OC_PASSWORD:-admin}"
+        oc_token: "${OC_TOKEN}"
+  lint:
+    name: ansible-lint
+scenario:
+  name: default
+  test_sequence:
+    - dependency
+    - lint
+    - destroy
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    # -   idempotence
+    - side_effect
+    - verify
+    - destroy
+
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
+    options:
+      max-line-length: 250

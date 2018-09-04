@@ -1,0 +1,27 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Download OpenShift Binary
+      unarchive:
+        src: "{{ oc_binary_url }}"
+        dest: "/usr/local/bin"
+        remote_src: yes
+    - name: Manage OpenShift Configuration File
+      block:
+        - name: Copy OpenShift Configuration File
+          copy:
+            src: "~/.kube/config"
+            dest: "~/.kube/"
+      when: use_kube_file|bool
+    - name: Manage OpenShift Configuration File via Login
+      block:
+        - name: Login to OpenShift (Token)
+          command: >
+            oc login --insecure-skip-tls-verify=true {{ oc_master_url }} --token={{ oc_token }}
+          when: not oc_token|trim == ""
+        - name: Login to OpenShift (Username/Password)
+          command: >
+            oc login --insecure-skip-tls-verify=true  --username={{ oc_username }} --password={{ oc_password }} {{ oc_master_url }}
+          when: oc_token|trim == ""
+      when: not use_kube_file|bool

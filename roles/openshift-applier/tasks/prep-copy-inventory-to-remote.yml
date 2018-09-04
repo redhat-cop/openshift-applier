@@ -1,11 +1,11 @@
 ---
 
-- name: "Create a temporary directory to use" 
+- name: "Create a temporary directory to use"
   tempfile:
     state: directory
   register: tmp_dir
   notify:
-  - Clean up temporary inventory dir
+    - Clean up temporary inventory dir
 
 - name: "Store away the temporary directory path"
   set_fact:

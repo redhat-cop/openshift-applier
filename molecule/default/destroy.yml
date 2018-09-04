@@ -1,0 +1,59 @@
+---
+
+- hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - block:
+        - name: Check hosts are available
+          wait_for_connection:
+            timeout: 5
+          no_log: true
+        - name: clear hosts
+          group_by:
+            key: "available_hosts"
+      rescue:
+        - debug:
+            msg: "Existing runtime container is not accessible. Errors can be ignored."
+
+- hosts: available_hosts
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Delete Test Project
+      command: >
+        oc delete project oa-ci-multi-files-dir1
+      ignore_errors: yes
+      delegate_to: "{{ groups['seed-hosts'] | first }}"
+
+- name: Destroy
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  no_log: "{{ not (lookup('env', 'MOLECULE_DEBUG') | bool or molecule_yml.provisioner.log|default(false) | bool) }}"
+  tasks:
+    - name: Destroy molecule instance(s)
+      docker_container:
+        name: "{{ item.name }}"
+        docker_host: "{{ item.docker_host | default(lookup('env', 'DOCKER_HOST') or 'unix://var/run/docker.sock') }}"
+        state: absent
+        force_kill: "{{ item.force_kill | default(true) }}"
+      register: server
+      with_items: "{{ molecule_yml.platforms }}"
+      async: 7200
+      poll: 0
+
+    - name: Wait for instance(s) deletion to complete
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      register: docker_jobs
+      until: docker_jobs.finished
+      retries: 300
+      with_items: "{{ server.results }}"
+
+    - name: Delete docker network(s)
+      docker_network:
+        name: "{{ item }}"
+        docker_host: "{{ item.docker_host | default(lookup('env', 'DOCKER_HOST') or 'unix://var/run/docker.sock') }}"
+        state: absent
+      with_items: "{{ molecule_yml.platforms | molecule_get_docker_networks }}"

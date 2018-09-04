@@ -14,9 +14,9 @@
   include_role:
     name: "{{ tmp_dep_dir }}{{ step.role }}"
   when:
-  - step is defined
-  - step.role is defined
-  - step.role|trim != ''
+    - step is defined
+    - step.role is defined
+    - step.role|trim != ''
 
 - name: "Clear facts to ensure that they don't carry over"
   set_fact:

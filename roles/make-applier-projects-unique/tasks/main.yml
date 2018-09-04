@@ -1,5 +1,5 @@
 ---
-# updating params is mandatory. the check on params_regexp_replace_pairs is skipped 
+# updating params is mandatory. the check on params_regexp_replace_pairs is skipped
 # to provide users a failure message if the value is not set
 
 - name: "Update the params file entries"
@@ -16,7 +16,7 @@
   include_tasks: update-galaxy-requirements.yml
   with_items:
   - "{{ openshift_cluster_content }}"
-  when: 
+  when:
   - item.galaxy_requirements is defined
   - item.galaxy_requirements != ""
   - galaxy_regexp_replace_pairs is defined
