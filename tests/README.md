@@ -28,6 +28,7 @@ ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/multi
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/multi-params-dir
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/params-from-file
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/params-from-vars
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/params-from-both
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/pre-post-steps
 ```
 
