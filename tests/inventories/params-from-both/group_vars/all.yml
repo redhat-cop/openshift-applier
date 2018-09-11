@@ -1,0 +1,40 @@
+---
+
+project_params:
+  NAMESPACE: oa-ci-route1
+  NAMESPACE_DISPLAY_NAME: OpenShift Applier Route Test 1 (displayName)
+  NAMESPACE_DESCRIPTION: OpenShift Applier Route Test 1 (description)
+
+secret_params:
+  USERNAME: testUsername-overwritten
+#  PASSWORD: "{{ test_password | default(omit) }}"
+
+route_params:
+  FQDN: test-overwritten.params-from-vars.com
+  NAME: route1-test-overwritten
+  NAMESPACE: oa-ci-route1
+
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: Create Secret Projects
+    file: "{{ inventory_dir }}/../../files/secrets/project1.yml"
+    action: create
+  - name: Create Route Projects
+    template: "{{ inventory_dir }}/../../files/templates/projectrequest.yml"
+    params: "{{ inventory_dir }}/../../files/routes/project1.params"
+    action: create
+- object: secret-test
+  content:
+  - name: Create Secrets with params_from_vars
+    template: "{{ inventory_dir }}/../../files/secrets/template1.yml"
+    params: "{{ inventory_dir }}/../../files/secrets/secret1.params"
+    params_from_vars: "{{ secret_params }}"
+    namespace: oa-ci-secret1
+- object: route-test
+  content:
+  - name: Create route from template and params_from_vars
+    template: "{{ inventory_dir }}/../../files/routes/template1.yml"
+    params: "{{ inventory_dir }}/../../files/routes/route1.params"
+    params_from_vars: "{{ route_params }}"
+    namespace: oa-ci-route1
