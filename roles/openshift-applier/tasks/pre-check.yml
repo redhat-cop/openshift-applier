@@ -4,3 +4,13 @@
     msg: "openshift-applier requires at least Ansible 2.5 in order to proceed"
   when:
   - "ansible_version.full is version('2.5','<')"
+
+- name: test
+  shell: "oc version | head -1 | awk '{print $2}' | awk -F'+' '{print $1}'"
+  register: unknown_param_check
+
+- name: "Set Fact"
+  set_fact:
+    oc_ignore_unknown_parameters: false
+  when:
+    "unknown_param_check.stdout[1:] is version('3.6','<=')"
