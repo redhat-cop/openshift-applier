@@ -1,4 +1,6 @@
 ---
+- name: "Check applier requirements"
+  include_tasks: pre-check.yml
 
 - name: "Error out on anything in the inventory that is no longer supported"
   include_tasks: error-on-unsupported.yml
