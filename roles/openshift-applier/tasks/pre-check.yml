@@ -7,7 +7,7 @@
 
 
 - name:  "Determine oc version"
-  shell: "oc version | sed -ne 's/^oc v*\(.*\)+.*$/\1/p'" 
+  shell: oc version | sed -ne 's/^oc v*\(.*\)+.*$/\1/p'
   register: oc_vers_check
 
 - name: "Determine unknown param flag"
