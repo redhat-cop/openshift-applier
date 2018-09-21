@@ -1,20 +1,30 @@
 ---
-- name: Exit if ansible version doesn't meet minimum requirements
+
+- name: "Exit if ansible version doesn't meet minimum requirements"
   fail:
     msg: "openshift-applier requires at least Ansible 2.5 in order to proceed"
   when:
   - "ansible_version.full is version('2.5','<')"
 
-
-- name:  "Determine oc version"
-  shell: oc version | sed -ne 's/^oc v*\(.*\)+.*$/\1/p'
+- name: "Retrieve oc client version"
+  shell: oc version
   register: oc_vers_check
 
-- name: "Determine unknown param flag"
-  set_fact:
-    oc_ignore_unknown_parameters: false
+# Block to handle oc command output
+# - only proceed if the oc command returned any output
+- block:
+
+  - name: "Filter out just the oc version number"
+    set_fact:
+      oc_version: "{{ oc_vers_check.stdout | regex_search('^oc.+v([\\d.]+).*', '\\1') }}" 
+
+  - name: "Do *not* use the 'ignore_unknown_parameters' flag if 'oc' version is older than 3.7"
+    set_fact:
+      oc_ignore_unknown_parameters: false
+    when:
+    - oc_version is version('3.7','<')
+
   when:
   - oc_vers_check is defined
   - oc_vers_check.stdout is defined
   - oc_vers_check.stdout|trim != ""
-  - oc_vers_check.stdout is version('3.6','<=')
