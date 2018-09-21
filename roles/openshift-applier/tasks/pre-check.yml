@@ -18,11 +18,11 @@
     set_fact:
       oc_version: "{{ oc_vers_check.stdout | regex_search('^oc.+v([\\d.]+).*', '\\1') }}" 
 
-  - name: "Do *not* use the 'ignore_unknown_parameters' flag if 'oc' version is 3.6 or older"
+  - name: "Do *not* use the 'ignore_unknown_parameters' flag if 'oc' version is older than 3.7"
     set_fact:
       oc_ignore_unknown_parameters: false
     when:
-    - oc_version is version('3.6','<=')
+    - oc_version is version('3.7','<')
 
   when:
   - oc_vers_check is defined
