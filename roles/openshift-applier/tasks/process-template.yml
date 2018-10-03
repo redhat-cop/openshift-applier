@@ -4,6 +4,7 @@
   set_fact:
     oc_param_file_option: []
     oc_param_option: ''
+    list_of_param_files: []
 
 - name: "Pre-process params file (if applicable)"
   block:
@@ -15,16 +16,27 @@
       msg: "{{ params }} - params file doesn't exist."
     when:
     - params_result.stat.exists == False
-  # Append '/*' if this is a directory as we'd want it to expand to all files in the dir
-  - set_fact:
-      params: "{{ params }}/*"
+  # Find all files in the directory - if "params" is a directory
+  - block:
+    - find:
+        paths: "{{ tmp_inv_dir }}{{ params }}"
+      register: find_result
+    - set_fact:
+        list_of_param_files: "{{ list_of_param_files + [ item.path ] }}"
+      with_items:
+      - "{{ find_result.files }}"
     when:
     - params_result.stat.isdir
+  - set_fact:
+      list_of_param_files: "[ '{{ tmp_inv_dir }}{{ params }}' ]"
+    when:
+    - params_result.stat.isdir is undefined or 
+      not params_result.stat.isdir
   # Build a list of '--param-file' command line paramters to iterate
   - set_fact:
       oc_param_file_option: "{{ oc_param_file_option + [ ' --param-file=' + item ] }}"
-    with_fileglob:
-    - "{{ tmp_inv_dir }}{{ params }}"
+    with_items:
+    - "{{ list_of_param_files }}"
   when:
   - params|trim != ''
 
@@ -59,7 +71,7 @@
   - command_result.rc != 0
   - "'AlreadyExists' not in command_result.stderr"
   # If the array is empty, make sure to run the loop at least once
-  # - the "['']" will enforce that it run at least once
+  # - the "['']" will enforce that it runs at least once
   with_items:
   - "{{ (oc_param_file_option|length > 0) | ternary(oc_param_file_option, ['']) }}"
   loop_control:
