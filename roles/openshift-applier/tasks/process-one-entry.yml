@@ -40,7 +40,6 @@
   include_tasks: process-template.yml
   when:
   - template|trim != ''
-  - params|trim != '' or params_from_vars|trim != ''
 
 - name: "Process File (if applicable)"
   include_tasks: process-file.yml
