@@ -2,13 +2,13 @@
 
 - name: "Reset Command Line Options"
   set_fact:
-    oc_param_file_option: []
+    param_file_list: []
     oc_param_option: ''
 
 - name: "Pre-process params file (if applicable)"
   block:
   - stat:
-      path: "{{ tmp_inv_dir }}{{ params }}"
+      path: "{{ params }}"
     ignore_errors: yes
     register: params_result
   - fail:
@@ -22,9 +22,9 @@
     - params_result.stat.isdir
   # Build a list of '--param-file' command line paramters to iterate
   - set_fact:
-      oc_param_file_option: "{{ oc_param_file_option + [ ' --param-file=' + item ] }}"
+      param_file_list: "{{ param_file_list + [ item ] }}"
     with_fileglob:
-    - "{{ tmp_inv_dir }}{{ params }}"
+    - "{{ params }}"
   when:
   - params|trim != ''
 
@@ -33,20 +33,33 @@
     oc_param_option: "{{ oc_param_option }} --param='{{ item.key }}={{ item.value }}'"
   with_dict: "{{ params_from_vars }}"
 
-# This call sets the 'oc_process_local', 'oc_option_f' and 'oc_file_path' parameters
+# This call sets the 'oc_process_local', 'oc_option_f', 'oc_path' & 'local_path' parameters
 - name: "Determine location for the 'template'"
   set_fact:
-    template_facts: "{{ template | check_file_location(tmp_inv_dir) }}"
+    template_facts: "{{ template | check_file_location }}"
 
+- name: "Copy file(s) to remote location if required"
+  block:
+  - vars:
+      file: "{{ template_facts.oc_path }}"
+    include_tasks: copy-inventory-file-to-remote.yml
+  - vars:
+      file: "{{ item }}"
+    include_tasks: copy-inventory-file-to-remote.yml
+    with_items:
+    - "{{ param_file_list }}"
+  when:
+  - template_facts.local_path
+  - ansible_connection != 'local'
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
   shell: >
     oc process \
-       {{ template_facts['oc_process_local'] }} \
-       {{ template_facts['oc_option_f'] }} {{ template_facts['oc_file_path'] }} \
+       {{ template_facts.oc_process_local }} \
+       {{ template_facts.oc_option_f }} {{ tmp_inv_dir }}{{ template_facts.oc_path }} \
        {{ target_namespace }} \
        {{ oc_param_option }} \
-       {{ oc_param_file_item }} \
+       {{ (oc_param_file_item|trim == '') | ternary('', ' --param-file="' + tmp_inv_dir + oc_param_file_item + '"') }} \
        {{ oc_ignore_unknown_parameters | ternary('--ignore-unknown-parameters', '') }} \
        | \
     oc {{ oc_action }} \
@@ -61,6 +74,6 @@
   # If the array is empty, make sure to run the loop at least once
   # - the "['']" will enforce that it run at least once
   with_items:
-  - "{{ (oc_param_file_option|length > 0) | ternary(oc_param_file_option, ['']) }}"
+  - "{{ (param_file_list|length > 0) | ternary(param_file_list, ['']) }}"
   loop_control:
     loop_var: 'oc_param_file_item'

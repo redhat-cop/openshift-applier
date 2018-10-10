@@ -15,8 +15,8 @@
   - dependencies.galaxy_requirements is defined
   delegate_to: localhost
 
-- name: "Copy inventory content to remote host(s) if not running 'locally'"
-  import_tasks: copy-inventory-to-remote.yml
+- name: "Prepare to copy content to remote host(s) if not running 'locally'"
+  import_tasks: prep-copy-inventory-to-remote.yml
   when:
   - ansible_connection != 'local'
 

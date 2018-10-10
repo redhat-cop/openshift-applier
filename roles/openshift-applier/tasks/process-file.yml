@@ -2,13 +2,21 @@
 
 - name: "Determine the location for the 'file'"
   set_fact:
-    file_facts: "{{ file | check_file_location(tmp_inv_dir) }}"
+    file_facts: "{{ file | check_file_location }}"
+
+- name: "Copy file(s) to remote location if required"
+  vars:
+    file: "{{ file_facts.oc_path }}"
+  include_tasks: copy-inventory-file-to-remote.yml
+  when:
+  - file_facts.local_path
+  - ansible_connection != 'local'
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on static files for '{{ entry.object}} : {{ content.name | default(file | basename) }}'"
-  command: >
+  shell: >
     oc {{ oc_action }} \
        {{ target_namespace }} \
-       -f {{ file_facts['oc_file_path'] }} \
+       -f {{ tmp_inv_dir }}{{ file_facts.oc_path }} \
        {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
   no_log: "{{ no_log }}"
   register: command_result

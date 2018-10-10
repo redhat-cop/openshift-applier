@@ -41,21 +41,22 @@ def filter_applier_items(applier_list, filter_tags):
 
     return applier_list
 
-# Function used to determine a files location - i.e.: URL, local file or "something else"
-def check_file_location(path, tmp_inv_dir):
+# Function used to determine a files location - i.e.: URL, local file/directory or "something else"
+def check_file_location(path):
     # default return values
     return_vals = {
         "oc_option_f":  '',
-        "oc_file_path": path,
-        "oc_process_local": ''
+        "oc_path": path,
+        "oc_process_local": '',
+        "local_path": False
     }
 
     # default return status to false
     url_status = False
 
-    # First try to see if this is a local file - if it is not, check for a valid URL
-    file_status = os.path.isfile("%s%s" % (tmp_inv_dir, path))
-    if (not file_status):
+    # First try to see if this is a local file or directory - if it is not, check for a valid URL
+    path_status = os.path.exists(path)
+    if (not path_status):
         try:
             url_status = urllib.urlopen(path)
         except:
@@ -63,13 +64,15 @@ def check_file_location(path, tmp_inv_dir):
             return return_vals
 
     # If it is a valid URL or local file, set the proper flags
-    if ((url_status and url_status.getcode() == 200) or file_status):
+    if ((url_status and url_status.getcode() == 200) or path_status):
         return_vals['oc_option_f'] = ' -f'
         return_vals['oc_process_local'] = ' --local'
 
-    # Ensure the correct path is used for the file if it is a local file
-    if (file_status):
-        return_vals['oc_file_path'] = "%s%s" % (tmp_inv_dir, path)
+    # If this is a local file, set flag to indicate so
+    if (path_status):
+        if (os.path.isdir(path)):
+            return_vals['oc_path'] += '/'
+        return_vals['local_path'] = True
 
     return return_vals
 
