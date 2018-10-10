@@ -11,6 +11,7 @@
       path: "{{ params }}"
     ignore_errors: yes
     register: params_result
+    delegate_to: localhost
   - fail:
       msg: "{{ params }} - params file doesn't exist."
     when:
