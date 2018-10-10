@@ -1,11 +1,9 @@
 ---
 
 - name: "Clean up temporary inventory dir"
-  debug:
-    msg: "{{ item }}"
-#  file:
-#    path: "{{ item }}"
-#    state: absent
+  file:
+    path: "{{ item }}"
+    state: absent
   with_items:
   - "{{ tmp_inv_dir }}"
 
