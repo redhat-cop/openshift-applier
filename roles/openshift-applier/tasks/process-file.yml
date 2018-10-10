@@ -13,7 +13,7 @@
   - ansible_connection != 'local'
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on static files for '{{ entry.object}} : {{ content.name | default(file | basename) }}'"
-  shell: >
+  command: >
     oc {{ oc_action }} \
        {{ target_namespace }} \
        -f {{ tmp_inv_dir }}{{ file_facts.oc_path }} \
