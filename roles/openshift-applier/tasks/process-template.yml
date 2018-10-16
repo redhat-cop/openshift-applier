@@ -7,27 +7,27 @@
 
 - name: "Pre-process params file (if applicable)"
   block:
-  - stat:
-      path: "{{ params }}"
-    ignore_errors: yes
-    register: params_result
-    delegate_to: localhost
-  - fail:
-      msg: "{{ params }} - params file doesn't exist."
-    when:
-    - params_result.stat.exists == False
-  # Append '/*' if this is a directory as we'd want it to expand to all files in the dir
-  - set_fact:
-      params: "{{ params }}/*"
-    when:
-    - params_result.stat.isdir
-  # Build a list of '--param-file' command line paramters to iterate
-  - set_fact:
-      param_file_list: "{{ param_file_list + [ item ] }}"
-    with_fileglob:
-    - "{{ params }}"
+    - stat:
+        path: "{{ params }}"
+      ignore_errors: yes
+      register: params_result
+      delegate_to: localhost
+    - fail:
+        msg: "{{ params }} - params file doesn't exist."
+      when:
+        - params_result.stat.exists == False
+    # Append '/*' if this is a directory as we'd want it to expand to all files in the dir
+    - set_fact:
+        params: "{{ params }}/*"
+      when:
+        - params_result.stat.isdir
+    # Build a list of '--param-file' command line paramters to iterate
+    - set_fact:
+        param_file_list: "{{ param_file_list + [ item ] }}"
+      with_fileglob:
+        - "{{ params }}"
   when:
-  - params|trim != ''
+    - params|trim != ''
 
 - name: "Change 'params_from_vars' fact (if applicable) into command line parameters"
   set_fact:
@@ -41,17 +41,17 @@
 
 - name: "Copy file(s) to remote location if required"
   block:
-  - vars:
-      file: "{{ template_facts.oc_path }}"
-    include_tasks: copy-inventory-file-to-remote.yml
-  - vars:
-      file: "{{ item }}"
-    include_tasks: copy-inventory-file-to-remote.yml
-    with_items:
-    - "{{ param_file_list }}"
+    - vars:
+        file: "{{ template_facts.oc_path }}"
+      include_tasks: copy-inventory-file-to-remote.yml
+    - vars:
+        file: "{{ item }}"
+      include_tasks: copy-inventory-file-to-remote.yml
+      with_items:
+        - "{{ param_file_list }}"
   when:
-  - template_facts.local_path
-  - ansible_connection != 'local'
+    - template_facts.local_path
+    - ansible_connection != 'local'
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
   shell: >
@@ -70,11 +70,11 @@
   register: command_result
   no_log: "{{ no_log }}"
   failed_when:
-  - command_result.rc != 0
-  - "'AlreadyExists' not in command_result.stderr"
+    - command_result.rc != 0
+    - "'AlreadyExists' not in command_result.stderr"
   # If the array is empty, make sure to run the loop at least once
   # - the "['']" will enforce that it run at least once
   with_items:
-  - "{{ (param_file_list|length > 0) | ternary(param_file_list, ['']) }}"
+    - "{{ (param_file_list|length > 0) | ternary(param_file_list, ['']) }}"
   loop_control:
     loop_var: 'oc_param_file_item'

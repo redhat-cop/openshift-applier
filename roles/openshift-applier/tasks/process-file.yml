@@ -9,8 +9,8 @@
     file: "{{ file_facts.oc_path }}"
   include_tasks: copy-inventory-file-to-remote.yml
   when:
-  - file_facts.local_path
-  - ansible_connection != 'local'
+    - file_facts.local_path
+    - ansible_connection != 'local'
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on static files for '{{ entry.object}} : {{ content.name | default(file | basename) }}'"
   command: >
@@ -21,5 +21,5 @@
   no_log: "{{ no_log }}"
   register: command_result
   failed_when:
-  - command_result.rc != 0
-  - "'AlreadyExists' not in command_result.stderr"
+    - command_result.rc != 0
+    - "'AlreadyExists' not in command_result.stderr"

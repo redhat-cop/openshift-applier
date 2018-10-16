@@ -5,6 +5,6 @@
     regexp: "{{ pair.regexp }}"
     replace: "{{ pair.replace }}"
   with_items:
-  - "{{ galaxy_regexp_replace_pairs }} "
+    - "{{ galaxy_regexp_replace_pairs }} "
   loop_control:
-    loop_var: pair 
+    loop_var: pair

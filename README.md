@@ -14,6 +14,10 @@ You can either use the role within your playbooks, or you can choose to use the 
 
 To ensure that your execution environment meets all requirements, it is recommended to use the [openshift-applier docker image](images/openshift-applier) for the executions. Please see the image README for more details on runtime parameters, etc.
 
+### Molecule testing
+
+Validates the execution of the `openshift-applier` role using [Molecule](https://molecule.readthedocs.io). Please see the [README inside the molecule directory](molecule/README.md).
+
 
 ## Release
 

@@ -1,0 +1,14 @@
+---
+- name: Converge
+  hosts: all
+  pre_tasks:
+    - name: Setting Location of Inventory Directory
+      set_fact:
+        inventory_dir: "{{ (playbook_dir ~ '/../../tests/inventories/multi-files-dir') | realpath }}"
+    - name: Include Inventory
+      include_vars:
+        dir: "{{ playbook_dir }}/../../tests/inventories/multi-files-dir/group_vars"
+  tasks:
+    - name: OpenShift Applier Role
+      include_role:
+        name: "{{ (playbook_dir ~ '/../../roles/openshift-applier') | realpath }}"

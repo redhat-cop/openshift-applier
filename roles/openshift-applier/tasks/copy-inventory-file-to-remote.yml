@@ -5,10 +5,10 @@
     path: "{{ tmp_inv_dir }}{{ file|dirname }}"
     state: directory
   when:
-  - file|dirname != ''
+    - file|dirname != ''
 
 - name: "Copy file to target directory"
-  copy: 
+  copy:
     src: "{{ file }}"
     dest: "{{ tmp_inv_dir }}{{ file }}"
   failed_when: false
