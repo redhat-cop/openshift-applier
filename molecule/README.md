@@ -16,7 +16,7 @@ The following requirements must be met:
 
 ## OpenShift Environment
 
-The primary goal of the `openshift-applier` role is to configure an OpenShift cluster. An existing environment must be available for the role to be executed against. The location and credentials are driven by environment variables. Authentication can be provided in the following forms:
+The primary goal of the `openshift-applier` role is to manage resources in an OpenShift cluster. An existing OpenShift cluster must be available for the role to be executed against. The location and credentials are driven by environment variables. Authentication can be provided in the following forms:
 
     * .kubeconfig file
     * Username/password
