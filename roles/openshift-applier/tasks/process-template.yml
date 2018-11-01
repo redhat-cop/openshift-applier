@@ -37,21 +37,21 @@
 - name: "Copy template and param file(s) to remote location - if required"
   block:
     - set_fact:
-        file_facts: []
+        processed_file_facts: []
     - include_tasks: copy-inventory-file-to-remote.yml
       vars:
-        file: "{{ template }}"
+        file_path: "{{ template }}"
     - set_fact:
-        template_facts: "{{ file_facts|first }}"
-        file_facts: []
+        template_facts: "{{ processed_file_facts|first }}"
+        processed_file_facts: []
     - include_tasks: copy-inventory-file-to-remote.yml
       vars:
-        file: "{{ item }}"
+        file_path: "{{ item }}"
       with_items:
         - "{{ param_file_list }}"
     - set_fact:
-        param_facts: "{{ file_facts }}"
-        file_facts: []
+        param_facts: "{{ processed_file_facts }}"
+        processed_file_facts: []
 
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
