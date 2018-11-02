@@ -14,7 +14,7 @@
   command: >
     oc {{ oc_action }} \
        {{ target_namespace }} \
-       -f {{ tmp_inv_dir }}{{ file_facts.oc_path }} \
+       -f {{ file_facts.oc_path }} \
        {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
   no_log: "{{ no_log }}"
   register: command_result
