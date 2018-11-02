@@ -10,5 +10,5 @@ openshift_cluster_content:
 - object: label-test
   content:
   - name: Create multiple routes from multiple static files in a directory
-    file: "{{ inventory_dir }}/../../files/multi-files-dir/files"
+    file: "{{ inventory_dir }}/../../files/multi-files-dir/files/"
     namespace: 'oa-ci-multi-files-dir1'
