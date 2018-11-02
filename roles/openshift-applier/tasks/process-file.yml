@@ -1,22 +1,20 @@
 ---
 
-- name: "Determine the location for the 'file'"
-  set_fact:
-    file_facts: "{{ file | check_file_location }}"
+- name: "Copy file to remote location if required"
+  block:
+    - set_fact:
+        processed_file_facts: []
+    - include_tasks: copy-inventory-file-to-remote.yml
+      vars:
+        file_path: "{{ file }}"
+    - set_fact:
+        file_facts: "{{ processed_file_facts|first }}"
 
-- name: "Copy file(s) to remote location if required"
-  vars:
-    file: "{{ file_facts.oc_path }}"
-  include_tasks: copy-inventory-file-to-remote.yml
-  when:
-    - file_facts.local_path
-    - ansible_connection != 'local'
-
-- name: "{{ oc_action | capitalize }} OpenShift objects based on static files for '{{ entry.object}} : {{ content.name | default(file | basename) }}'"
+- name: "{{ oc_action | capitalize }} OpenShift objects based on static files for '{{ entry.object }} : {{ content.name | default(file | basename) }}'"
   command: >
     oc {{ oc_action }} \
        {{ target_namespace }} \
-       -f {{ tmp_inv_dir }}{{ file_facts.oc_path }} \
+       -f {{ file_facts.oc_path }} \
        {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
   no_log: "{{ no_log }}"
   register: command_result

@@ -1,14 +1,32 @@
 ---
 
-- name: "Create target directory to ensure it exists"
-  file:
-    path: "{{ tmp_inv_dir }}{{ file|dirname }}"
-    state: directory
-  when:
-    - file|dirname != ''
+- name: "Determine location for the file"
+  set_fact:
+    tmp_file_facts: "{{ file_path | check_file_location }}"
 
-- name: "Copy file to target directory"
-  copy:
-    src: "{{ file }}"
-    dest: "{{ tmp_inv_dir }}{{ file }}"
-  failed_when: false
+- block:
+    - name: "Create target directory to ensure it exists"
+      file:
+        path: "{{ tmp_inv_dir }}{{ file_path|dirname }}"
+        state: directory
+      when:
+        - file_path|dirname != ''
+
+    - name: "Copy file to target directory"
+      copy:
+        src: "{{ file_path }}"
+        dest: "{{ tmp_inv_dir }}{{ file_path }}"
+      failed_when: false
+
+    - name: "Update file path to include the tmp_inv_dir path"
+      set_fact:
+        tmp_file_facts: "{{ tmp_file_facts|combine(new_value, recursive=true) }}"
+      vars:
+        new_value: "{ 'oc_path': '{{ tmp_inv_dir }}{{ file_path }}' }"
+  when:
+    - tmp_file_facts.local_path
+    - ansible_connection != 'local'
+
+- name: "Add the processed file to the list of files"
+  set_fact:
+    processed_file_facts: "{{ processed_file_facts + [ tmp_file_facts ] }}"
