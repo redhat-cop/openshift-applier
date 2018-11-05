@@ -30,13 +30,13 @@ The simplest possible run of the image would look like:
 ```
 docker run  \
   -v $HOME/.kube/config:/openshift-applier/.kube/config:z
-  -t redhatcop/openshift-applier
+  -t redhat-cop/openshift-applier
 ```
 
 NOTE: The above commands expects the following inputs:
 * You already have a valid session with the OpenShift cluster (i.e.: using `oc login`) with the session data stored at `$HOME/.kube/config`
 
-Running the above command will kick off an openshift-applier run that will execute against a [Test inventory](../../test/) by default. This however doesn't account for inventories or changes you've made locally. The following subsections cover alternate uses of the image for these scenarios
+Running the above command will kick off an openshift-applier run that will execute against a [Test inventory](../../tests/) by default. This however doesn't account for inventories or changes you've made locally. The following subsections cover alternate uses of the image for these scenarios
 
 ### Running a local inventory
 
@@ -47,7 +47,7 @@ docker run \
   -v $HOME/.kube/config:/openshift-applier/.kube/config:z
   -v $HOME/src/my-inventory/:/tmp/my-inventory <1>
   -e INVENTORY_PATH=/tmp/my-inventory <2>
-  -t redhatcop/openshift-applier
+  -t redhat-cop/openshift-applier
 ```
 1. Your inventory must be mounted into the container
 2. You need to tell the container's run script about the inventory
@@ -61,18 +61,18 @@ docker run  \
   -v $HOME/.kube/config:/openshift-applier/.kube/config:z
   -v $HOME/src/openshift-applier/:/tmp/openshift-applier <1>
   -e PLAYBOOK=/tmp/openshift-applier/playbooks/my-new-playbook.yml <2>
-  -t redhatcop/openshift-applier
+  -t redhat-cop/openshift-applier
 ```
 1. Your copy of openshift-applier must be mounted into the container
 2. You must tell the container's run script which playbook to run
 
 ## Building the Image
 
-This image is built and published to docker.io, so there's no reason to build it if you're just wanting to use the latest stable version. However, if you need to build it for development reasons, here's how:
+This image is built and published to quay.io, so there's no reason to build it if you're just wanting to use the latest stable version. However, if you need to build it for development reasons, here's how:
 
 ```
 cd ./openshift-applier
-docker build -t redhatcop/openshift-applier -f images/openshift-applier/Dockerfile .
+docker build -t redhat-cop/openshift-applier -f images/openshift-applier/Dockerfile .
 ```
 
 ## Troubleshooting
