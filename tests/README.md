@@ -5,7 +5,7 @@ This area of the repo contains tests that can be run to check the `openshift-app
 
 ## Requirements
 - An execution environment where the `openshift-applier` can successfully operate
-  - Consider using the [openshift-applier docker image](https://quay.io/repository/redhat-cop/openshift-applier)
+  - Consider using the [openshift-applier docker image](https://quay.io/repository/redhat-cop/openshift-applier/)
 - A target OpenShift environment
   - *Note:* The `openshift-applier` needs access to the `oc` command
 
