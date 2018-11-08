@@ -2,12 +2,15 @@
 
 - name: "Copy file to remote location if required"
   block:
-    - set_fact:
+    - name: "Clear processed facts"
+      set_fact:
         processed_file_facts: []
-    - include_tasks: copy-inventory-file-to-remote.yml
+    - name: "Copy inventory file to remote"
+      include_tasks: copy-inventory-file-to-remote.yml
       vars:
         file_path: "{{ file }}"
-    - set_fact:
+    - name: "Set file facts"
+      set_fact:
         file_facts: "{{ processed_file_facts|first }}"
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on static files for '{{ entry.object }} : {{ content.name | default(file | basename) }}'"

@@ -25,6 +25,10 @@ provisioner:
         oc_token: "${OC_TOKEN}"
   lint:
     name: ansible-lint
+    options:
+      x:
+        - 301
+        - 305
 scenario:
   name: default
   test_sequence:
