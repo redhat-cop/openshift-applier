@@ -1,0 +1,49 @@
+---
+
+language: python
+python:
+  - "2.7"
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+
+env:
+  global:
+    - ANSIBLE_HOST_KEY_CHECKING=False
+    - PIP_DOWNLOAD_CACHE=$HOME/.cache/pip
+    - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz
+
+before_install:
+  - sudo apt-get update -qq
+
+install:
+  - pip install -U pip
+  - pip install ansible==2.6 ansible-lint yamllint flake8 molecule docker "pytest<3.10"
+  # Configure OpenShift Binary
+  - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
+
+before_script:
+  # Configure Docker
+  - sudo service docker stop
+  - sudo sed -i -e 's/sock/sock --insecure-registry 172.30.0.0\/16/' /etc/default/docker
+  - sudo service docker start
+  # Launch OpenShift Environment
+  - |
+    set +e
+    built=false
+    while true; do
+      IP_ADDR=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+      oc cluster up --public-hostname=${IP_ADDR} --routing-suffix=${IP_ADDR}.nip.io --base-dir=/home/travis/ocp
+      if [ "$?" -eq 0 ]; then
+        built=true
+        break
+      fi
+      echo "Retrying oc cluster up after failure"
+      oc cluster down
+      sleep 5
+    done
+    echo "OpenShift Cluster Running"
+
+script:
+  - molecule test

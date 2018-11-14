@@ -25,6 +25,11 @@ provisioner:
         oc_token: "${OC_TOKEN}"
   lint:
     name: ansible-lint
+    options:
+      # Skipping certin rules per https://github.com/ansible/ansible-lint/blob/master/RULE_DOCS.md
+      x:
+        - 301
+        - 305
 scenario:
   name: default
   test_sequence:

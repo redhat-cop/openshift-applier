@@ -1,4 +1,4 @@
-# Welcome to the the home of the openshift-applier
+# Welcome to the the home of the openshift-applier [![Build Status](https://travis-ci.org/redhat-cop/openshift-applier.svg)](https://travis-ci.org/redhat-cop/openshift-applier)
 The `openshift-applier` is used to apply OpenShift objects to an OpenShift Cluster.
 
 

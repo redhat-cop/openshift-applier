@@ -7,22 +7,26 @@
 
 - name: "Pre-process params file (if applicable)"
   block:
-    - stat:
+    - name: "Check whether parameters file exists"
+      stat:
         path: "{{ params }}"
       ignore_errors: yes
       register: params_result
       delegate_to: localhost
-    - fail:
+    - name: "Fail when params file does  not exist"
+      fail:
         msg: "{{ params }} - params file doesn't exist."
       when:
         - params_result.stat.exists == False
     # Append '/*' if this is a directory as we'd want it to expand to all files in the dir
-    - set_fact:
+    - name: "Append '/*' when location is a directory"
+      set_fact:
         params: "{{ params }}/*"
       when:
         - params_result.stat.isdir
-    # Build a list of '--param-file' command line paramters to iterate
-    - set_fact:
+    # Build a list of '--param-file' command line parameters to iterate
+    - name: "Build a list --param-file command line parameters"
+      set_fact:
         param_file_list: "{{ param_file_list + [ item ] }}"
       with_fileglob:
         - "{{ params }}"
@@ -36,20 +40,25 @@
 
 - name: "Copy template and param file(s) to remote location - if required"
   block:
-    - set_fact:
+    - name: Clear process file facts"
+      set_fact:
         processed_file_facts: []
-    - include_tasks: copy-inventory-file-to-remote.yml
+    - name: "Copy inventory file to remote"
+      include_tasks: copy-inventory-file-to-remote.yml
       vars:
         file_path: "{{ template }}"
-    - set_fact:
+    - name: "Set template file facts"
+      set_fact:
         template_facts: "{{ processed_file_facts|first }}"
         processed_file_facts: []
-    - include_tasks: copy-inventory-file-to-remote.yml
+    - name: "Copy inventory file list to remote"
+      include_tasks: copy-inventory-file-to-remote.yml
       vars:
         file_path: "{{ item }}"
       with_items:
         - "{{ param_file_list }}"
-    - set_fact:
+    - name: "Set param file facts"
+      set_fact:
         param_facts: "{{ processed_file_facts }}"
         processed_file_facts: []
 
