@@ -1,6 +1,9 @@
 import os
 import urllib
-from urlparse import urlparse
+try:
+    from urlparse import urljoin
+except ImportError:
+    from urllib.parse import urljoin
 
 
 # Helper function to simplify the 'filter_applier_items' below
