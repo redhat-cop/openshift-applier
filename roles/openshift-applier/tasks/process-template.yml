@@ -59,9 +59,9 @@
         - "{{ param_file_list }}"
     - name: "Set param file facts"
       set_fact:
-        # If no file has been processed, the 'default' filter will assign an empty 'oc_path'
+        # If no file has been processed, the 'ternary' filter will assign an empty 'oc_path'
         # This will ensure Ansible is happy on the conditionals + ensure the loop below runs at least once.
-        param_facts: "{{ processed_file_facts | default({ 'oc_path': '' }) }}"
+        param_facts: "{{ (processed_file_facts|length == 0) | ternary([{ 'oc_path': '' }], processed_file_facts) }}"
         processed_file_facts: []
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object }} : {{ content.name | default(template | basename) }}'"
