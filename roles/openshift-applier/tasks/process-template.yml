@@ -59,18 +59,19 @@
         - "{{ param_file_list }}"
     - name: "Set param file facts"
       set_fact:
-        param_facts: "{{ processed_file_facts }}"
+        # If no file has been processed, the 'ternary' filter will assign an empty 'oc_path'
+        # This will ensure Ansible is happy on the conditionals + ensure the loop below runs at least once.
+        param_facts: "{{ (processed_file_facts|length == 0) | ternary([{ 'oc_path': '' }], processed_file_facts) }}"
         processed_file_facts: []
 
-
-- name: "{{ oc_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object}} : {{ content.name | default(template | basename) }}'"
+- name: "{{ oc_action | capitalize }} OpenShift objects based on template with params for '{{ entry.object }} : {{ content.name | default(template | basename) }}'"
   shell: >
     oc process \
        {{ template_facts.oc_process_local }} \
        {{ template_facts.oc_option_f }} {{ template_facts.oc_path }} \
        {{ target_namespace }} \
        {{ oc_param_option }} \
-       {{ (oc_param_file_item|trim == '') | ternary('', ' --param-file="' + oc_param_file_item.oc_path + '"') }} \
+       {{ (oc_param_file_item.oc_path|trim == '') | ternary('', ' --param-file="' + oc_param_file_item.oc_path + '"') }} \
        {{ oc_ignore_unknown_parameters | ternary('--ignore-unknown-parameters', '') }} \
        | \
     oc {{ oc_action }} \
@@ -82,9 +83,7 @@
   failed_when:
     - command_result.rc != 0
     - "'AlreadyExists' not in command_result.stderr"
-  # If the array is empty, make sure to run the loop at least once
-  # - the "['']" will enforce that it run at least once
   with_items:
-    - "{{ (param_facts|length > 0) | ternary(param_facts, ['']) }}"
+    - "{{ param_facts }}"
   loop_control:
     loop_var: 'oc_param_file_item'
