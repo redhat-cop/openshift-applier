@@ -7,7 +7,7 @@ The easiest way to get started is to run through the openshift-applier tutorials
 
 - [Introduction to OpenShift-Applier](https://www.katacoda.com/redhat-cop/scenarios/openshift-applier)
 - [Advanced OpenShift-Applier with Dynamic Parameters](https://www.katacoda.com/redhat-cop/scenarios/advanced-applier-dynamic-params)
-- [Advanced OpenShift-Applier with Ansible-Vault and Secrets](https://www.katacoda.com/patrickcarney/scenarios/secrets-with-openshift-applier)
+- [Advanced OpenShift-Applier with Ansible-Vault and Secrets](https://www.katacoda.com/redhat-cop/scenarios/secrets-with-openshift-applier)
 
 ### openshift-applier role
 
