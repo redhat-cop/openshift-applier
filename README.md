@@ -1,6 +1,13 @@
 # Welcome to the the home of the openshift-applier [![Build Status](https://travis-ci.org/redhat-cop/openshift-applier.svg)](https://travis-ci.org/redhat-cop/openshift-applier)
 The `openshift-applier` is used to apply OpenShift objects to an OpenShift Cluster.
 
+### Getting Started
+
+The easiest way to get started is to run through the openshift-applier tutorials on Katacoda:
+
+- [Introduction to OpenShift-Applier](https://www.katacoda.com/redhat-cop/scenarios/openshift-applier)
+- [Advanced OpenShift-Applier with Dynamic Parameters](https://www.katacoda.com/redhat-cop/scenarios/advanced-applier-dynamic-params)
+- [Advanced OpenShift-Applier with Ansible-Vault and Secrets](https://www.katacoda.com/redhat-cop/scenarios/secrets-with-openshift-applier)
 
 ### openshift-applier role
 
