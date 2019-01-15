@@ -28,7 +28,7 @@ systemctl restart docker
 The simplest possible run of the image would look like:
 
 ```
-docker run  \
+docker run -u $(id -u) \
   -v $HOME/.kube/config:/openshift-applier/.kube/config:z
   -t redhat-cop/openshift-applier
 ```
@@ -43,7 +43,7 @@ Running the above command will kick off an openshift-applier run that will execu
 Running an openshift-applier inventory that you may have locally requires two things:
 
 ```
-docker run \
+docker run -u $(id -u) \
   -v $HOME/.kube/config:/openshift-applier/.kube/config:z
   -v $HOME/src/my-inventory/:/tmp/my-inventory <1>
   -e INVENTORY_PATH=/tmp/my-inventory <2>
@@ -57,7 +57,7 @@ docker run \
 For convenience, the container image packages the openshift-applier ansible code inside of the container file system at `/openshift-applier/`. By default, the run script will run the basic applier playbook at `/openshift-applier/playbooks/openshift-cluster-seed.yml`. If you would like to run your local version of applier, you can override this default by adding the following:
 
 ```
-docker run  \
+docker run -u $(id -u) \
   -v $HOME/.kube/config:/openshift-applier/.kube/config:z
   -v $HOME/src/openshift-applier/:/tmp/openshift-applier <1>
   -e PLAYBOOK=/tmp/openshift-applier/playbooks/my-new-playbook.yml <2>
