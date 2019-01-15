@@ -19,7 +19,7 @@ before_install:
 
 install:
   - pip install -U pip
-  - pip install ansible==2.6 ansible-lint yamllint flake8 molecule docker "pytest<3.10"
+  - pip install ansible==2.6 "ansible-lint<4.0" yamllint flake8 molecule docker "pytest<3.10"
   # Configure OpenShift Binary
   - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
 
