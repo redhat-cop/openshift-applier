@@ -22,9 +22,8 @@
        {{ target_namespace }} \
        -f {{ file_facts.oc_path }} \
        {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }} \
-       {{ (oc_action == 'patch') | ternary(" -p", '') }} \
        {% if oc_action == 'patch' %}
-         "{{patch_content}}"
+         -p "{{patch_content}}"
        {% endif %}
   no_log: "{{ no_log }}"
   register: command_result
