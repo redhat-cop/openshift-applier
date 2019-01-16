@@ -12,13 +12,18 @@
     - name: "Set file facts"
       set_fact:
         file_facts: "{{ processed_file_facts|first }}"
+- set_fact:
+    patch_content: "{{ lookup('file', params) }}"
+  when: oc_action == 'patch'
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on static files for '{{ entry.object }} : {{ content.name | default(file | basename) }}'"
   command: >
     oc {{ oc_action }} \
        {{ target_namespace }} \
        -f {{ file_facts.oc_path }} \
-       {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
+       {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }} \
+       {{ (oc_action == 'patch') | ternary(" -p", '') }} \
+       "{{ (oc_action == 'patch') | ternary( patch_content, '') }}"
   no_log: "{{ no_log }}"
   register: command_result
   failed_when:

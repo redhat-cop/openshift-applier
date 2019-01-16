@@ -1,0 +1,11 @@
+---
+
+openshift_cluster_content:
+- object: patch test
+  content:
+  - name: initialize resource
+    file: "{{ inventory_dir }}/../../files/patches/route1.yml"
+  - name: patch resource
+    file: "{{ inventory_dir }}/../../files/patches/route1.yml"
+    params: "{{ inventory_dir }}/../../files/patches/patch1.yml"
+    action: patch
