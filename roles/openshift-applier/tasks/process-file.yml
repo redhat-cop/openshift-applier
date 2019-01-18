@@ -12,6 +12,7 @@
     - name: "Set file facts"
       set_fact:
         file_facts: "{{ processed_file_facts|first }}"
+
 - set_fact:
     patch_content: "{{ lookup('file', params) }}"
   when: oc_action == 'patch'
