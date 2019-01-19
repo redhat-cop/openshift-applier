@@ -13,7 +13,8 @@
       set_fact:
         file_facts: "{{ processed_file_facts|first }}"
 
-- set_fact:
+- name: Grab patch file content if action == patch
+  set_fact:
     patch_content: "{{ lookup('file', params) }}"
   when: oc_action == 'patch'
 
