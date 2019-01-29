@@ -4,6 +4,7 @@ try:
     from urlparse import urljoin
 except ImportError:
     from urllib.parse import urljoin
+    from urllib.request import urlopen
 
 
 # Helper function to simplify the 'filter_applier_items' below
@@ -61,9 +62,9 @@ def check_file_location(path):
     path_status = os.path.exists(path)
     if (not path_status):
         try:
-            url_status = urllib.urlopen(path)
-        except:
-            # Both check failed - return "default" values
+            url_status = urlopen(path)
+        except ValueError:
+            # Must be a pre-loaded template, nothing to do
             return return_vals
 
     # If it is a valid URL or local file, set the proper flags
