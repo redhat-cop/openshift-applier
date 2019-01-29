@@ -17,7 +17,7 @@
   block:
     - name: Check if patch is file or url
       set_fact:
-        patch_path: {{ params | check_file_location }}
+        patch_path: "{{ params | check_file_location }}"
     - name: Pull data from file
       set_fact:
         patch_content: "{{ lookup('file', params) }}"
