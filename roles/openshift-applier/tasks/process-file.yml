@@ -13,12 +13,30 @@
       set_fact:
         file_facts: "{{ processed_file_facts|first }}"
 
+- name: Grab patch file content if action == patch
+  block:
+    - name: Check if patch is file or url
+      set_fact:
+        patch_path: "{{ params | check_file_location }}"
+    - name: Pull data from file
+      set_fact:
+        patch_content: "{{ lookup('file', params) }}"
+      when: patch_path.local_path
+    - name: Pull data from url
+      set_fact:
+        patch_content: "{{ lookup('url', params, split_lines=False) }}"
+      when: not patch_path.local_path
+  when: oc_action == 'patch'
+
 - name: "{{ oc_action | capitalize }} OpenShift objects based on static files for '{{ entry.object }} : {{ content.name | default(file | basename) }}'"
   command: >
     oc {{ oc_action }} \
        {{ target_namespace }} \
        -f {{ file_facts.oc_path }} \
-       {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
+       {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }} \
+       {% if oc_action == 'patch' %}
+         -p "{{patch_content}}"
+       {% endif %}
   no_log: "{{ no_log }}"
   register: command_result
   failed_when:

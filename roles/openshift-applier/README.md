@@ -167,7 +167,28 @@ my_space_params_dict:
   NAMESPACE_DESCRIPTION: This is My Project
 ```
 
-Valid `action` values are `apply`, `create`, and `delete`.
+Valid `action` values are `apply`, `create`, `patch` and `delete`.
+
+#### Using patch
+
+Patching resources using applier can be done as follows:
+
+```yaml
+- object: single patch
+  content:
+  - name: patch a resource
+    file: "route1.yml" # File containing the resource you would like to patch
+    params: "patch.yml" # File containing the patch you would like to apply
+    action: patch
+```
+
+An example of what a patch file might look like is:
+
+```yaml
+metadata:
+  labels:
+    labelkey: labelvalue
+```
 
 ### Filtering content based on tags
 

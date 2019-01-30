@@ -1,0 +1,22 @@
+---
+
+openshift_cluster_content:
+- object: single patch test
+  content:
+  - name: initialize resource
+    file: "{{ inventory_dir }}/../../files/multi-files-dir/files/route1.yml"
+  - name: patch resource from file
+    file: "{{ inventory_dir }}/../../files/multi-files-dir/files/route1.yml"
+    params: "{{ inventory_dir }}/../../files/patches/patch1.yml"
+    action: patch
+  - name: patch resource from url
+    file: "{{ inventory_dir }}/../../files/multi-files-dir/files/route1.yml"
+    params: "https://raw.githubusercontent.com/redhat-cop/openshift-applier/master/tests/files/patches/patch1.yml"
+- object: multi patch test
+  content:
+  - name: initialize resource
+    file: "{{ inventory_dir }}/../../files/multi-files-dir/files/"
+  - name: patch resource
+    file: "{{ inventory_dir }}/../../files/multi-files-dir/files/"
+    params: "{{ inventory_dir }}/../../files/patches/patch1.yml"
+    action: patch
