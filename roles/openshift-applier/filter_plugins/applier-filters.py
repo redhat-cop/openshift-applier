@@ -2,6 +2,7 @@ import os
 import urllib
 try:
     from urlparse import urljoin
+    from urllib import urlopen
 except ImportError:
     from urllib.parse import urljoin
     from urllib.request import urlopen
