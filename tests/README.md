@@ -30,6 +30,8 @@ ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/param
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/params-from-vars
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/params-from-both
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/pre-post-steps
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/patch
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/cluster-template
 ```
 
 
