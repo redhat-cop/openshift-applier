@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: List
+items:
+- kind: ProjectRequest
+  apiVersion: v1
+  metadata:
+    name: oa-cluster-template-test
+  displayName: OpenShift Applier Cluster Template Test 1 (displayName)

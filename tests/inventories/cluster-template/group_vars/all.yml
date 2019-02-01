@@ -1,0 +1,24 @@
+---
+
+test:
+  postgresql:
+    POSTGRESQL_DATABASE: httpd
+    POSTGRESQL_PASSWORD: httpd
+    POSTGRESQL_USER: httpd
+
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: Create HTTPd project
+    file: "{{ inventory_dir }}/../../files/cluster-template/project1.yml"
+    action: create
+- object: httpd-test
+  content:
+  - name: Create HTTPd from OpenShift pre-existing template
+    template: "openshift//httpd-example"
+    params: "{{ inventory_dir }}/../../files/cluster-template/httpd.params"
+    namespace: "oa-cluster-template-test"
+  - name: Create DB for use with HTTPd
+    template: "openshift//postgresql-ephemeral"
+    params_from_vars: "{{ test.postgresql }}"
+    namespace: "oa-cluster-template-test"
