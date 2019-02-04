@@ -6,9 +6,9 @@
       find:
         paths: "{{ playbook_dir }}/../../tests/inventories"
         file_type: directory
-        depth: 1
-        recurse: yes
+        recurse: no
       register: tests
+      delegate_to: localhost
   tasks:
     - include: tasks.yml
       with_items: "{{ tests.files }}"
