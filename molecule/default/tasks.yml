@@ -1,10 +1,10 @@
 ---
 - name: Setting Location of Inventory Directory
   set_fact:
-    inventory_dir: "{{ (playbook_dir ~ inventory) | realpath }}"
+    inventory_dir: "{{ inventory.path | realpath }}"
 - name: Include Inventory
   include_vars:
-    dir: "{{inventory}}"
+    dir: "{{ inventory_dir }}/group_vars"
 - name: OpenShift Applier Role
   include_role:
     name: "{{ (playbook_dir ~ '/../../roles/openshift-applier') | realpath }}"

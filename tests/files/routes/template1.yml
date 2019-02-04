@@ -25,3 +25,6 @@ parameters:
 - name: NAME
   description: Name of the Application
   required: true
+- name: NAMESPACE
+  required: true
+  value: oa-ci-test
