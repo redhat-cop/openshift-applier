@@ -216,7 +216,7 @@ The pre/post steps can be added at both the `object` level as well as the `conte
 
 In essence, the pre/post steps are ansible roles that gets executed in the order they are found in the inventory. These roles are sourced from the `galaxy_requirements` file part of the inventory. See the official [Ansible Galaxy docs for more details on the requirements yaml file](http://docs.ansible.com/ansible/latest/galaxy.html#installing-multiple-roles-from-a-file).
 
-**_NOTE:_** it is important that the repos used for pre/post roles have the `meta/main.yml` file setup correctly. See the [Ansible Galaxy docs](docs.ansible.com/ansible/latest/galaxy.html) for more details.
+**_NOTE:_** it is important that the repos used for pre/post roles have the `meta/main.yml` file setup correctly. See the [Ansible Galaxy docs](http://docs.ansible.com/ansible/latest/galaxy.html) for more details.
 
 For roles that requires input parameters, the implementation also supports supplying variables, as part of the inventory, to the pre/post steps. See example at the top for more details.
 
