@@ -1,8 +1,9 @@
 ---
-
+dist: xenial
 language: python
 python:
   - "2.7"
+  - "3.7"
 
 cache:
   directories:
@@ -19,21 +20,23 @@ before_install:
 
 install:
   - pip install -U pip
-  - pip install ansible==2.6 "ansible-lint<4.0" yamllint flake8 molecule docker "pytest<3.10"
+  - pip install "ansible-lint<4.0" yamllint flake8 molecule docker "pytest<3.10"
   # Configure OpenShift Binary
   - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
 
 before_script:
   # Configure Docker
   - sudo service docker stop
-  - sudo sed -i -e 's/sock/sock --insecure-registry 172.30.0.0\/16/' /etc/default/docker
+  - sudo mkdir -p /etc/docker
+  - echo '{"insecure-registries":["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json
   - sudo service docker start
   # Launch OpenShift Environment
   - |
     set +e
     built=false
     while true; do
-      IP_ADDR=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+      DEV=$(ip link | awk '/state UP/{ gsub(":", ""); print $2}')
+      IP_ADDR=$(ip addr show $DEV | awk '/inet /{ gsub("/.*", ""); print $2}')
       oc cluster up --public-hostname=${IP_ADDR} --routing-suffix=${IP_ADDR}.nip.io --base-dir=/home/travis/ocp
       if [ "$?" -eq 0 ]; then
         built=true
@@ -46,4 +49,5 @@ before_script:
     echo "OpenShift Cluster Running"
 
 script:
-  - molecule test
+  - pip install ansible==2.6 && molecule test
+  - pip install ansible==2.7 && molecule test

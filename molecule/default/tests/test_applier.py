@@ -14,7 +14,7 @@ def test_oc_installed(host):
     assert oc_file.exists
     assert oc_file.user == 'root'
     assert oc_file.group == 'root'
-    assert oct(oc_file.mode) == '0755'
+    assert oct(oc_file.mode) == '0755' or oct(oc_file.mode) == '0o755'
 
 
 @pytest.mark.parametrize('name, description, display_name', [
