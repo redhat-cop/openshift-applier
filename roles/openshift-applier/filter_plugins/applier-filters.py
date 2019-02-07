@@ -64,7 +64,7 @@ def check_file_location(path):
     if (not path_status):
         try:
             url_status = urlopen(path)
-        except ValueError:
+        except (IOError,ValueError):
             # Must be a pre-loaded template, nothing to do
             return return_vals
 
