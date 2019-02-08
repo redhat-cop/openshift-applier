@@ -7,7 +7,7 @@ secret_params:
 route_params:
   FQDN: test.params-from-vars.com
   NAME: route1-test
-  NAMESPACE: oa-ci-route1
+  NAMESPACE: oa-ci-route3
 
 openshift_cluster_content:
 - object: projectrequest
@@ -17,17 +17,17 @@ openshift_cluster_content:
     action: create
   - name: Create Route Projects
     template: "{{ inventory_dir }}/../../files/templates/projectrequest.yml"
-    params: "{{ inventory_dir }}/../../files/routes/project1.params"
+    params: "{{ inventory_dir }}/../../files/routes/project3.params"
     action: create
 - object: secret-test
   content:
   - name: Create Secrets with params_from_vars
     template: "{{ inventory_dir }}/../../files/secrets/template1.yml"
     params_from_vars: "{{ secret_params }}"
-    namespace: oa-ci-secret1
+    namespace: oa-ci-secret3
 - object: route-test
   content:
   - name: Create route from template and params_from_vars
     template: "{{ inventory_dir }}/../../files/routes/template1.yml"
     params_from_vars: "{{ route_params }}"
-    namespace: oa-ci-route1
+    namespace: oa-ci-route3

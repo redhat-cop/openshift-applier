@@ -10,7 +10,7 @@
       register: tests
       delegate_to: localhost
   tasks:
-    - include: tasks.yml
+    - include_tasks: tasks.yml
       with_items: "{{ tests.files }}"
       loop_control:
         loop_var: inventory

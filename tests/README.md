@@ -15,6 +15,16 @@ This area of the repo contains tests that can be run to check the `openshift-app
 - Operational OpenShift Cluster
 - `oc` client
 
+## Molecule Considerations
+
+All inventories located in the [inventories](inventories) directory will undergo testing and validation using [Molecule](https://molecule.readthedocs.io).
+
+To omit an inventory from being executed as part of the testing phase, set the following 'group_vars' variable:
+
+```
+molecule_test_inventory_skip: true
+```
+
 # Running Tests
 
 Each "test case" is built out as an inventory with corresponding files (if applicable) in this directory. In general, and unless otherwise noted, the tests can be executed with the following command (from the repo's top level):

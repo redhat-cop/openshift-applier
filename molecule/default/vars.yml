@@ -1,0 +1,4 @@
+---
+
+openshift_cluster_content: {}
+molecule_test_inventory_skip: false
