@@ -16,15 +16,15 @@ env:
     - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz
   matrix:
     - ANSIBLE_VERSION="latest"
-    - ANSIBLE_VERSION="2.6.13"
-    - ANSIBLE_VERSION="2.7.7"
+    - ANSIBLE_VERSION="2.6"
+    - ANSIBLE_VERSION="2.7"
 
 before_install:
   - sudo apt-get update -qq
 
 install:
   - pip install -U pip
-  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
+  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible~=$ANSIBLE_VERSION; fi
   - pip install "ansible-lint<4.0" yamllint flake8 molecule docker "pytest<3.10"
   # Configure OpenShift Binary
   - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
