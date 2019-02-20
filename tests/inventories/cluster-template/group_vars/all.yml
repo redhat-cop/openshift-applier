@@ -1,4 +1,5 @@
 ---
+molecule_test_inventory_skip: true
 
 test:
   postgresql:

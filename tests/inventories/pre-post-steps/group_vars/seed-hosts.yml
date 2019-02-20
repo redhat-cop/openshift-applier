@@ -1,5 +1,7 @@
 ---
 
+molecule_test_inventory_skip: true
+
 openshift_cluster_content:
 - galaxy_requirements: "{{ inventory_dir }}/../../files/dependency/galaxy_requirements.yml"
 - object: projectrequest

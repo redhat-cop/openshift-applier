@@ -1,0 +1,3 @@
+NAMESPACE=oa-ci-route3
+NAMESPACE_DISPLAY_NAME=OpenShift Applier Route Test 3 (displayName)
+NAMESPACE_DESCRIPTION=OpenShift Applier Route Test 3 (description)

@@ -1,0 +1,15 @@
+---
+
+- name: Setting Location of Inventory Directory
+  set_fact:
+    inventory_dir: "{{ inventory.path | realpath }}"
+- name: Include Default Testing Variables
+  include_vars:
+    file: "{{ lookup('env','MOLECULE_SCENARIO_DIRECTORY') }}/vars.yml"
+- name: Include Inventory
+  include_vars:
+    dir: "{{ inventory_dir }}/group_vars"
+- name: OpenShift Applier Role
+  include_role:
+    name: "{{ (playbook_dir ~ '/../../roles/openshift-applier') | realpath }}"
+  when: not ((molecule_test_inventory_skip | default(false))|bool)
