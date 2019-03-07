@@ -1,0 +1,12 @@
+{
+  "spec": {
+    "tags": [
+      {
+        "name": "2.7",
+        "importPolicy": {
+          "scheduled": true
+        }
+      }
+    ]
+  }
+}
