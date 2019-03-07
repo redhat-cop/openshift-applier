@@ -12,6 +12,10 @@ openshift_cluster_content:
   - name: patch resource from url
     file: "{{ inventory_dir }}/../../files/multi-files-dir/files/route1.yml"
     params: "https://raw.githubusercontent.com/redhat-cop/openshift-applier/master/tests/files/patches/patch1.yml"
+  - name: patch resource from json
+    file: "{{ inventory_dir }}/../../files/multi-files-dir/files/route1.yml"
+    params: "{{ inventory_dir }}/../../files/patches/patch1.json"
+    action: patch
 - object: multi patch test
   content:
   - name: initialize resource
