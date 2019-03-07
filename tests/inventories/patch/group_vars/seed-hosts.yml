@@ -20,3 +20,11 @@ openshift_cluster_content:
     file: "{{ inventory_dir }}/../../files/multi-files-dir/files/"
     params: "{{ inventory_dir }}/../../files/patches/patch1.yml"
     action: patch
+- object: patch containing strings
+  content:
+  - name: initialize resource
+    file: "{{ inventory_dir }}/../../files/imagestreams/python.yml"
+  - name: patch resource
+    file: "{{ inventory_dir }}/../../files/imagestreams/python.yml"
+    params: "{{ inventory_dir }}/../../files/patches/python-is-patch.yml"
+    action: patch
