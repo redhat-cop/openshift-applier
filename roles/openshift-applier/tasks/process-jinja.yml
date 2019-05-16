@@ -1,0 +1,28 @@
+---
+
+- name: Delegate processing to localhost
+  block:
+  - name: Set file or template fact
+    set_fact:
+      process_file_or_template: "{{ (file != '') | ternary('file', 'template') }}"
+
+  - name: Create temporary directory for Jinja template output
+    tempfile:
+      state: directory
+    register: jinja_tmp_dir
+    notify:
+      - Clean up temporary Jinja directory
+
+  - name: Set processed Jinja template output path
+    set_fact:
+      dest_path: "{{ jinja_tmp_dir.path }}/processed_{{ lookup('vars', process_file_or_template) | basename | regex_replace('.j2$','.yml') }}"
+
+  - name: Process Jinja template
+    template:
+      src: "{{ lookup('vars', process_file_or_template) }}"
+      dest: "{{ dest_path }}"
+
+  - name: Update path
+    set_fact: {"{{ process_file_or_template }}":"{{ dest_path }}"}
+
+  delegate_to: localhost

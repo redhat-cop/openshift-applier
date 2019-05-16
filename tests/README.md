@@ -43,6 +43,7 @@ ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/param
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/pre-post-steps
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/patch
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/cluster-template
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/jinja-templates
 ```
 
 

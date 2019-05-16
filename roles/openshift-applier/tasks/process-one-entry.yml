@@ -36,6 +36,10 @@
   loop_control:
     loop_var: step
 
+- name: "Process Jinja Template (if applicable)"
+  include_tasks: process-jinja.yml
+  when: template | regex_search('\.j2$') or file | regex_search('\.j2$')
+
 - name: "Process Template (if applicable)"
   include_tasks: process-template.yml
   when:
