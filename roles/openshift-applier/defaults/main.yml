@@ -3,6 +3,7 @@ client: oc
 default_oc_action: apply
 tmp_inv_dir: ''
 include_tags: ''
+skip_tags: ''
 provision: True
 params_from_vars: {}
 oc_ignore_unknown_parameters: true

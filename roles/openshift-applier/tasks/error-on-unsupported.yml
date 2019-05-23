@@ -24,3 +24,9 @@
   when:
     - unsupported_items is defined
   with_dict: "{{ unsupported_items }}"
+
+- name: "Error out if both filter_tags and skip_tags are set"
+  fail:
+    msg: "Both filter_tags and skip_tags cannot be set at once"
+  when:
+    - filter_tags != '' and skip_tags != ''

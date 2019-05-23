@@ -9,7 +9,7 @@ except ImportError:
 
 
 # Helper function to simplify the 'filter_applier_items' below
-def filter_content(content_dict, outer_list, filter_list):
+def filter_content(content_dict, outer_list, filter_list, filter_type):
     # If tags don't exists at all, just remove the 'content'
     if 'tags' not in content_dict:
         outer_list.remove(content_dict)
@@ -19,19 +19,28 @@ def filter_content(content_dict, outer_list, filter_list):
     intersect_list = [val for val in content_dict['tags'] if val in filter_list]
 
     # If none of the filter tags exists, remove it from the list
-    if len(intersect_list) == 0:
+    if filter_type == "include_tags" and len(intersect_list) == 0:
+        outer_list.remove(content_dict)
+    elif filter_type == "skip_tags" and len(intersect_list) != 0:
         outer_list.remove(content_dict)
 
 
 # Main 'filter_applier_items' function
-def filter_applier_items(applier_list, include_tags):
+def filter_applier_items(applier_list, include_tags, skip_tags):
     # If no filter tags supplied - just return list as-is
-    if len(include_tags.strip()) == 0:
+    if len(include_tags.strip()) == 0 and len(skip_tags.strip()) == 0:
         return applier_list
 
     # Convert comma seperated list to an actual list and strip off whitespaces of each element
-    filter_list = include_tags.split(",")
-    filter_list = [i.strip() for i in filter_list]
+    # Set the type of filter to use
+    if len(include_tags.strip()) != 0:
+        filter_list = include_tags.split(",")
+        filter_list = [i.strip() for i in filter_list]
+        filter_type = "include_tags"
+    else:
+        filter_list = skip_tags.split(",")
+        filter_list = [i.strip() for i in filter_list]
+        filter_type = "skip_tags"
 
     # Loop through the main list to check tags
     # - use a copy to allow for elements to be removed at the same time as we iterrate
@@ -39,7 +48,7 @@ def filter_applier_items(applier_list, include_tags):
         # Handle the 'content' entries
         if 'content' in a:
             for c in a['content'][:]:
-                filter_content(c, a['content'], filter_list)
+                filter_content(c, a['content'], filter_list, filter_type)
 
             if len(a['content']) == 0:
                 applier_list.remove(a)
