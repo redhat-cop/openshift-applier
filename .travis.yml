@@ -25,7 +25,7 @@ before_install:
 install:
   - pip install -U pip
   - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible~=$ANSIBLE_VERSION; fi
-  - pip install "ansible-lint<4.0" yamllint flake8 molecule docker "pytest<3.10"
+  - pip install "ansible-lint<4.0" yamllint flake8 molecule docker "pytest<3.10" "testinfra==3.0.4"
   # Configure OpenShift Binary
   - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
 
