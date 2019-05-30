@@ -1,7 +1,7 @@
 FROM centos:centos7
 
-ENV OC_CLIENT_MIRROR https://mirror.openshift.com/pub/openshift-v3/clients/3.11.16/linux/oc.tar.gz
-ENV ANSIBLE_RPM https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.6.8-1.el7.ans.noarch.rpm
+ENV OC_CLIENT_MIRROR https://mirror.openshift.com/pub/openshift-v3/clients/3.11.115/linux/oc.tar.gz
+ENV ANSIBLE_RPM https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.8.0-1.el7.ans.noarch.rpm
 ENV INSTALL_PKGS "git"
 ENV WORK_DIR /openshift-applier
 ENV HOME ${WORK_DIR}
