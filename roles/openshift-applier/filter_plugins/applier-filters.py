@@ -24,13 +24,13 @@ def filter_content(content_dict, outer_list, filter_list):
 
 
 # Main 'filter_applier_items' function
-def filter_applier_items(applier_list, filter_tags):
+def filter_applier_items(applier_list, include_tags):
     # If no filter tags supplied - just return list as-is
-    if len(filter_tags.strip()) == 0:
+    if len(include_tags.strip()) == 0:
         return applier_list
 
     # Convert comma seperated list to an actual list and strip off whitespaces of each element
-    filter_list = filter_tags.split(",")
+    filter_list = include_tags.split(",")
     filter_list = [i.strip() for i in filter_list]
 
     # Loop through the main list to check tags

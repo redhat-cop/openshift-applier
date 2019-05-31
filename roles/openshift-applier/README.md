@@ -50,7 +50,7 @@ openshift_cluster_content:
     file: <file source>
     action: <apply|create> # Optional: Defaults to 'apply'
     no_log: <True|False> # Optional: no_log at content level if functionality desired. Defaults to False
-    tags: # Optional: Tags are only needed if `filter_tags` is used
+    tags: # Optional: Tags are only needed if `include_tags` is used
     - tag1
     - tag2
     post_steps: # Optional: post-steps at content level can be added if desired
@@ -72,7 +72,7 @@ You have the choice of sourcing a `file` or a `template`. The `file` definition 
 
 **_TIP:_** Both `file` and `template` choices give you the option of defining target namespaces in the template manually, or adding the `namespace` variable alongside the template and params (where applicable).
 
-The `tags` definition is a list of tags that will be processed if the `filter_tags` variable/fact is supplied. See [Filtering content based on tags](README.md#filtering-content-based-on-tags) below for more details.
+The `tags` definition is a list of tags that will be processed if the `include_tags` variable/fact is supplied. See [Filtering content based on tags](README.md#filtering-content-based-on-tags) below for more details.
 
 The pre/post definitions are a set of pre and post roles to execute before/after a particular portion of the inventory is applied. This can be before/afterthe object levels - i.e.: before and after all of the content, or before/after certain files/templates at a content level.
 
@@ -192,12 +192,12 @@ metadata:
 
 ### Filtering content based on tags
 
-The `openshift-applier` supports the use of tags in the inventory (see example above) to allow for filtering which content should be processed and not. The `filter_tags` variable/fact takes a comma separated list of tags that will be processed and only content with matching tags will be applied.
+The `openshift-applier` supports the use of tags in the inventory (see example above) to allow for filtering which content should be processed and not. The `include_tags` variable/fact takes a comma separated list of tags that will be processed and only content with matching tags will be applied.
 
-**_NOTE:_** Entries in the inventory without tags will not be processed when a valid list is supplied with the `filter_tags` option.
+**_NOTE:_** Entries in the inventory without tags will not be processed when a valid list is supplied with the `include_tags` option.
 
 ```
-filter_tags=tag1,tag2
+include_tags=tag1,tag2
 
 ```
 
