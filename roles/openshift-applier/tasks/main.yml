@@ -3,6 +3,9 @@
 - name: "Check applier requirements"
   include_tasks: pre-check.yml
 
+- name: "Deprecated variable check"
+  include_tasks: check-for-old-vars.yml
+
 - name: "Error out on anything in the inventory that is no longer supported"
   include_tasks: error-on-unsupported.yml
 
