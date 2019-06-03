@@ -9,38 +9,46 @@ except ImportError:
 
 
 # Helper function to simplify the 'filter_applier_items' below
-def filter_content(content_dict, outer_list, filter_list, filter_type):
-    # If tags don't exists at all, just remove the 'content'
+def filter_content(content_dict, outer_list, filter_list, exclude_list):
+    # Handle if tags don't exist in the 'content' section
     if 'tags' not in content_dict:
-        outer_list.remove(content_dict)
+        if filter_list:
+            outer_list.remove(content_dict)
         return
 
-    # Find out of if any of the tags exists in the 'content' section
-    intersect_list = [val for val in content_dict['tags'] if val in filter_list]
+    # Handle if include_tags exists in the 'content' section
+    if filter_list:
+        intersect_list = [
+            val for val in content_dict['tags'] if val in filter_list]
+        if len(intersect_list) == 0:
+            outer_list.remove(content_dict)
+            return
 
-    # If none of the filter tags exists, remove it from the list
-    if filter_type == "include_tags" and len(intersect_list) == 0:
-        outer_list.remove(content_dict)
-    elif filter_type == "skip_tags" and len(intersect_list) != 0:
-        outer_list.remove(content_dict)
+    # Handle if exclude_tags exists in the 'content' section
+    if exclude_list:
+        intersect_list = [
+            val for val in content_dict['tags'] if val in exclude_list]
+        if len(intersect_list) != 0:
+            outer_list.remove(content_dict)
+            return
 
 
 # Main 'filter_applier_items' function
-def filter_applier_items(applier_list, include_tags, skip_tags):
+def filter_applier_items(applier_list, include_tags, exclude_tags):
     # If no filter tags supplied - just return list as-is
-    if len(include_tags.strip()) == 0 and len(skip_tags.strip()) == 0:
+    if len(include_tags.strip()) == 0 and len(exclude_tags.strip()) == 0:
         return applier_list
 
+    exclude_list, filter_list = [], []
+
     # Convert comma seperated list to an actual list and strip off whitespaces of each element
-    # Set the type of filter to use
-    if len(include_tags.strip()) != 0:
+    if include_tags and len(include_tags.strip()) != 0:
         filter_list = include_tags.split(",")
         filter_list = [i.strip() for i in filter_list]
-        filter_type = "include_tags"
-    else:
-        filter_list = skip_tags.split(",")
-        filter_list = [i.strip() for i in filter_list]
-        filter_type = "skip_tags"
+
+    if exclude_tags and len(exclude_tags.strip()) != 0:
+        exclude_list = exclude_tags.split(",")
+        exclude_list = [i.strip() for i in exclude_list]
 
     # Loop through the main list to check tags
     # - use a copy to allow for elements to be removed at the same time as we iterrate
@@ -48,7 +56,7 @@ def filter_applier_items(applier_list, include_tags, skip_tags):
         # Handle the 'content' entries
         if 'content' in a:
             for c in a['content'][:]:
-                filter_content(c, a['content'], filter_list, filter_type)
+                filter_content(c, a['content'], filter_list, exclude_list)
 
             if len(a['content']) == 0:
                 applier_list.remove(a)
@@ -56,6 +64,8 @@ def filter_applier_items(applier_list, include_tags, skip_tags):
     return applier_list
 
 # Function used to determine a files location - i.e.: URL, local file/directory or "something else"
+
+
 def check_file_location(path):
     # default return values
     return_vals = {

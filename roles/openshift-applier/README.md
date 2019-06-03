@@ -51,7 +51,7 @@ openshift_cluster_content:
     file: <file source>
     action: <apply|create> # Optional: Defaults to 'apply'
     no_log: <True|False> # Optional: no_log at content level if functionality desired. Defaults to False
-    tags: # Optional: Tags are only needed if `include_tags` or `skip_tags` is used
+    tags: # Optional: Tags are only needed if `include_tags` or `exclude_tags` is used
     - tag1
     - tag2
     post_steps: # Optional: post-steps at content level can be added if desired
@@ -212,7 +212,7 @@ metadata:
 
 ### Filtering content based on tags
 
-The `openshift-applier` supports the use of tags in the inventory (see example above) to allow for filtering which content should be processed and not. The `include_tags` variable/fact takes a comma separated list of tags that will be processed and only content with matching tags will be applied. Additionally, tags can be skipped in the same manner with the `skip_tags` option. 
+The `openshift-applier` supports the use of tags in the inventory (see example above) to allow for filtering which content should be processed and not. The `include_tags` variable/fact takes a comma separated list of tags that will be processed and only content with matching tags will be applied. Additionally, tags can be skipped in the same manner with the `exclude_tags` option. 
 
 **_NOTE:_** These two options are mutually exclusive.
 
@@ -220,7 +220,7 @@ The `openshift-applier` supports the use of tags in the inventory (see example a
 
 ```
 include_tags=tag1,tag2
-skip_tags=tag1,tag2
+exclude_tags=tag1,tag2
 
 ```
 
