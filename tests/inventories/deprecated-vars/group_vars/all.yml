@@ -15,6 +15,7 @@ openshift_cluster_content:
     action: create
     tags:
       - project
+      - route
 - object: route-test
   content:
   - name: Create route from template and params_from_vars
