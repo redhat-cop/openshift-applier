@@ -1,0 +1,9 @@
+---
+
+- block:
+    - debug:
+        msg: "filter_tags is now DEPRECATED, please use include_tags"
+    - name: "Set filter_tags to include_tags"
+      set_fact:
+        include_tags: "{{ filter_tags }}"
+  when: filter_tags is defined

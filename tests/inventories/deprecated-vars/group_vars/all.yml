@@ -1,0 +1,29 @@
+---
+test_namespace: oa-ci-deprecation1
+
+filter_tags: route
+
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: Create Route Projects
+    template: "{{ inventory_dir }}/../../files/templates/projectrequest.yml"
+    params_from_vars:
+      NAMESPACE: "{{ test_namespace }}"
+      NAMESPACE_DISPLAY_NAME: OpenShift Applier Deprecation Test (displayName)
+      NAMESPACE_DESCRIPTION: OpenShift Applier Deprecation Test (description)
+    action: create
+    tags:
+      - project
+      - route
+- object: route-test
+  content:
+  - name: Create route from template and params_from_vars
+    template: "{{ inventory_dir }}/../../files/routes/template1.yml"
+    params_from_vars: 
+      FQDN: test.deprecation.com
+      NAME: deprecation1-test
+      NAMESPACE: "{{ test_namespace }}" 
+    namespace: "{{ test_namespace }}"
+    tags:
+      - route
