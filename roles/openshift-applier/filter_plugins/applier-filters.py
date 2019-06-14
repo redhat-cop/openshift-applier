@@ -9,15 +9,15 @@ except ImportError:
 
 
 # Helper function to simplify the 'filter_applier_items' below
-def filter_content(content_dict, outer_list, filter_list, exclude_list):
+def filter_content(content_dict, outer_list, include_list, exclude_list):
     # Handle if tags don't exist in the 'content' section
     if 'tags' not in content_dict:
-        if filter_list:
+        if include_list:
             outer_list.remove(content_dict)
         return
 
     # Handle if include_tags exists in the 'content' section
-    if filter_list:
+    if include_list:
         intersect_list = [
             val for val in content_dict['tags'] if val in filter_list]
         if len(intersect_list) == 0:
@@ -35,16 +35,16 @@ def filter_content(content_dict, outer_list, filter_list, exclude_list):
 
 # Main 'filter_applier_items' function
 def filter_applier_items(applier_list, include_tags, exclude_tags):
-    # If no filter tags supplied - just return list as-is
+    # If no tag lists supplied - just return list as-is
     if len(include_tags.strip()) == 0 and len(exclude_tags.strip()) == 0:
         return applier_list
 
-    exclude_list, filter_list = [], []
+    exclude_list, include_list = [], []
 
     # Convert comma seperated list to an actual list and strip off whitespaces of each element
     if include_tags and len(include_tags.strip()) != 0:
-        filter_list = include_tags.split(",")
-        filter_list = [i.strip() for i in filter_list]
+        include_list = include_tags.split(",")
+        include_list = [i.strip() for i in include_list]
 
     if exclude_tags and len(exclude_tags.strip()) != 0:
         exclude_list = exclude_tags.split(",")
@@ -56,7 +56,7 @@ def filter_applier_items(applier_list, include_tags, exclude_tags):
         # Handle the 'content' entries
         if 'content' in a:
             for c in a['content'][:]:
-                filter_content(c, a['content'], filter_list, exclude_list)
+                include_content(c, a['content'], include_list, exclude_list)
 
             if len(a['content']) == 0:
                 applier_list.remove(a)
@@ -83,7 +83,7 @@ def check_file_location(path):
     if (not path_status):
         try:
             url_status = urlopen(path)
-        except (IOError,ValueError):
+        except (IOError, ValueError):
             # Must be a pre-loaded template, nothing to do
             return return_vals
 
@@ -103,6 +103,7 @@ def check_file_location(path):
 
 class FilterModule(object):
     ''' Filters to handle openshift_cluster_content data '''
+
     def filters(self):
         return {
             'check_file_location': check_file_location,
