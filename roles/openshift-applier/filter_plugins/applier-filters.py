@@ -56,7 +56,7 @@ def filter_applier_items(applier_list, include_tags, exclude_tags):
         # Handle the 'content' entries
         if 'content' in a:
             for c in a['content'][:]:
-                include_content(c, a['content'], include_list, exclude_list)
+                filter_content(c, a['content'], include_list, exclude_list)
 
             if len(a['content']) == 0:
                 applier_list.remove(a)
