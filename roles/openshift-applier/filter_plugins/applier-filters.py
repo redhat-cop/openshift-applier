@@ -19,7 +19,7 @@ def filter_content(content_dict, outer_list, include_list, exclude_list):
     # Handle if include_tags exists in the 'content' section
     if include_list:
         intersect_list = [
-            val for val in content_dict['tags'] if val in filter_list]
+            val for val in content_dict['tags'] if val in include_list]
         if len(intersect_list) == 0:
             outer_list.remove(content_dict)
             return
