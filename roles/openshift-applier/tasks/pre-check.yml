@@ -10,7 +10,7 @@
         - "ansible_version.full is version('2.5','<')"
 
     - name: "Retrieve oc client version"
-      shell: oc version
+      shell: "{{client}} version"
       register: oc_vers_check
 
     # Block to handle oc command output
@@ -19,7 +19,7 @@
 
         - name: "Filter out just the oc version number"
           set_fact:
-            oc_version: "{{ (oc_vers_check.stdout | regex_search('^oc.+v([\\d.]+).*', '\\1'))[0] }}"
+            oc_version: "{{ (oc_vers_check.stdout | regex_search('^(Client.*v[\\d]\\.|oc.+v[\\d]\\.)([\\d]*).*', '\\2'))[0] }}"
 
         - name: "Do *not* use the 'ignore_unknown_parameters' flag if 'oc' version is older than 3.7"
           set_fact:

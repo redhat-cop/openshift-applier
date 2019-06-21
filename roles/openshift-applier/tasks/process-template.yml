@@ -74,10 +74,11 @@
        {{ (oc_param_file_item.oc_path|trim == '') | ternary('', ' --param-file="' + oc_param_file_item.oc_path + '"') }} \
        {{ oc_ignore_unknown_parameters | ternary('--ignore-unknown-parameters', '') }} \
        | \
-    oc {{ oc_action }} \
+    {{ client }} {{ oc_action }} \
        {{ target_namespace }} \
        -f - \
-       {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }}
+       {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }} \
+       {{ (client == 'kubectl') | ternary(' --validate=false', '') }}
   register: command_result
   no_log: "{{ no_log }}"
   failed_when:
