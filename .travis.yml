@@ -5,10 +5,6 @@ python:
   - "2.7"
   - "3.7"
 
-cache:
-  directories:
-    - $HOME/.cache/pip
-
 env:
   global:
     - ANSIBLE_HOST_KEY_CHECKING=False
@@ -20,6 +16,10 @@ env:
   - ANSIBLE_VERSION="2.7"
   - ANSIBLE_ARGS=""
   - ANSIBLE_ARGS="-e client=kubectl"
+
+cache:
+  directories:
+    - $HOME/.cache/pip
 
 before_install:
   - sudo apt-get update -qq
