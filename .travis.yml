@@ -19,6 +19,8 @@ env:
     - ANSIBLE_VERSION="latest"
     - ANSIBLE_VERSION="2.6"
     - ANSIBLE_VERSION="2.7"
+    - ANSIBLE_ARGS=""
+    - ANSIBLE_ARGS="-e client=kubectl"
 
 before_install:
   - sudo apt-get update -qq
@@ -56,4 +58,4 @@ before_script:
     echo "OpenShift Cluster Running"
 
 script:
-  - molecule test
+  - molecule test ${ANSIBLE_ARGS}
