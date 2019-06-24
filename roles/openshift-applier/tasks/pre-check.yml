@@ -25,7 +25,7 @@
           set_fact:
             oc_ignore_unknown_parameters: false
           when:
-            - oc_version is version('3.7','<')
+            - oc_version is version('7','<')
 
       when:
         - oc_vers_check is defined

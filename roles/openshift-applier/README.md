@@ -8,6 +8,7 @@ Role used to apply OpenShift objects to an existing OpenShift Cluster.
 	- [Requirements](#requirements)
 	- [Role Usage](#role-usage)
 		- [Sourcing OpenShift Object Definitions](#sourcing-openshift-object-definitions)
+		- [Using oc vs kubectl](#using-oc-vs-kubectl)
 		- [Sourcing a directory with files](#sourcing-a-directory-with-files)
 		- [Ordering of Objects in the inventory](#ordering-of-objects-in-the-inventory)
 		- [Privileged Objects](#privileged-objects)
@@ -25,7 +26,7 @@ Role used to apply OpenShift objects to an existing OpenShift Cluster.
 
 ## Requirements
 
-A working OpenShift cluster that can be used to populate things like namespaces, policies and PVs (all require cluster-admin), or application level content (cluster-admin not required).
+A working OpenShift or Kubernetes cluster that can be used to populate things like namespaces, policies and PVs (all require cluster-admin), or application level content (cluster-admin not required).
 
 
 ## Role Usage
@@ -75,6 +76,25 @@ You have the choice of sourcing a `file` or a `template`. The `file` definition 
 The `tags` definition is a list of tags that will be processed if the `include_tags` variable/fact is supplied. See [Filtering content based on tags](README.md#filtering-content-based-on-tags) below for more details.
 
 The pre/post definitions are a set of pre and post roles to execute before/after a particular portion of the inventory is applied. This can be before/afterthe object levels - i.e.: before and after all of the content, or before/after certain files/templates at a content level.
+
+### Using oc vs kubectl
+
+OpenShift-Applier is compatible with both `kubectl` and `oc` as a client binary. The client can be selected by setting `client: <oc|kubectl>` in any of your vars files, or as an inline ansible argument. **Default: `client: oc`**
+
+YAML Example:
+```
+client: kubectl
+
+openshift_cluster_content:
+...
+```
+
+INLINE Argument Example:
+```
+ansible-playbook -i .applier/ playbooks/openshift-cluster-seed.yml -e client=oc
+```
+
+**NOTE: If you have `client: kubectl`, but have OpenShift Templates in your inventory (defined by .object[*].content.template), you still need to have `oc` in your PATH.**
 
 ### Sourcing a directory with files
 
