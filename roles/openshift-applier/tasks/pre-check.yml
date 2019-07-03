@@ -17,9 +17,21 @@
     # - only proceed if the oc command returned any output
     - block:
 
-        - name: "Filter out just the oc version number"
+        - name: "Filter out just the oc version number (v3.X)"
           set_fact:
             oc_version: "{{ (oc_vers_check.stdout | regex_search('^oc.+v([\\d.]+).*', '\\1'))[0] }}"
+          when:
+            - oc_vers_check.stdout | regex_search('^oc.*')
+
+        - name: "Filter out just the oc version number (v4.X)"
+          set_fact:
+            oc_version: "{{ (oc_vers_check.stdout | regex_search('Client Version: version.Info{.*}') | regex_search('Major:\"[0-9]*\"')).split(':')[1] }}"
+          when:
+            - oc_vers_check.stdout | regex_search('^Client Version:')
+
+        - debug:
+            msg: "OC version is: {{ oc_version }}"
+            verbosity: 2
 
         - name: "Do *not* use the 'ignore_unknown_parameters' flag if 'oc' version is older than 3.7"
           set_fact:
