@@ -10,12 +10,12 @@
         - "ansible_version.full is version('2.5','<')"
 
     - name: "Retrieve oc client version"
-      shell: "{{ item }}" 
+      shell: "{{ item }}"
       ignore_errors: true
       register: oc_vers_check
       with_items:
-      - oc version -o yaml
-      - oc version 
+        - oc version -o yaml
+        - oc version
 
     # Block to handle oc command output
     # - only proceed if the oc command returned any output
@@ -23,15 +23,15 @@
 
         - name: "Filter out just the oc version number (v4.X)"
           set_fact:
-            oc_version: "{{ (oc_vers_check.results[0].stdout | from_yaml).clientVersion.major }}.{{ (oc_vers_check.results[0].stdout | from_yaml).clientVersion.minor}}"   
+            oc_version: "{{ (oc_vers_check.results[0].stdout | from_yaml).clientVersion.major }}.{{ (oc_vers_check.results[0].stdout | from_yaml).clientVersion.minor}}"
           when:
             - oc_vers_check.results[0].stdout != ""
 
         - name: "Filter out just the oc version number (v3.X)"
           set_fact:
             oc_version: "{{ (oc_vers_check.results[1].stdout | regex_search('^oc.+v([\\d.]+).*', '\\1'))[0] }}"
-          when: 
-          - oc_vers_check.results[1].stdout != ""
+          when:
+            - oc_vers_check.results[1].stdout != ""
           - oc_vers_check.results[0].stdout == ""
 
         - name: "Debug: Check oc version"
