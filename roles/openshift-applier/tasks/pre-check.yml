@@ -10,16 +10,34 @@
         - "ansible_version.full is version('2.5','<')"
 
     - name: "Retrieve oc client version"
-      shell: oc version
+      shell: "{{ item }}"
+      ignore_errors: true
       register: oc_vers_check
+      with_items:
+        - oc version -o yaml
+        - oc version
 
     # Block to handle oc command output
     # - only proceed if the oc command returned any output
     - block:
 
-        - name: "Filter out just the oc version number"
+        - name: "Filter out just the oc version number (v4.X)"
           set_fact:
-            oc_version: "{{ (oc_vers_check.stdout | regex_search('^oc.+v([\\d.]+).*', '\\1'))[0] }}"
+            oc_version: "{{ (oc_vers_check.results[0].stdout | from_yaml).clientVersion.major }}.{{ (oc_vers_check.results[0].stdout | from_yaml).clientVersion.minor}}"
+          when:
+            - oc_vers_check.results[0].stdout != ""
+
+        - name: "Filter out just the oc version number (v3.X)"
+          set_fact:
+            oc_version: "{{ (oc_vers_check.results[1].stdout | regex_search('^oc.+v([\\d.]+).*', '\\1'))[0] }}"
+          when:
+            - oc_vers_check.results[1].stdout != ""
+            - oc_vers_check.results[0].stdout == ""
+
+        - name: "Debug: Check oc version"
+          debug:
+            msg: "oc version is: {{ oc_version }}"
+            verbosity: 2
 
         - name: "Do *not* use the 'ignore_unknown_parameters' flag if 'oc' version is older than 3.7"
           set_fact:
@@ -29,7 +47,7 @@
 
       when:
         - oc_vers_check is defined
-        - oc_vers_check.stdout is defined
-        - oc_vers_check.stdout|trim != ""
+        - oc_vers_check.results[0].stdout is defined or oc_vers_check.results[1].stdout is defined
+        - oc_vers_check.results[0].stdout|trim != "" or oc_vers_check.results[1].stdout|trim != ""
   when:
     - skip_version_checks is undefined
