@@ -32,7 +32,7 @@
             oc_version: "{{ (oc_vers_check.results[1].stdout | regex_search('^oc.+v([\\d.]+).*', '\\1'))[0] }}"
           when:
             - oc_vers_check.results[1].stdout != ""
-          - oc_vers_check.results[0].stdout == ""
+            - oc_vers_check.results[0].stdout == ""
 
         - name: "Debug: Check oc version"
           debug:
