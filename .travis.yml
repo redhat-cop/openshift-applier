@@ -10,11 +10,12 @@ env:
     - PIP_DOWNLOAD_CACHE=$HOME/.cache/pip
     - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz
     - KUBE_BINARY=https://storage.googleapis.com/kubernetes-release/release/v1.10.13/bin/linux/amd64/kubectl
-  - ANSIBLE_VERSION="latest"
-  - ANSIBLE_VERSION="2.6"
-  - ANSIBLE_VERSION="2.7"
-  - ANSIBLE_ARGS=""
-  - ANSIBLE_ARGS="-e client=kubectl"
+  matrix:
+    - ANSIBLE_VERSION="latest"
+    - ANSIBLE_VERSION="2.6"
+    - ANSIBLE_VERSION="2.7"
+    - ANSIBLE_ARGS=""
+    - ANSIBLE_ARGS="-e client=kubectl"
 
 cache:
   directories:
