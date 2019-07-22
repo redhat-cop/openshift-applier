@@ -11,11 +11,12 @@ env:
     - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz
     - KUBE_BINARY=https://storage.googleapis.com/kubernetes-release/release/v1.10.13/bin/linux/amd64/kubectl
   matrix:
-    - ANSIBLE_VERSION="latest"
-    - ANSIBLE_VERSION="2.6"
-    - ANSIBLE_VERSION="2.7"
-    - ANSIBLE_ARGS=""
-    - ANSIBLE_ARGS="-e client=kubectl"
+    - ANSIBLE_VERSION="latest" ANSIBLE_ARGS=""
+    - ANSIBLE_VERSION="2.6"  ANSIBLE_ARGS=""
+    - ANSIBLE_VERSION="2.7" ANSIBLE_ARGS=""
+    - ANSIBLE_VERSION="latest" ANSIBLE_ARGS="-e client=kubectl"
+    - ANSIBLE_VERSION="2.6"  ANSIBLE_ARGS="-e client=kubectl"
+    - ANSIBLE_VERSION="2.7" ANSIBLE_ARGS="-e client=kubectl"
 
 cache:
   directories:
@@ -26,7 +27,7 @@ before_install:
 
 install:
   - pip install -U pip
-  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible~=$ANSIBLE_VERSION; fi
+  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible~=${ANSIBLE_VERSION}; fi
   - pip install "ansible-lint<4.0" yamllint flake8 molecule docker "pytest<3.10" "testinfra==3.0.4"
   # Configure OpenShift Binary
   - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
