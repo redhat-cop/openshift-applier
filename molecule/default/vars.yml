@@ -2,3 +2,4 @@
 
 openshift_cluster_content: {}
 molecule_test_inventory_skip: false
+client: "{{ lookup('env', 'APPLIER_CLIENT') }}"

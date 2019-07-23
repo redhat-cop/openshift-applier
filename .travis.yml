@@ -11,12 +11,12 @@ env:
     - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz
     - KUBE_BINARY=https://storage.googleapis.com/kubernetes-release/release/v1.10.13/bin/linux/amd64/kubectl
   matrix:
-    - ANSIBLE_VERSION="latest" ANSIBLE_ARGS=""
-    - ANSIBLE_VERSION="2.6"  ANSIBLE_ARGS=""
-    - ANSIBLE_VERSION="2.7" ANSIBLE_ARGS=""
-    - ANSIBLE_VERSION="latest" ANSIBLE_ARGS="-e client=kubectl"
-    - ANSIBLE_VERSION="2.6"  ANSIBLE_ARGS="-e client=kubectl"
-    - ANSIBLE_VERSION="2.7" ANSIBLE_ARGS="-e client=kubectl"
+    - ANSIBLE_VERSION="latest" APPLIER_CLIENT="oc"
+    - ANSIBLE_VERSION="2.6"  APPLIER_CLIENT="oc"
+    - ANSIBLE_VERSION="2.7" APPLIER_CLIENT="oc"
+    - ANSIBLE_VERSION="latest" APPLIER_CLIENT="kubectl"
+    - ANSIBLE_VERSION="2.6"  APPLIER_CLIENT="kubectl"
+    - ANSIBLE_VERSION="2.7" APPLIER_CLIENT="kubectl"
 
 cache:
   directories:
@@ -58,4 +58,4 @@ before_script:
     echo "OpenShift Cluster Running"
 
 script:
-  - molecule test ${ANSIBLE_ARGS}
+  - molecule test
