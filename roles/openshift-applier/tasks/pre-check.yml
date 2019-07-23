@@ -21,9 +21,18 @@
     # - only proceed if the oc command returned any output
     - block:
 
-        - name: "Filter out the {{ client }} version number"
+        - name: "Filter out the {{ client }} version number from yaml output"
           set_fact:
-            client_version: "{{ (client_vers_check.results[1].stdout | regex_search('^(Client.+v|oc.+v)([\\d]\\.[\\d]*).*', '\\2'))[0] }}"
+            client_version: "{{ (client_vers_check.results[0].stdout | from_yaml).clientVersion.major }}.{{ (client_vers_check.results[0].stdout | from_yaml).clientVersion.minor}}"
+          when:
+            - client_vers_check.results[0].stdout != ""
+
+        - name: "Handle cases where yaml output is not available"
+          set_fact:
+            client_version: "{{ (client_vers_check.results[1].stdout | regex_search('^oc.+v([\\d.]+).*', '\\1'))[0] }}"
+          when:
+            - client_vers_check.results[1].stdout != ""
+            - client_vers_check.results[0].stdout == ""
 
         - name: "Debug: Check {{ client }} version"
           debug:
