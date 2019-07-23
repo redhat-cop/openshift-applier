@@ -14,6 +14,7 @@ This area of the repo contains tests that can be run to check the `openshift-app
 - Ansible 2.5 or later
 - Operational OpenShift Cluster
 - `oc` client
+- `kubectl` client
 
 ## Molecule Considerations
 

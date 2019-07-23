@@ -19,6 +19,7 @@ provisioner:
       all:
         use_kube_file: "${USE_KUBE_FILE:-True}"
         oc_binary_url: "${OC_BINARY_URL:-https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz}"
+        kube_binary_url: "${KUBE_BINARY:-https://storage.googleapis.com/kubernetes-release/release/v1.10.13/bin/linux/amd64/kubectl}"
         oc_master_url: "${OC_MASTER_URL:-https://localhost:8443}"
         oc_username: "${OC_USERNAME:-admin}"
         oc_password: "${OC_PASSWORD:-admin}"

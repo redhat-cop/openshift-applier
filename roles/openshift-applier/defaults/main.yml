@@ -1,5 +1,5 @@
 ---
-
+client: oc
 default_oc_action: apply
 tmp_inv_dir: ''
 include_tags: ''

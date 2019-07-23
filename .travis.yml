@@ -4,30 +4,34 @@ language: python
 python:
   - "2.7"
   - "3.7"
-
-cache:
-  directories:
-    - $HOME/.cache/pip
-
 env:
   global:
     - ANSIBLE_HOST_KEY_CHECKING=False
     - PIP_DOWNLOAD_CACHE=$HOME/.cache/pip
     - OC_BINARY_URL=https://mirror.openshift.com/pub/openshift-v3/clients/3.10.45/linux/oc.tar.gz
+    - KUBE_BINARY=https://storage.googleapis.com/kubernetes-release/release/v1.10.13/bin/linux/amd64/kubectl
   matrix:
-    - ANSIBLE_VERSION="latest"
-    - ANSIBLE_VERSION="2.6"
-    - ANSIBLE_VERSION="2.7"
+    - ANSIBLE_VERSION="latest" APPLIER_CLIENT="oc"
+    - ANSIBLE_VERSION="2.6"  APPLIER_CLIENT="oc"
+    - ANSIBLE_VERSION="2.7" APPLIER_CLIENT="oc"
+    - ANSIBLE_VERSION="latest" APPLIER_CLIENT="kubectl"
+    - ANSIBLE_VERSION="2.6"  APPLIER_CLIENT="kubectl"
+    - ANSIBLE_VERSION="2.7" APPLIER_CLIENT="kubectl"
+
+cache:
+  directories:
+    - $HOME/.cache/pip
 
 before_install:
   - sudo apt-get update -qq
 
 install:
   - pip install -U pip
-  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible~=$ANSIBLE_VERSION; fi
+  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible~=${ANSIBLE_VERSION}; fi
   - pip install "ansible-lint<4.0" yamllint flake8 molecule docker "pytest<3.10" "testinfra==3.0.4"
   # Configure OpenShift Binary
   - sudo wget -qO- ${OC_BINARY_URL} | sudo tar -xvz -C /bin
+  - curl -LO ${KUBE_BINARY} && chmod +x ./kubectl && sudo mv ./kubectl /bin/kubectl
 
 before_script:
   # Configure Docker

@@ -12,42 +12,43 @@
     - name: "Retrieve oc client version"
       shell: "{{ item }}"
       ignore_errors: true
-      register: oc_vers_check
+      register: client_vers_check
       with_items:
-        - oc version -o yaml
-        - oc version
+        - "{{ client }} version -o yaml"
+        - "{{ client }} version"
 
     # Block to handle oc command output
     # - only proceed if the oc command returned any output
     - block:
 
-        - name: "Filter out just the oc version number (v4.X)"
+        - name: "Filter out the {{ client }} version number from yaml output"
           set_fact:
-            oc_version: "{{ (oc_vers_check.results[0].stdout | from_yaml).clientVersion.major }}.{{ (oc_vers_check.results[0].stdout | from_yaml).clientVersion.minor}}"
+            client_version: "{{ (client_vers_check.results[0].stdout | from_yaml).clientVersion.major }}.{{ (client_vers_check.results[0].stdout | from_yaml).clientVersion.minor}}"
           when:
-            - oc_vers_check.results[0].stdout != ""
+            - client_vers_check.results[0].stdout != ""
 
-        - name: "Filter out just the oc version number (v3.X)"
+        - name: "Handle cases where yaml output is not available"
           set_fact:
-            oc_version: "{{ (oc_vers_check.results[1].stdout | regex_search('^oc.+v([\\d.]+).*', '\\1'))[0] }}"
+            client_version: "{{ (client_vers_check.results[1].stdout | regex_search('^oc.+v([\\d.]+).*', '\\1'))[0] }}"
           when:
-            - oc_vers_check.results[1].stdout != ""
-            - oc_vers_check.results[0].stdout == ""
+            - client_vers_check.results[1].stdout != ""
+            - client_vers_check.results[0].stdout == ""
 
-        - name: "Debug: Check oc version"
+        - name: "Debug: Check {{ client }} version"
           debug:
-            msg: "oc version is: {{ oc_version }}"
+            msg: "{{ client }} version is: {{ client_version }}"
             verbosity: 2
 
         - name: "Do *not* use the 'ignore_unknown_parameters' flag if 'oc' version is older than 3.7"
           set_fact:
-            oc_ignore_unknown_parameters: false
+            client_ignore_unknown_parameters: false
           when:
-            - oc_version is version('3.7','<')
+            - client == 'kubectl' and client_version is version('1.7','<')
+            - client == 'oc' and client_version is version('3.7','<')
 
       when:
-        - oc_vers_check is defined
-        - oc_vers_check.results[0].stdout is defined or oc_vers_check.results[1].stdout is defined
-        - oc_vers_check.results[0].stdout|trim != "" or oc_vers_check.results[1].stdout|trim != ""
+        - client_vers_check is defined
+        - client_vers_check.results[0].stdout is defined or client_vers_check.results[1].stdout is defined
+        - client_vers_check.results[0].stdout|trim != "" or client_vers_check.results[1].stdout|trim != ""
   when:
     - skip_version_checks is undefined
