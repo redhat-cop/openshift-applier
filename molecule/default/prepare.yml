@@ -8,10 +8,10 @@
         dest: "/usr/local/bin"
         remote_src: yes
     - name: Download Kubectl Binary
-      unarchive:
+      copy:
         src: "{{ kube_binary_url }}"
         dest: "/usr/local/bin"
-        remote_src: yes
+        mode: u+rx
     - name: Manage OpenShift Configuration File
       block:
         - name: Copy OpenShift Configuration File
