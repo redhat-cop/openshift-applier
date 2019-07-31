@@ -10,6 +10,7 @@ TODO
 
 ## Desired Feature List
 
+- Dash should be written in Golang to align with other projects in the Kubernetes ecosystem.
 - Dash should take the form of a CLI tool, and an API library that could be directly consumed by other projects
 - Dash should not be “object aware” and hence not process any kubernetes/openshift objects itself (just as the current openshift-applier works)
   - This avoids the ties to a specific version of kubernetes / OpenShift objects
