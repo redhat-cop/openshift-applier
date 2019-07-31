@@ -77,8 +77,7 @@
     {{ client }} {{ oc_action }} \
        {{ target_namespace }} \
        -f - \
-       {{ (oc_action == 'delete') | ternary(' --ignore-not-found', '') }} \
-       {{ (client == 'kubectl') | ternary(' --validate=false', '') }}
+       {{ (oc_action == 'delete') | ternary(' --ignore-not-found', ' --validate=false') }}
   register: command_result
   no_log: "{{ no_log }}"
   failed_when:
