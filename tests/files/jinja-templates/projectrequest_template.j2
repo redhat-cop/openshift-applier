@@ -13,7 +13,7 @@ metadata:
   name: ${NAMESPACE}
 objects:
 {% for environment in environments %}
-- apiVersion: v1
+- apiVersion: project.openshift.io/v1
   kind: {{ 'Project' if (oc_action == 'delete') else 'ProjectRequest' }}
   metadata:
     name: ${NAMESPACE}-template-{{ environment }}

@@ -3,7 +3,7 @@ apiVersion: v1
 kind: List
 items:
 {% for environment in environments %}
-- apiVersion: v1
+- apiVersion: project.openshift.io/v1
   kind: {{ 'Project' if (oc_action == 'delete') else 'ProjectRequest' }}
   metadata:
     name: {{ namespace_metadata.NAMESPACE }}-file-{{ environment }}
