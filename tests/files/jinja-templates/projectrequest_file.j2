@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: List
+items:
+{% for environment in environments %}
+- apiVersion: project.openshift.io/v1
+  kind: {{ 'Project' if (oc_action == 'delete') else 'ProjectRequest' }}
+  metadata:
+    name: {{ namespace_metadata.NAMESPACE }}-file-{{ environment }}
+  description: {{ namespace_metadata.NAMESPACE_DESCRIPTION }} (file) - {{ environment }}
+  displayName: {{ namespace_metadata.NAMESPACE_DISPLAY_NAME }} (file) - {{ environment }}
+{% endfor %}
