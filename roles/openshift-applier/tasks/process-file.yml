@@ -33,7 +33,7 @@
     {{ client }} {{ oc_action }} \
        {{ target_namespace }} \
        -f {{ file_facts.oc_path }} \
-       {{ (oc_action | regex_search('delete|get')) | ternary(' --ignore-not-found', '') }} \
+       {{ (oc_action | regex_search('delete')) | ternary(' --ignore-not-found', '') }} \
        {% if oc_action == 'patch' %}
          -p '{{ patch_content | to_json }}'
        {% endif %}
