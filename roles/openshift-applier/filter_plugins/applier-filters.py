@@ -8,7 +8,7 @@ except ImportError:
     from urllib.request import urlopen
 
 
-# Helper function to simplify the 'filter_applier_items' below
+# Helper function to simplify the 'filter_applier_item' below
 def filter_content(content_dict, outer_list, filter_list):
     # If tags don't exists at all, just remove the 'content'
     if 'tags' not in content_dict:
@@ -23,28 +23,22 @@ def filter_content(content_dict, outer_list, filter_list):
         outer_list.remove(content_dict)
 
 
-# Main 'filter_applier_items' function
-def filter_applier_items(applier_list, include_tags):
+# Main 'filter_applier_item' function
+def filter_applier_item(applier_item, include_tags):
     # If no filter tags supplied - just return list as-is
     if len(include_tags.strip()) == 0:
-        return applier_list
+        return applier_item
 
     # Convert comma seperated list to an actual list and strip off whitespaces of each element
     filter_list = include_tags.split(",")
     filter_list = [i.strip() for i in filter_list]
 
-    # Loop through the main list to check tags
-    # - use a copy to allow for elements to be removed at the same time as we iterrate
-    for a in applier_list[:]:
-        # Handle the 'content' entries
-        if 'content' in a:
-            for c in a['content'][:]:
-                filter_content(c, a['content'], filter_list)
+    # Handle the 'content' entries
+    if 'content' in applier_item:
+        for c in a['content'][:]:
+            filter_content(c, a['content'], filter_list)
 
-            if len(a['content']) == 0:
-                applier_list.remove(a)
-
-    return applier_list
+    return applier_item
 
 # Function used to determine a files location - i.e.: URL, local file/directory or "something else"
 def check_file_location(path):
@@ -87,5 +81,5 @@ class FilterModule(object):
     def filters(self):
         return {
             'check_file_location': check_file_location,
-            'filter_applier_items': filter_applier_items
+            'filter_applier_item': filter_applier_item
         }
