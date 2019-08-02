@@ -30,7 +30,7 @@
     invalid_tag_usage: "{{ openshift_cluster_content | get_invalid_tag_usage(include_tags, exclude_tags) }}"
 
 - name: "Error out if any unsupported tag usage was found"
-  fail: 
+  fail:
     msg: "Tags were found in both the include_tags and exclude_tags lists"
   when:
     - invalid_tag_usage != []
