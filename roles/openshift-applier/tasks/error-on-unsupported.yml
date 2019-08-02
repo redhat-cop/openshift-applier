@@ -24,3 +24,15 @@
   when:
     - unsupported_items is defined
   with_dict: "{{ unsupported_items }}"
+
+- name: "Check for invalid include and exclude tage usage"
+  set_fact:
+    invalid_tag_usage: "{{ openshift_cluster_content | get_invalid_tag_usage(include_tags, exclude_tags) }}"
+
+- name: "Error out if any unsupported tag usage was found"
+  fail: 
+    msg: "Tags were found in both the include_tags and exclude_tags lists"
+  when:
+    - invalid_tag_usage != []
+  with_items:
+    - "{{ invalid_tag_usage }}"

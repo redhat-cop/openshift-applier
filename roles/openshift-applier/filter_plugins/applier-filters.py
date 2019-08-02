@@ -7,6 +7,40 @@ except ImportError:
     from urllib.parse import urljoin
     from urllib.request import urlopen
 
+# Return content invoked with improper tag usage
+def get_invalid_tag_usage(applier_list, include_tags, exclude_tags):
+
+    if len(include_tags.strip()) == 0 or len(exclude_tags.strip()) == 0:
+        return []
+
+    # Convert comma seperated list to an actual list and strip off whitespaces of each element
+    include_list = include_tags.split(",")
+    include_list = [i.strip() for i in include_list]
+
+    exclude_list = exclude_tags.split(",")
+    exclude_list = [i.strip() for i in exclude_list]
+
+    repeated_tags = []
+    # Loop through the main list to check if any tags were invoked incorrectly
+    # - append to repeated_tags and return
+    for a in applier_list[:]:
+        if 'content' in a:
+            for c in a['content'][:]:
+                if 'tags' not in c:
+                    continue
+
+                include_matches = list(set(include_list) & set(c['tags']))
+
+                exclude_matches = list(set(exclude_list) & set(c['tags']))
+
+                if include_matches and exclude_matches:
+                    repeat_tags.append({
+                        'object': a['object'],
+                        'name': c['name'],
+                        'invoked_tags': include_matches + exclude_matches,
+                    })
+
+    return repeated_tags
 
 # Helper function to simplify the 'filter_applier_items' below
 def filter_content(content_dict, outer_list, include_list, exclude_list):
@@ -107,5 +141,6 @@ class FilterModule(object):
     def filters(self):
         return {
             'check_file_location': check_file_location,
-            'filter_applier_items': filter_applier_items
+            'filter_applier_items': filter_applier_items,
+            'get_invalid_tag_usage': get_invalid_tag_usage
         }

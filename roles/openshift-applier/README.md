@@ -214,13 +214,12 @@ metadata:
 
 The `openshift-applier` supports the use of tags in the inventory (see example above) to allow for filtering which content should be processed and not. The `include_tags` variable/fact takes a comma separated list of tags that will be processed and only content with matching tags will be applied. Additionally, tags can be skipped in the same manner with the `exclude_tags` option. 
 
-**_NOTE:_** These two options are mutually exclusive.
-
 **_NOTE:_** Entries in the inventory without tags will not be processed when a valid list is supplied with the `include_tags` option.
+**_NOTE:_** Each content piece can only be invoked with either include_tags or exclude_tags. If both are invoked on an content piece, this will cause the run to error out.
 
 ```
 include_tags=tag1,tag2
-exclude_tags=tag1,tag2
+exclude_tags=tag3,tag4
 
 ```
 
