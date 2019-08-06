@@ -31,7 +31,7 @@
 
 - name: "Error out if any unsupported tag usage was found"
   fail:
-    msg: "Tags were found in both the include_tags and exclude_tags lists"
+    msg: "Confused - Do not know how to process the combination of tags for content {{ item.object }}/{{ item.name }} and include_tags/exclude_tags parameters."
   when:
     - invalid_tag_usage != []
   with_items:

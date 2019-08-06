@@ -8,6 +8,8 @@ except ImportError:
     from urllib.request import urlopen
 
 # Return content invoked with improper tag usage
+
+
 def get_invalid_tag_usage(applier_list, include_tags, exclude_tags):
 
     if len(include_tags.strip()) == 0 or len(exclude_tags.strip()) == 0:
@@ -34,15 +36,17 @@ def get_invalid_tag_usage(applier_list, include_tags, exclude_tags):
                 exclude_matches = list(set(exclude_list) & set(c['tags']))
 
                 if include_matches and exclude_matches:
-                    repeat_tags.append({
-                        'object': a['object'],
-                        'name': c['name'],
+                    repeated_tags.append({
+                        'object': a.get("object", "[unknown]"),
+                        'name': c.get("name", "[unknown]"),
                         'invoked_tags': include_matches + exclude_matches,
                     })
 
     return repeated_tags
 
 # Helper function to simplify the 'filter_applier_items' below
+
+
 def filter_content(content_dict, outer_list, include_list, exclude_list):
     # Handle if tags don't exist in the 'content' section
     if 'tags' not in content_dict:
