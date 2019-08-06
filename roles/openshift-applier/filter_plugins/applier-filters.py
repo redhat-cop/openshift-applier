@@ -7,9 +7,8 @@ except ImportError:
     from urllib.parse import urljoin
     from urllib.request import urlopen
 
+
 # Return content invoked with improper tag usage
-
-
 def get_invalid_tag_usage(applier_list, include_tags, exclude_tags):
 
     if len(include_tags.strip()) == 0 or len(exclude_tags.strip()) == 0:
@@ -44,9 +43,8 @@ def get_invalid_tag_usage(applier_list, include_tags, exclude_tags):
 
     return repeated_tags
 
+
 # Helper function to simplify the 'filter_applier_items' below
-
-
 def filter_content(content_dict, outer_list, include_list, exclude_list):
     # Handle if tags don't exist in the 'content' section
     if 'tags' not in content_dict:
@@ -101,9 +99,8 @@ def filter_applier_items(applier_list, include_tags, exclude_tags):
 
     return applier_list
 
+
 # Function used to determine a files location - i.e.: URL, local file/directory or "something else"
-
-
 def check_file_location(path):
     # default return values
     return_vals = {
