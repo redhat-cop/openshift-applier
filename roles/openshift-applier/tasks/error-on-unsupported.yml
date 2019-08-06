@@ -24,3 +24,9 @@
   when:
     - unsupported_items is defined
   with_dict: "{{ unsupported_items }}"
+
+- name: "Error out if any unsupported tag usage was found"
+  fail:
+    msg: "Confused - Do not know how to process the combination of tags for content {{ item.object }}/{{ item.name }} and include_tags/exclude_tags parameters."
+  with_items:
+    - "{{ openshift_cluster_content | get_invalid_tag_usage(include_tags, exclude_tags) }}"
