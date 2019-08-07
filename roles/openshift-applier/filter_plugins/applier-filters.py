@@ -44,7 +44,7 @@ def get_invalid_tag_usage(applier_list, include_tags, exclude_tags):
     return repeated_tags
 
 
-# Helper function to simplify the 'filter_applier_items' below
+# Helper function to simplify the 'filter_applier_item' below
 def filter_content(content_dict, outer_list, include_list, exclude_list):
     # Handle if tags don't exist in the 'content' section
     if 'tags' not in content_dict:
@@ -69,11 +69,11 @@ def filter_content(content_dict, outer_list, include_list, exclude_list):
             return
 
 
-# Main 'filter_applier_items' function
-def filter_applier_items(applier_list, include_tags, exclude_tags):
-    # If no tag lists supplied - just return list as-is
+# Main 'filter_applier_item' function
+def filter_applier_item(applier_item, include_tags, exclude_tags):
+    # If no tag lists supplied - just return item
     if len(include_tags.strip()) == 0 and len(exclude_tags.strip()) == 0:
-        return applier_list
+        return applier_item
 
     exclude_list, include_list = [], []
 
@@ -86,18 +86,12 @@ def filter_applier_items(applier_list, include_tags, exclude_tags):
         exclude_list = exclude_tags.split(",")
         exclude_list = [i.strip() for i in exclude_list]
 
-    # Loop through the main list to check tags
-    # - use a copy to allow for elements to be removed at the same time as we iterrate
-    for a in applier_list[:]:
-        # Handle the 'content' entries
-        if 'content' in a:
-            for c in a['content'][:]:
-                filter_content(c, a['content'], include_list, exclude_list)
+    # Handle the 'content' entries
+    if 'content' in applier_item:
+        for c in applier_item['content'][:]:
+            filter_content(c, applier_item['content'], include_list, exclude_list)
 
-            if len(a['content']) == 0:
-                applier_list.remove(a)
-
-    return applier_list
+    return applier_item
 
 
 # Function used to determine a files location - i.e.: URL, local file/directory or "something else"
@@ -142,6 +136,6 @@ class FilterModule(object):
     def filters(self):
         return {
             'check_file_location': check_file_location,
-            'filter_applier_items': filter_applier_items,
+            'filter_applier_item': filter_applier_item,
             'get_invalid_tag_usage': get_invalid_tag_usage
         }

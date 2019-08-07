@@ -25,9 +25,10 @@
 
 - name: "Create OpenShift objects"
   include_tasks: process-content.yml
-  with_items:
-    - "{{ openshift_cluster_content | filter_applier_items(include_tags, exclude_tags) | default([]) }}"
+  with_items: "{{ range(0, openshift_cluster_content|default([])|length) | list }}"
   loop_control:
-    loop_var: entry
+    loop_var: entry_n
+  vars:
+    entry: "{{ openshift_cluster_content[entry_n] }}"
   when:
     - entry.content is defined
