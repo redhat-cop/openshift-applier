@@ -26,7 +26,7 @@
     get_url:
       url: "{{ lookup('vars', process_file_or_template) }}"
       dest: "{{ dest_path_j2 }}"
-    when:  not template_location.local_path
+    when: not template_location.local_path
 
   - name: Copy Jinja template to temp dir if local
     local_action:
