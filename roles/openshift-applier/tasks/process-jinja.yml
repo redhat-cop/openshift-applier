@@ -15,14 +15,32 @@
 
   - name: Set processed Jinja template output path
     set_fact:
-      dest_path: "{{ jinja_tmp_dir.path }}/processed_{{ lookup('vars', process_file_or_template) | basename | regex_replace('.j2$','.yml') }}"
+      dest_path_yml: "{{ jinja_tmp_dir.path }}/processed_{{ lookup('vars', process_file_or_template) | basename | regex_replace('.j2$','.yml') }}"
+      dest_path_j2: "{{ jinja_tmp_dir.path }}/{{ lookup('vars', process_file_or_template) | basename }}"
+
+  - name: Determine Jinja template location
+    set_fact:
+      template_location: "{{ lookup('vars', process_file_or_template) | check_file_location }}"
+
+  - name: Copy Jinja template locally if remote
+    get_url:
+      url: "{{ lookup('vars', process_file_or_template) }}"
+      dest: "{{ dest_path_j2 }}"
+    when:  not template_location.local_path
+
+  - name: Copy Jinja template to temp dir if local
+    local_action:
+      module: copy
+      src: "{{ lookup('vars', process_file_or_template) }}"
+      dest: "{{ dest_path_j2 }}"
+    when: template_location.local_path
 
   - name: Process Jinja template
     template:
-      src: "{{ lookup('vars', process_file_or_template) }}"
-      dest: "{{ dest_path }}"
+      src: "{{ dest_path_j2 }}"
+      dest: "{{ dest_path_yml }}"
 
   - name: Update path
-    set_fact: {"{{ process_file_or_template }}":"{{ dest_path }}"}
+    set_fact: {"{{ process_file_or_template }}":"{{ dest_path_yml }}"}
 
   delegate_to: localhost
