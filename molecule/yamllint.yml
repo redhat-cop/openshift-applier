@@ -3,6 +3,14 @@
 extends: default
 
 rules:
+  braces:
+    max-spaces-inside: 1
+    level: error
+  brackets:
+    max-spaces-inside: 1
+    level: error
+  indentation:
+    indent-sequences: consistent
   line-length:
     level: error
     max: 250
