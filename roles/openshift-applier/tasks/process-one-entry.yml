@@ -9,7 +9,7 @@
     params: "{{ content.params | default('') }}"
     params_from_vars: "{{ content.params_from_vars | default({}) }}"
     oc_ignore_unknown_parameters: "{{ content.ignore_unknown_parameters | default(oc_ignore_unknown_parameters) }}"
-    no_log: False
+    no_log: false
 
 - name: "Set oc_action to delete when in deprovision mode"
   set_fact:
@@ -19,7 +19,7 @@
 
 - name: "Set no_log when specified"
   set_fact:
-    no_log: True
+    no_log: true
   when: (entry.no_log is defined and entry.no_log|bool) or (content.no_log is defined and content.no_log|bool)
 
 - name: "Set the target namespace option if supplied"

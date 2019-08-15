@@ -6,7 +6,7 @@
       find:
         paths: "{{ playbook_dir }}/../../tests/inventories"
         file_type: directory
-        recurse: no
+        recurse: false
       register: tests
       delegate_to: localhost
   tasks:

@@ -2,7 +2,7 @@
 
 - hosts: all
   connection: local
-  gather_facts: no
+  gather_facts: false
   tasks:
     - block:
         - name: Check hosts are available
@@ -18,12 +18,12 @@
 
 - hosts: available_hosts
   connection: local
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Delete Test Project
       command: >
         oc delete project oa-ci-multi-files-dir1
-      ignore_errors: yes
+      ignore_errors: true
       delegate_to: "{{ groups['seed-hosts'] | first }}"
 
 - name: Destroy

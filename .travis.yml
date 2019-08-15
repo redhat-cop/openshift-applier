@@ -34,9 +34,6 @@ install:
   - curl -LO ${KUBE_BINARY} && chmod +x ./kubectl && sudo mv ./kubectl /bin/kubectl
 
 before_script:
-  # Linting
-  - yamllint .
-  - ansible-lint playbooks/openshift-cluster-seed.yml
   # Configure Docker
   - sudo service docker stop
   - sudo mkdir -p /etc/docker
