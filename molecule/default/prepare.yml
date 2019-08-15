@@ -6,7 +6,7 @@
       unarchive:
         src: "{{ oc_binary_url }}"
         dest: "/usr/local/bin"
-        remote_src: yes
+        remote_src: true
     - name: Download Kubectl Binary
       get_url:
         url: "{{ kube_binary_url }}"

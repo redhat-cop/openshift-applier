@@ -10,7 +10,7 @@
     - name: "Check whether parameters file exists"
       stat:
         path: "{{ params }}"
-      ignore_errors: yes
+      ignore_errors: true
       register: params_result
       delegate_to: localhost
     - name: "Fail when params file does  not exist"

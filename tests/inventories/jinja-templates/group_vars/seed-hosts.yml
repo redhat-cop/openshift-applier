@@ -1,9 +1,9 @@
 ---
 
 environments:
-  - dev
-  - test
-  - prod
+- dev
+- test
+- prod
 namespace_metadata:
   NAMESPACE: oa-ci-jinja-templates
   NAMESPACE_DISPLAY_NAME: OpenShift Applier Jinja Templates Test 1 (displayName)

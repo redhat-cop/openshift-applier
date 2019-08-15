@@ -11,7 +11,7 @@
       state: directory
     register: jinja_tmp_dir
     notify:
-      - Clean up temporary Jinja directory
+    - Clean up temporary Jinja directory
 
   - name: Set processed Jinja template output path
     set_fact:

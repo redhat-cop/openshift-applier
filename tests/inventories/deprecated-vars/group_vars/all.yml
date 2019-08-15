@@ -14,16 +14,16 @@ openshift_cluster_content:
       NAMESPACE_DESCRIPTION: OpenShift Applier Deprecation Test (description)
     action: create
     tags:
-      - project
-      - route
+    - project
+    - route
 - object: route-test
   content:
   - name: Create route from template and params_from_vars
     template: "{{ inventory_dir }}/../../files/routes/template1.yml"
-    params_from_vars: 
+    params_from_vars:
       FQDN: test.deprecation.com
       NAME: deprecation1-test
-      NAMESPACE: "{{ test_namespace }}" 
+      NAMESPACE: "{{ test_namespace }}"
     namespace: "{{ test_namespace }}"
     tags:
-      - route
+    - route
