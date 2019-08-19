@@ -50,7 +50,7 @@ The Dash _inventory_ will be the file where users define what contents exist and
 
 version: <2.0|3.0> # This is how we will maintain backwards compatibility. A value of '2.0' will run the current `openshift-applier`
 
-context: global-context
+context: global-context #if not specified, should default to the current active context or fail right away if one is not able to be identified.
 namespace: global-default
 resource_groups: # This will replace `object` in openshift-applier, and serve as a logical grouping of content. This will be the level at which we pre-process all template content before putting to the api. Resource_groups should be able to be parent/child of other resource groups.
   - name: Group 1 # name fields are not required, just used for logging/debugging
