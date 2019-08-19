@@ -50,6 +50,7 @@ The Dash _inventory_ will be the file where users define what contents exist and
 
 version: <2.0|3.0> # This is how we will maintain backwards compatibility. A value of '2.0' will run the current `openshift-applier`
 
+context: global-context
 namespace: global-default
 resource_groups: # This will replace `object` in openshift-applier, and serve as a logical grouping of content. This will be the level at which we pre-process all template content before putting to the api. Resource_groups should be able to be parent/child of other resource groups.
   - name: Group 1 # name fields are not required, just used for logging/debugging
@@ -58,6 +59,14 @@ resource_groups: # This will replace `object` in openshift-applier, and serve as
       - name: A Deployment
         namespace: this-deployment
         type: <manifest|helm|openshift|kustomize>
-        path:
+        template:
         params:
+# Group 1 would run a deployment to the group1-stuff namespace using the global-context kube-context and apply a template using a specific set of params
+  - name: Group 2
+    resources:
+      - name: Another Deployment
+        type: <manifest|helm|openshift|kustomize>
+        file:
+        context: a-different-kube-context
+# Group 2 would run a deployment to the global-default namespace using the a-different-kube-context kube-context and process a standard file (i.e. not a template)
 ```
