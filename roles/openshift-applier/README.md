@@ -8,6 +8,7 @@ Role used to apply OpenShift objects to an existing OpenShift Cluster.
 	- [Requirements](#requirements)
 	- [Role Usage](#role-usage)
 		- [Sourcing OpenShift Object Definitions](#sourcing-openshift-object-definitions)
+		- [Template processing](#template-processing)
 		- [Using oc vs kubectl](#using-oc-vs-kubectl)
 		- [Sourcing a directory with files](#sourcing-a-directory-with-files)
 		- [Ordering of Objects in the inventory](#ordering-of-objects-in-the-inventory)
@@ -71,14 +72,43 @@ openshift_cluster_content:
 
 You have the choice of sourcing a `file` or a `template`. The `file` definition expects that the sourced file has all definitions set and will NOT accept any parameters (i.e.: static content). The `template` definition can be paired with a `params` file and/or params supplied through a dictionary variable `params_from_vars` which will be passed into the template. Note that if a template supply all default values, it can be processed without `params` or `params_from_vars` set.
 
-It is also possible to use Jinja templates for the `file` and `template` entries. If you would like to use a Jinja template, simply set the suffix to `.j2`.
-See examples in the [test suite](/tests/files/jinja-templates) for more details.
-
 **_TIP:_** Both `file` and `template` choices give you the option of defining target namespaces in the template manually, or adding the `namespace` variable alongside the template and params (where applicable).
 
 The `tags` definition is a list of tags that will be processed if the `include_tags` variable/fact is supplied. See [Filtering content based on tags](README.md#filtering-content-based-on-tags) below for more details.
 
 The pre/post definitions are a set of pre and post roles to execute before/after a particular portion of the inventory is applied. This can be before/afterthe object levels - i.e.: before and after all of the content, or before/after certain files/templates at a content level.
+
+### Template processing
+Openshift-applier supports multiple template languages, that can be used to process your Openshift/Kubernetes Object Resources prior to being applied to the cluster.
+Both templating engines support both local and remote template location (http(s)).
+The currently supported template languages are:
+- [Openshift templates](https://docs.openshift.com/container-platform/latest/openshift_images/using-templates.html)
+- [Jinja templates](https://jinja.palletsprojects.com/)
+
+Openshift templates will require the use of `template` when sourcing your object resource(s). Use `params` to pass variables to the template.
+```
+openshift_cluster_content:
+- object:
+  content:
+  - name: Applying Openshift template
+    template: "{{ inventory_dir }}/../.openshift/templates/template.yml"
+    params:
+      PARAM1: foo
+      PARAM2: bar
+```
+
+Jinja templates can use either `file` or `template` when sourcing your object resources(s). Use `template` if your generated object resource is an Openshift template, otherwise use `file`.
+```
+openshift_cluster_content:
+- object:
+  content:
+  - name: Applying Openshift template
+    file: "https://example.com/openshift/files/file.j2"
+```
+Ansible variables are available and can be used in the Jinja template.
+Additional examples are available in the [test directory](https://github.com/redhat-cop/openshift-applier/tree/master/tests/files/jinja-templates)
+
+**NOTE: In order to use the jinja processing engine the file suffix must be '.j2'
 
 ### Using oc vs kubectl
 
