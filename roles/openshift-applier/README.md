@@ -71,6 +71,9 @@ openshift_cluster_content:
 
 You have the choice of sourcing a `file` or a `template`. The `file` definition expects that the sourced file has all definitions set and will NOT accept any parameters (i.e.: static content). The `template` definition can be paired with a `params` file and/or params supplied through a dictionary variable `params_from_vars` which will be passed into the template. Note that if a template supply all default values, it can be processed without `params` or `params_from_vars` set.
 
+It is also possible to use Jinja templates for the `file` and `template` entries. If you would like to use a Jinja template, simply set the suffix to `.j2`.
+See examples in the [test suite](/tests/files/jinja-templates) for more details.
+
 **_TIP:_** Both `file` and `template` choices give you the option of defining target namespaces in the template manually, or adding the `namespace` variable alongside the template and params (where applicable).
 
 The `tags` definition is a list of tags that will be processed if the `include_tags` variable/fact is supplied. See [Filtering content based on tags](README.md#filtering-content-based-on-tags) below for more details.
