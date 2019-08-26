@@ -108,7 +108,7 @@ openshift_cluster_content:
 Ansible variables are available and can be used in the Jinja template.
 Additional examples are available in the [test directory](https://github.com/redhat-cop/openshift-applier/tree/master/tests/files/jinja-templates)
 
-**NOTE: In order to use the jinja processing engine the file suffix must be '.j2'
+**NOTE: In order to use the jinja processing engine the file suffix must be '.j2'**
 
 ### Using oc vs kubectl
 
