@@ -11,7 +11,7 @@ Dash has a goal of becoming THE automation framework for Kubernetes. In order to
 - One should represent all Kubernetes resource definitions in files, or templates and parameters that produce files.
 - These definition files should be version controlled in Git.
 - Once resource definitions are defined as files in a repository, they should be reconciled to the Kubernetes API using repeatable raw verbs. This means:
-  - `kubectl apply` should be the default, and used for all files that are wholly managed.
+  - `kubectl apply` should be the default, and used for all resources whose full lifecycle will be managed.
   - `kubectl patch` should be used for files where we only manage certain fields.
   - `kubectl create` or `kubectl replace` should be used sparingly, being used only where there are immutable fields to contend with that `apply` would not work on.
     - If using `create` the automation should gracefully handle `Already Exists` errors, taking no action and allowing the automation to continue.
