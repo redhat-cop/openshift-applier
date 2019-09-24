@@ -6,9 +6,22 @@ The working name for the project is "Dash" (because when you remove the words `o
 
 ## Design Philosophy
 
-TODO
+Dash has a goal of becoming THE automation framework for Kubernetes. In order to acheive this, we feel that we must adhere to a set of principles for how Kubernetes automation should be done.
+
+- One should represent all Kubernetes resource definitions in files, or templates and parameters that produce files.
+- These definition files should be version controlled in Git.
+- Once resource definitions are defined as files in a repository, they should be reconciled to the Kubernetes API using repeatable raw verbs. This means:
+  - `kubectl apply` should be the default, and used for all files that are wholly managed.
+  - `kubectl patch` should be used for files where we only manage certain fields.
+  - `kubectl create` or `kubectl replace` should be used sparingly, being used only where there are immutable fields to contend with that `apply` would not work on.
+    - If using `create` the automation should gracefully handle `Already Exists` errors, taking no action and allowing the automation to continue.
+  - `kubectl delete` may be used to remove resources that are provisioned in the cluster by default, but not desired.
+    - If using `delete` the automation should gracefully handle `Does Not Exist` errors, taking no action and allowing the automation to continue.
+- Every entity that has a set of resources to manage, be it a person, team, or robot, should manage its own repository of resource files.
 
 ## Desired Feature List
+
+The following is a list of features we would like to see in Dash. This is not intended to represent a _Minimum Viable Product_, but a long term list of desired features. From here we will define a subset that defines our MVP.
 
 - Dash should be written in Golang to align with other projects in the Kubernetes ecosystem.
 - Dash should take the form of a CLI tool, and an API library that could be directly consumed by other projects
