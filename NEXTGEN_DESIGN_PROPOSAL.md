@@ -18,6 +18,8 @@ Dash has a goal of becoming THE automation framework for Kubernetes. In order to
   - `kubectl delete` may be used to remove resources that are provisioned in the cluster by default, but not desired.
     - If using `delete` the automation should gracefully handle `Does Not Exist` errors, taking no action and allowing the automation to continue.
 - Every entity that has a set of resources to manage, be it a person, team, or robot, should manage its own repository of resource files.
+- In some cases the configuration of a resource may depend on values of fields in other resources in the cluster. The automation should provide a way to handle this through a _discovery model_, allowing to do `get` calls to retrieve values that can be used as template parameters later in the run.
+- Processing of templates should be done client-side, so as to keep the automation portable across any cluster. This also allows for batching of POST/PUT calls to the API server.
 
 ## Desired Feature List
 
