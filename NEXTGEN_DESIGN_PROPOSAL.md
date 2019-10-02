@@ -55,6 +55,9 @@ The following is a list of features we would like to see in Dash. This is not in
   - Patch
 - Dash should support runs across Multiple Kubernetes clusters
 - Dash should support variable hierarchy, such that variables can be set at multiple levels, overriding as they get more specific.
+- For very simple use cases, Dash should not _require_ an inventory file.
+  - In order to lower the barrier, Dash should be able to run against an embedded default inventory such that simple repositories with a predictable directory structure could run without its own inventory file.
+  - (see below for proposed default values)
 
 # Working Inventory Contract
 
@@ -84,4 +87,21 @@ resource_groups: # This will replace `object` in openshift-applier, and serve as
         file:
         context: a-different-kube-context
 # Group 2 would run a deployment to the global-default namespace using the a-different-kube-context kube-context and process a standard file (i.e. not a template)
+```
+
+A _default_ Dash inventory.
+
+```
+verison: 3.0
+resource_groups:
+  - name: Default Resources
+    resources:
+    - name: Raw Manifests
+      file: manifests/
+    - name: Helm Templates
+      template: helm/
+      type: helm
+    - name: OpenShift Templates
+      template: openshift-templates/
+      params: openshift-template-params/
 ```
