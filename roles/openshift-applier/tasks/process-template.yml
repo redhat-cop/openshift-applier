@@ -78,7 +78,8 @@
        {{ target_namespace }} \
        -f - \
        {{ (oc_action | regex_search('delete')) | ternary(' --ignore-not-found', '') }} \
-       {{ (client == 'kubectl' and not (oc_action | regex_search('delete|patch'))) | ternary(' --validate=false', '') }}
+       {{ (client == 'kubectl' and not (oc_action | regex_search('delete|patch'))) | ternary(' --validate=false', '') }} \
+       {{ flags }}
   register: command_result
   no_log: "{{ no_log }}"
   failed_when:
