@@ -243,11 +243,28 @@ metadata:
     labelkey: labelvalue
 ```
 
+### Passing extra arguments to the client
+
+OpenShift Applier supports passing additional argument flags to the client (`oc` or `kubectl`). This can be done by setting `.openshift_cluster_content.object.content[*].flag` to any string value.
+
+For example, to explicitly set the patch strategy (`--type`) on a patch action:
+
+```
+- object: json merge patch
+  content:
+  - name: perform json merge patch with flag
+    file: "https://k8s.io/examples/application/deployment-patch.yaml"
+    params: "{{ inventory_dir }}/../../files/patches/patch-demo-merge.yaml"
+    action: patch
+    flags: --type merge
+```
+
+
 ### Filtering content based on tags
 
-The `openshift-applier` supports the use of tags in the inventory (see example above) to allow for filtering which content should be processed and not. The `include_tags` and `exclude_tags` variables/facts take a comma separated list of tags that will be processed. The `include_tags` will apply content **only** with the matching tags, while `exclude_tags` will apply **anything but** the content with the matching tags. 
+The `openshift-applier` supports the use of tags in the inventory (see example above) to allow for filtering which content should be processed and not. The `include_tags` and `exclude_tags` variables/facts take a comma separated list of tags that will be processed. The `include_tags` will apply content **only** with the matching tags, while `exclude_tags` will apply **anything but** the content with the matching tags.
 
-**_NOTE:_** Entries in the inventory without tags will not be processed when a valid list of tags is supplied with `include_tags`. 
+**_NOTE:_** Entries in the inventory without tags will not be processed when a valid list of tags is supplied with `include_tags`.
 
 **_NOTE:_** If the same tag exists in both `include_tags` and `exclude_tags` the run will error out. Likewise, if tags from the two options annuls each other, the execution will also error out.
 
