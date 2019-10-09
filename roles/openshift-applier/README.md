@@ -15,6 +15,7 @@ Role used to apply OpenShift objects to an existing OpenShift Cluster.
 		- [Privileged Objects](#privileged-objects)
 		- [Object Entries in the Inventory](#object-entries-in-the-inventory)
 		- [Override default actions with `action`](#override-default-actions-with-action)
+		- [Passing extra arguments to the client](#passing-arguments-to-the-client)
 		- [Filtering content based on tags](#filtering-content-based-on-tags)
 		- [Deprovisioning](#deprovisioning)
 		- [Dependencies](#dependencies)
