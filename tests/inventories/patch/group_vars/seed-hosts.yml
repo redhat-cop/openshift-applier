@@ -36,3 +36,12 @@ openshift_cluster_content:
     file: "{{ inventory_dir }}/../../files/imagestreams/python.yml"
     params: "{{ inventory_dir }}/../../files/patches/python-is-patch.json"
     action: patch
+- object: json merge patch
+  content:
+  - name: create a deployment to patch
+    file: "https://k8s.io/examples/application/deployment-patch.yaml"
+  - name: perform json merge patch with flag
+    file: "https://k8s.io/examples/application/deployment-patch.yaml"
+    params: "{{ inventory_dir }}/../../files/patches/patch-demo-merge.yaml"
+    action: patch
+    flags: --type merge
