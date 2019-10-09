@@ -8,7 +8,7 @@ The working name for the project is "Dash" (because when you remove the words `o
 
 Dash has a goal of becoming THE automation framework for Kubernetes. In order to acheive this, we feel that we must adhere to a set of principles for how Kubernetes automation should be done.
 
-- One should represent all Kubernetes resource definitions in files, or templates and parameters that produce files.
+- One should represent all Kubernetes resource definitions in files, or templates and parameters that produce files. This is in line with the the strategy for [Declarative Management of Kubernetes Objects](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/)
 - These definition files should be version controlled in Git.
 - Once resource definitions are defined as files in a repository, they should be reconciled to the Kubernetes API using repeatable raw verbs. This means:
   - `kubectl apply` should be the default, and used for all resources whose full lifecycle will be managed.
