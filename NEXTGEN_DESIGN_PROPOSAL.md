@@ -8,7 +8,7 @@ The working name for the project is "Dash" (because when you remove the words `o
 
 Dash has a goal of becoming THE automation framework for Kubernetes. In order to acheive this, we feel that we must adhere to a set of principles for how Kubernetes automation should be done.
 
-- One should represent all Kubernetes resource definitions in files, or templates and parameters that produce files.
+- One should represent all Kubernetes resource definitions in files, or templates and parameters that produce files. This is in line with the the strategy for [Declarative Management of Kubernetes Objects](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/)
 - These definition files should be version controlled in Git.
 - Once resource definitions are defined as files in a repository, they should be reconciled to the Kubernetes API using repeatable raw verbs. This means:
   - `kubectl apply` should be the default, and used for all resources whose full lifecycle will be managed.
@@ -55,6 +55,9 @@ The following is a list of features we would like to see in Dash. This is not in
   - Patch
 - Dash should support runs across Multiple Kubernetes clusters
 - Dash should support variable hierarchy, such that variables can be set at multiple levels, overriding as they get more specific.
+- For very simple use cases, Dash should not _require_ an inventory file.
+  - In order to lower the barrier, Dash should be able to run against an embedded default inventory such that simple repositories with a predictable directory structure could run without its own inventory file.
+  - (see below for proposed default values)
 
 # Working Inventory Contract
 
@@ -84,4 +87,21 @@ resource_groups: # This will replace `object` in openshift-applier, and serve as
         file:
         context: a-different-kube-context
 # Group 2 would run a deployment to the global-default namespace using the a-different-kube-context kube-context and process a standard file (i.e. not a template)
+```
+
+A _default_ Dash inventory.
+
+```
+verison: 3.0
+resource_groups:
+  - name: Default Resources
+    resources:
+    - name: Raw Manifests
+      file: manifests/
+    - name: Helm Templates
+      template: helm/
+      type: helm
+    - name: OpenShift Templates
+      template: openshift-templates/
+      params: openshift-template-params/
 ```
