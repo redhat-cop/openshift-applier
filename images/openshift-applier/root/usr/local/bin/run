@@ -2,7 +2,7 @@
 DEFAULT_INV=/etc/ansible
 DEFAULT_PLAYBOOK=$HOME/playbooks/openshift-cluster-seed.yml
 
-echo "command: /usr/local/bin/ansible-playbook -i ${INVENTORY_PATH:-$DEFAULT_INV} ${PLAYBOOK:-$DEFAULT_PLAYBOOK}"
 cmd="/usr/local/bin/ansible-playbook -i ${INVENTORY_PATH:-$DEFAULT_INV} ${PLAYBOOK:-$DEFAULT_PLAYBOOK}"
+echo "command: $cmd"
 
 exec ${cmd}

@@ -10,9 +10,7 @@ ENV USER_UID 1001
 
 USER root
 
-RUN yum -y --disableplugin=subscription-manager module enable httpd php:7.2;\
-    yum -y install --disableplugin=subscription-manager \
-    httpd php $INSTALL_PKGS ;\
+RUN yum -y install --disableplugin=subscription-manager $INSTALL_PKGS ;\
     curl $OC_CLIENT_MIRROR | tar -C /usr/local/bin/ -xzf - ;\
     yum --disableplugin=subscription-manager clean all ;\
     rm -rf /var/cache/yum
