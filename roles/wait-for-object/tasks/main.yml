@@ -1,0 +1,37 @@
+---
+
+- fail:
+    msg: "ERROR: {{ k8s_object }} is not defined."
+  when: k8s_object is not defined or k8s_object == ""
+
+- fail:
+    msg: "ERROR: {{ k8s_object_name }} is not defined."
+  when: k8s_object_name is not defined or k8s_object_name == ""
+
+- debug:
+    msg: "ERROR: {{ k8s_object_namespace }} is not defined."
+  when: k8s_object_namespace is not defined or k8s_object_namespace == ""
+
+- name: "Allow warm up period if necessary"
+  pause:
+    seconds: "{{ k8s_object_wait_secs | default(0) }}"
+
+- name: "Wait until {{ k8s_object }} {{ k8s_object_name }} is available in namespace {{ k8s_object_namespace }}"
+  k8s_facts:
+    kind: "{{ k8s_object }}"
+    name: "{{ k8s_object_name }}"
+    namespace: "{{ k8s_object_namespace | default('') }}"
+  retries: "{{ retry_count | default(10) }}"
+  ignore_errors: yes
+  register: k8s_return
+
+- name: "Alert {{ k8s_object }} {{ k8s_object_name }} is unavailable in namespace {{ k8s_object_namespace }}"
+  fail:
+    msg: "{{ k8s_object }} {{ k8s_object_name }} is unavailable in namespace {{ k8s_object_namespace }}"
+  when: k8s_return.resources is not defined
+
+- name: "DEBUG: Returning object definition"
+  debug:
+    msg: "{{ k8s_return.resources }}"
+    verbosity: 1
+  when: k8s_return.resources is defined
