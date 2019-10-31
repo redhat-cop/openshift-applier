@@ -4,12 +4,12 @@
     msg: "ERROR: {{ k8s_object }} is not defined."
   when: k8s_object is not defined or k8s_object == ""
 
-- fail:
-    msg: "ERROR: {{ k8s_object_name }} is not defined."
+- debug:
+    msg: "{{ k8s_object_name }} is not defined. Will search all {{ k8s_object }}'s."
   when: k8s_object_name is not defined or k8s_object_name == ""
 
 - debug:
-    msg: "ERROR: {{ k8s_object_namespace }} is not defined."
+    msg: "{{ k8s_object_namespace }} is not defined. Will search all projects on cluster."
   when: k8s_object_namespace is not defined or k8s_object_namespace == ""
 
 - name: "Allow warm up period if necessary"
@@ -21,7 +21,9 @@
     kind: "{{ k8s_object }}"
     name: "{{ k8s_object_name }}"
     namespace: "{{ k8s_object_namespace | default('') }}"
-  retries: "{{ retry_count | default(10) }}"
+    label_selectors: "{{ k8s_object_labels }}"
+  retries: "{{ k8s_object_retry_count | default(10) }}"
+  delay: "{{ k8s_object_retry_delay | default(10) }}"
   ignore_errors: yes
   register: k8s_return
 
