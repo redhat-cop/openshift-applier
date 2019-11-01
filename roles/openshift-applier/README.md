@@ -5,23 +5,25 @@ Role used to apply OpenShift objects to an existing OpenShift Cluster.
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [openshift-applier](#openshift-applier)
-	- [Requirements](#requirements)
-	- [Role Usage](#role-usage)
-		- [Sourcing OpenShift Object Definitions](#sourcing-openshift-object-definitions)
-		- [Template processing](#template-processing)
-		- [Using oc vs kubectl](#using-oc-vs-kubectl)
-		- [Sourcing a directory with files](#sourcing-a-directory-with-files)
-		- [Ordering of Objects in the inventory](#ordering-of-objects-in-the-inventory)
-		- [Privileged Objects](#privileged-objects)
-		- [Object Entries in the Inventory](#object-entries-in-the-inventory)
-		- [Override default actions with `action`](#override-default-actions-with-action)
-		- [Passing extra arguments to the client](#passing-extra-arguments-to-the-client)
-		- [Filtering content based on tags](#filtering-content-based-on-tags)
-		- [Deprovisioning](#deprovisioning)
-		- [Dependencies](#dependencies)
-	- [Example Playbook](#example-playbook)
-	- [License](#license)
-	- [Author Information](#author-information)
+  - [Requirements](#requirements)
+  - [Role Usage](#role-usage)
+    - [Sourcing OpenShift Object Definitions](#sourcing-openshift-object-definitions)
+    - [Template processing](#template-processing)
+    - [Using oc vs kubectl](#using-oc-vs-kubectl)
+    - [Sourcing a directory with files](#sourcing-a-directory-with-files)
+    - [Ordering of Objects in the inventory](#ordering-of-objects-in-the-inventory)
+    - [Privileged Objects](#privileged-objects)
+    - [Object Entries in the Inventory](#object-entries-in-the-inventory)
+    - [Override default actions with `action`](#override-default-actions-with-action)
+    - [Passing extra arguments to the client](#passing-extra-arguments-to-the-client)
+    - [Filtering content based on tags](#filtering-content-based-on-tags)
+    - [Suppressing log output](#supressing-log-output)
+    - [Pre/Post steps](#prepost-steps)
+    - [Deprovisioning](#deprovisioning)
+    - [Dependencies](#dependencies)
+  - [Example Playbook](#example-playbook)
+  - [License](#license)
+  - [Author Information](#author-information)
 
 <!-- /TOC -->
 
@@ -275,7 +277,7 @@ exclude_tags=tag3,tag4
 
 ```
 
-### Suppressing Log Output
+### Suppressing log output
 
 Output can be suppressed either at the `object` or `content` level when there is a desire to suppress secret values from being displayed.
 
