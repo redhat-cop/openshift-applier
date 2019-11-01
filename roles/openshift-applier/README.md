@@ -18,7 +18,7 @@ Role used to apply OpenShift objects to an existing OpenShift Cluster.
     - [Passing extra arguments to the client](#passing-extra-arguments-to-the-client)
     - [Filtering content based on tags](#filtering-content-based-on-tags)
     - [Suppressing log output](#supressing-log-output)
-    - [Pre/Post steps](#pre-post-steps)
+    - [Pre/Post steps](#prepost-steps)
     - [Deprovisioning](#deprovisioning)
     - [Dependencies](#dependencies)
   - [Example Playbook](#example-playbook)
