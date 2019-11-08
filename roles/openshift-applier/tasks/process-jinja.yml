@@ -6,6 +6,13 @@
     set_fact:
       process_file_or_template: "{{ (file != '') | ternary('file', 'template') }}"
 
+  - name: Set facts to make variables available for the template
+    set_fact:
+      "{{ var.key }}": "{{ var.value }}"
+    with_dict: "{{ content.jinja_vars | default({}) }}"
+    loop_control:
+      loop_var: var
+
   - name: Create temporary directory for Jinja template output
     tempfile:
       state: directory
@@ -42,5 +49,12 @@
 
   - name: Update path
     set_fact: {"{{ process_file_or_template }}":"{{ dest_path_yml }}"}
+
+  - name: Clear facts to ensure that they don't carry over
+    set_fact:
+      "{{ var.key }}": ""
+    with_dict: "{{ content.jinja_vars | default({}) }}"
+    loop_control:
+      loop_var: var
 
   delegate_to: localhost
