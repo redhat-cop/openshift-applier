@@ -107,8 +107,11 @@ openshift_cluster_content:
   content:
   - name: Applying Openshift template
     file: "https://example.com/openshift/files/file.j2"
+    jinja_vars:
+      key1: value1
+      key2: value2
 ```
-Ansible variables are available and can be used in the Jinja template.
+Ansible variables are available and can be used in the Jinja template. Any variable required by the jinja template(s) can be passed through the `jinja_vars` dictionary (this is useful if you're using the same jinja template multiple times in your inventory). The `jinja_vars` are using `set_fact` and thus has precedence over host_vars and group_vars, see [Ansible variable precedence](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable) for more info.
 Additional examples are available in the [test directory](https://github.com/redhat-cop/openshift-applier/tree/master/tests/files/jinja-templates)
 
 **NOTE: In order to use the jinja processing engine the file suffix must be '.j2'**

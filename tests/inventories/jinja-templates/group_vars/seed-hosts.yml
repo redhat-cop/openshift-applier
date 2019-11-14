@@ -9,7 +9,7 @@ namespace_metadata:
   NAMESPACE_DISPLAY_NAME: OpenShift Applier Jinja Templates Test 1 (displayName)
   NAMESPACE_DESCRIPTION: OpenShift Applier Jinja Templates Test 1 (description)
 openshift_applier_raw: "https://raw.githubusercontent.com/redhat-cop/openshift-applier"
-openshift_applier_ver: v2.1.0
+openshift_applier_ver: master
 
 openshift_cluster_content:
 - object: projectrequest
@@ -21,10 +21,22 @@ openshift_cluster_content:
   - name: jinja-project-test-file
     file: "{{ inventory_dir }}/../../files/jinja-templates/projectrequest_file.j2"
     action: create
+  - name: jinja-project-test-file-with-vars
+    file: "{{ inventory_dir }}/../../files/jinja-templates/projectrequest_file.j2"
+    jinja_vars:
+      environments:
+        - jinja
+    action: create
   - name: delete jinja-project-test-template
     template: "{{ openshift_applier_raw }}/{{ openshift_applier_ver }}/tests/files/jinja-templates/projectrequest_template.j2"
     params_from_vars: "{{ namespace_metadata }}"
     action: delete
   - name: delete jinja-project-test-file
     file: "{{ inventory_dir }}/../../files/jinja-templates/projectrequest_file.j2"
+    action: delete
+  - name: delete jinja-project-test-file-with-vars
+    file: "{{ inventory_dir }}/../../files/jinja-templates/projectrequest_file.j2"
+    jinja_vars:
+      environments:
+        - jinja
     action: delete
