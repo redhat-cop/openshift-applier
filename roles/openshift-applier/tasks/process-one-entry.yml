@@ -4,6 +4,10 @@
   set_fact:
     target_namespace: ''
     oc_action: "{{ content.action | default(default_oc_action) }}"
+    helm_chart: "{{ content.helm_chart | default('') }}"
+    helm_values: "{{ content.helm_values | default({}) }}"
+    helm_values_file: "{{ content.helm_values_file | default('') }}"
+    helm_flags: "{{ content.helm_flags | default('') }}"
     file: "{{ content.file | default('') }}"
     template: "{{ content.template | default('') }}"
     params: "{{ content.params | default('') }}"
@@ -51,6 +55,11 @@
   include_tasks: process-file.yml
   when:
     - file|trim != ''
+
+- name: "Process Helm chart (if applicable)"
+  include_tasks: process-helm.yml
+  when:
+    - helm_chart|trim != ''
 
 - name: "Include any post-processing role(s) after applying file and/or template"
   include_tasks: pre-post-step.yml
