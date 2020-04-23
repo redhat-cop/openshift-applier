@@ -7,10 +7,8 @@ driver:
     managed: False
     ansible_connection_options:
       ansible_connection: local
-lint:
-  name: yamllint
-  options:
-    config-file: molecule/yamllint.yml
+lint: |
+  yamllint -c molecule/yamllint.yml .
 platforms:
   - name: instance
 provisioner:

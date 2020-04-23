@@ -16,7 +16,7 @@ RUN yum -y install --disableplugin=subscription-manager $INSTALL_PKGS ;\
     rm -rf /var/cache/yum
 
 # Install Ansible via Pip.
-RUN pip3 install ansible
+RUN pip3 install ansible molecule yamllint
 
 RUN mkdir -p /etc/ansible
 RUN echo -e '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
