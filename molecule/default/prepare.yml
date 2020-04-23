@@ -2,23 +2,6 @@
 - name: Converge
   hosts: all
   tasks:
-    # - name: Download OpenShift Binary
-    #   unarchive:
-    #     src: "{{ oc_binary_url }}"
-    #     dest: "/usr/local/bin"
-    #     remote_src: true
-    # - name: Download Kubectl Binary
-    #   get_url:
-    #     url: "{{ kube_binary_url }}"
-    #     dest: "/usr/local/bin"
-    #     mode: '0744'
-    # - name: Manage OpenShift Configuration File
-    #   block:
-    #     - name: Copy OpenShift Configuration File
-    #       copy:
-    #         src: "~/.kube/config"
-    #         dest: "~/.kube/"
-    #   when: use_kube_file|bool
     - name: Manage OpenShift Configuration File via Login
       block:
         - name: Login to OpenShift (Token)
