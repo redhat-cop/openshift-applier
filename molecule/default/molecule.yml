@@ -2,16 +2,15 @@
 dependency:
   name: galaxy
 driver:
-  name: docker
-lint:
-  name: yamllint
+  name: delegated
   options:
-    config-file: molecule/yamllint.yml
+    managed: False
+    ansible_connection_options:
+      ansible_connection: local
+lint: |
+  yamllint -c molecule/yamllint.yml .
 platforms:
-  - name: centos
-    image: centos:7
-    groups:
-      - seed-hosts
+  - name: instance
 provisioner:
   name: ansible
   inventory:
