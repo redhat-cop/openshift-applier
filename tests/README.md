@@ -44,6 +44,7 @@ ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/pre-p
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/patch
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/cluster-template
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/jinja-templates
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/helm-charts
 ```
 
 

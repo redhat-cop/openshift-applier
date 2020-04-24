@@ -71,6 +71,15 @@ openshift_cluster_content:
     params: <params_file_source> # Optional if template has all default values for required fields
     params_from_vars: <params_dictionary_variable> # Optional: Use to supply additional run-time params or override params from file
     namespace: <target_openshift_namespace>
+- object: <object_type>
+  content:
+  - name: <definition_name>
+    helm_chart: <helm_chart_source>
+    helm_values:
+      KEY: Value # Optional: can only be done as key value pairs, collections and lists will not work
+    helm_values_file: <helm_values_file_source> # Optional: Defaults to use chart's values.yaml
+    action: <apply|create> # Optional: Defaults to 'apply'
+    namespace: <target_openshift_namespace>
 ```
 
 You have the choice of sourcing a `file` or a `template`. The `file` definition expects that the sourced file has all definitions set and will NOT accept any parameters (i.e.: static content). The `template` definition can be paired with a `params` file and/or params supplied through a dictionary variable `params_from_vars` which will be passed into the template. Note that if a template supply all default values, it can be processed without `params` or `params_from_vars` set.
@@ -87,9 +96,10 @@ Both templating engines support both local and remote template location (http(s)
 The currently supported template languages are:
 - [Openshift templates](https://docs.openshift.com/container-platform/latest/openshift_images/using-templates.html)
 - [Jinja templates](https://jinja.palletsprojects.com/)
+- [Helm Charts](https://helm.sh/docs/topics/charts/)
 
 Openshift templates will require the use of `template` when sourcing your object resource(s). Use `params` to pass variables to the template.
-```
+```yaml
 openshift_cluster_content:
 - object:
   content:
@@ -101,7 +111,7 @@ openshift_cluster_content:
 ```
 
 Jinja templates can use either `file` or `template` when sourcing your object resources(s). Use `template` if your generated object resource is an Openshift template, otherwise use `file`.
-```
+```yaml
 openshift_cluster_content:
 - object:
   content:
@@ -116,12 +126,24 @@ Additional examples are available in the [test directory](https://github.com/red
 
 **NOTE: In order to use the jinja processing engine the file suffix must be '.j2'**
 
+Helm charts use their own `helm_chart` to source the chart into a `helm template` command. It will use the default `values.yaml` file. To override `helm_values_file` can be used, or `helm_values` for inline variables. `helm_flags` can also be used for any additional flags you wish to pass to helm.
+```yaml
+openshift_cluster_content:
+- object:
+  content:
+  - name: Apply a Helm Chart
+    helm_chart: "{{ inventory_dir }}/../../helm-charts/test-chart/"
+    helm_values_file: "{{ inventory_dir }}/../../helm-charts/test-chart/values-test.yaml"
+```    
+Additional examples are available in the [helm charts test directory](https://github.com/redhat-cop/openshift-applier/tree/master/tests/files/helm-charts)
+
+
 ### Using oc vs kubectl
 
 OpenShift-Applier is compatible with both `kubectl` and `oc` as a client binary. The client can be selected by setting `client: <oc|kubectl>` in any of your vars files, or as an inline ansible argument. **Default: `client: oc`**
 
 YAML Example:
-```
+```yaml
 client: kubectl
 
 openshift_cluster_content:
@@ -129,7 +151,7 @@ openshift_cluster_content:
 ```
 
 INLINE Argument Example:
-```
+```bash
 ansible-playbook -i .applier/ playbooks/openshift-cluster-seed.yml -e client=oc
 ```
 
@@ -255,7 +277,7 @@ OpenShift Applier supports passing additional argument flags to the client (`oc`
 
 For example, to explicitly set the patch strategy (`--type`) on a patch action:
 
-```
+```yaml
 - object: json merge patch
   content:
   - name: perform json merge patch with flag
@@ -274,7 +296,7 @@ The `openshift-applier` supports the use of tags in the inventory (see example a
 
 **_NOTE:_** If the same tag exists in both `include_tags` and `exclude_tags` the run will error out. Likewise, if tags from the two options annuls each other, the execution will also error out.
 
-```
+```params
 include_tags=tag1,tag2
 exclude_tags=tag3,tag4
 
