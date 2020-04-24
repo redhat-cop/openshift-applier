@@ -42,4 +42,5 @@
   register: command_result
   failed_when:
     - command_result.rc != 0
+    - "'stderr' in command_result"
     - "'AlreadyExists' not in command_result.stderr"

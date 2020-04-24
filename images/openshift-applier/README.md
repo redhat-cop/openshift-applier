@@ -10,11 +10,7 @@ Produces a container capable of acting as a control host for `openshift-applier`
 
 The following steps are required to run the docker client.
 
-1. Install docker and docker-compose
-  1. on RHEL/Fedora: ```{yum/dnf} install docker docker-compose```
-  2. on Windows: [Install Docker for Windows](https://docs.docker.com/windows/step_one/)
-  3. on OSX: [Max OS X](https://docs.docker.com/installation/mac/)
-  4. on all other Operating Systems: [Supported Platforms](https://docs.docker.com/installation/)
+1. Install [podman](https://podman.io/getting-started/installation) and [buildah](https://github.com/containers/buildah/blob/master/install.md)
 2. Give your user access to run Docker containers (this is only required in Linux/Unix distros)
 ```
 groupadd docker
@@ -28,9 +24,7 @@ systemctl restart docker
 The simplest possible run of the image would look like:
 
 ```
-docker run -u $(id -u) \
-  -v $HOME/.kube/config:/openshift-applier/.kube/config:z
-  -t redhat-cop/openshift-applier
+podman run -v $HOME/.kube/config:/openshift-applier/.kube/config:z -t redhat-cop/openshift-applier
 ```
 
 NOTE: The above commands expects the following inputs:
@@ -43,7 +37,7 @@ Running the above command will kick off an openshift-applier run that will execu
 Running an openshift-applier inventory that you may have locally requires two things:
 
 ```
-docker run -u $(id -u) \
+podman run \
   -v $HOME/.kube/config:/openshift-applier/.kube/config:z
   -v $HOME/src/my-inventory/:/tmp/my-inventory <1>
   -e INVENTORY_PATH=/tmp/my-inventory <2>
@@ -57,7 +51,7 @@ docker run -u $(id -u) \
 For convenience, the container image packages the openshift-applier ansible code inside of the container file system at `/openshift-applier/`. By default, the run script will run the basic applier playbook at `/openshift-applier/playbooks/openshift-cluster-seed.yml`. If you would like to run your local version of applier, you can override this default by adding the following:
 
 ```
-docker run -u $(id -u) \
+podman run \
   -v $HOME/.kube/config:/openshift-applier/.kube/config:z
   -v $HOME/src/openshift-applier/:/tmp/openshift-applier <1>
   -e PLAYBOOK=/tmp/openshift-applier/playbooks/my-new-playbook.yml <2>
@@ -72,7 +66,19 @@ This image is built and published to quay.io, so there's no reason to build it i
 
 ```
 cd ./openshift-applier
-docker build -t redhat-cop/openshift-applier -f images/openshift-applier/Dockerfile .
+buildah bud -t redhat-cop/openshift-applier -f images/openshift-applier/Dockerfile .
+```
+
+## Running automated tests
+
+To run the automated test suite against local changes you've made.
+
+```
+podman run \
+  -v $HOME/.kube/config:/openshift-applier/.kube/config:z \
+  -v $HOME/src/openshift-applier/:/tmp/openshift-applier:z \
+  -w /tmp/openshift-applier \
+  -ti redhat-cop/openshift-applier molecule test
 ```
 
 ## Troubleshooting
