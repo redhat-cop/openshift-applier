@@ -1,0 +1,46 @@
+---
+
+- name: "Copy kustomize to remote location if required"
+  block:
+    - name: "Clear processed facts"
+      set_fact:
+        processed_file_facts: []
+    - name: "Copy inventory file to remote"
+      include_tasks: copy-inventory-file-to-remote.yml
+      vars:
+        file_path: "{{ kustomize }}"
+    - name: "Set file facts"
+      set_fact:
+        file_facts: "{{ processed_file_facts|first }}"
+
+- name: Grab patch file content if action == patch
+  block:
+    - name: Check if patch is file or url
+      set_fact:
+        patch_path: "{{ params | check_file_location }}"
+    - name: Pull data from file
+      set_fact:
+        patch_content: "{{ lookup('file', params) | from_yaml }}"
+      when: patch_path.local_path
+    - name: Pull data from url
+      set_fact:
+        patch_content: "{{ lookup('url', params, split_lines=False) | from_yaml }}"
+      when: not patch_path.local_path
+  when: oc_action == 'patch'
+
+- name: "{{ oc_action | capitalize }} OpenShift objects based on kustomize template for '{{ entry.object }} : {{ content.name | default(file | basename) }}'"
+  command: >
+    {{ client }} {{ oc_action }} \
+       {{ target_namespace }} \
+       -k {{ file_facts.oc_path }} \
+       {{ (oc_action | regex_search('delete')) | ternary(' --ignore-not-found', '') }} \
+       {% if oc_action == 'patch' %}
+         -p '{{ patch_content | to_json }}' \
+       {% endif %}
+       {{ flags }}
+  no_log: "{{ no_log }}"
+  register: command_result
+  failed_when:
+    - command_result.rc != 0
+    - "'stderr' in command_result"
+    - "'AlreadyExists' not in command_result.stderr"
