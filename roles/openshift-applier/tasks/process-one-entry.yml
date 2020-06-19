@@ -6,6 +6,7 @@
     oc_action: "{{ content.action | default(default_oc_action) }}"
     file: "{{ content.file | default('') }}"
     template: "{{ content.template | default('') }}"
+    kustomize: "{{ content.kustomize | default('') }}"
     params: "{{ content.params | default('') }}"
     params_from_vars: "{{ content.params_from_vars | default({}) }}"
     oc_ignore_unknown_parameters: "{{ content.ignore_unknown_parameters | default(oc_ignore_unknown_parameters) }}"
@@ -51,6 +52,11 @@
   include_tasks: process-file.yml
   when:
     - file|trim != ''
+
+- name: "Process Kustomize (if applicable)"
+  include_tasks: process-kustomize.yml
+  when:
+    - kustomize|trim != ''
 
 - name: "Include any post-processing role(s) after applying file and/or template"
   include_tasks: pre-post-step.yml
