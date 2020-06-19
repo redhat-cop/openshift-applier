@@ -87,6 +87,7 @@ Both templating engines support both local and remote template location (http(s)
 The currently supported template languages are:
 - [Openshift templates](https://docs.openshift.com/container-platform/latest/openshift_images/using-templates.html)
 - [Jinja templates](https://jinja.palletsprojects.com/)
+- [Kustomize 2.x](https://kustomize.io/)
 
 Openshift templates will require the use of `template` when sourcing your object resource(s). Use `params` to pass variables to the template.
 ```
@@ -115,6 +116,18 @@ Ansible variables are available and can be used in the Jinja template. Any varia
 Additional examples are available in the [test directory](https://github.com/redhat-cop/openshift-applier/tree/master/tests/files/jinja-templates)
 
 **NOTE: In order to use the jinja processing engine the file suffix must be '.j2'**
+
+Kustomize templates can be processed using the `kustomize` field.
+
+```
+- object: configmap generator
+  content:
+  - name: configmap
+    kustomize: "{{ inventory_dir }}/../../files/kustomize/"
+    namespace: "{{ namespace_metadata.NAMESPACE }}-template-dev"
+```
+
+**NOTE: Kustomize templates will be invoked using `oc/kubectl apply -k /path/to/kustomize/`, and a such, only Kustomize 2.x will be supported.**
 
 ### Using oc vs kubectl
 
