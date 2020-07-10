@@ -19,7 +19,7 @@
         - helm_chart_result.stat.isdir == False
   when:
     - helm_chart|trim != ''
-    
+
 - name: "Pre-process helm values (if applicable)"
   block:
     - name: "Check whether helm values file exists"
@@ -35,15 +35,15 @@
         - helm_values_file_result.stat.exists == False
   when:
     - helm_values_file|trim != ''
- 
+
 # CAN'T DO COLLECTIONS, SO BLOCKED: https://github.com/helm/helm/issues/5618
 # WORKAROUND: https://github.com/helm/helm/issues/1987#issuecomment-324341396
 # will need to be output and iterated through in either dot format for every single value in mapping
 # IF LIST will also need to use an index for every single value
-#- name: "Change 'helm_values' fact (if applicable) into command line parameters"
-#  set_fact:
-#    helm_set_option: "{{ helm_set_option }} --set='{{ item.key }}={{ item.value }}'"
-#  with_dict: "{{ helm_values }}"
+# - name: "Change 'helm_values' fact (if applicable) into command line parameters"
+#   set_fact:
+#     helm_set_option: "{{ helm_set_option }} --set='{{ item.key }}={{ item.value }}'"
+#   with_dict: "{{ helm_values }}"
 
 - name: "{{ oc_action | capitalize }} OpenShift objects based on helm template for '{{ entry.object }} : {{ content.name | default(helm | basename) }}'"
   shell: >
