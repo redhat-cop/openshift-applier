@@ -1,0 +1,23 @@
+---
+
+environments:
+- dev
+namespace_metadata:
+  NAMESPACE: oa-ci-kustomize
+  NAMESPACE_DISPLAY_NAME: OpenShift Applier Kustomize Test 1 (displayName)
+  NAMESPACE_DESCRIPTION: OpenShift Applier Kustomize Test 1 (description)
+openshift_applier_raw: "https://raw.githubusercontent.com/redhat-cop/openshift-applier"
+openshift_applier_ver: master
+
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: create test project
+    template: "{{ openshift_applier_raw }}/{{ openshift_applier_ver }}/tests/files/jinja-templates/projectrequest_template.j2"
+    params_from_vars: "{{ namespace_metadata }}"
+    action: create
+- object: configmap generator
+  content:
+  - name: configmap
+    kustomize: "{{ inventory_dir }}/../../files/kustomize/"
+    namespace: "{{ namespace_metadata.NAMESPACE }}-template-dev"

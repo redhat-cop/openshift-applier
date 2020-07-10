@@ -97,6 +97,7 @@ The currently supported template languages are:
 - [Openshift templates](https://docs.openshift.com/container-platform/latest/openshift_images/using-templates.html)
 - [Jinja templates](https://jinja.palletsprojects.com/)
 - [Helm Charts](https://helm.sh/docs/topics/charts/)
+- [Kustomize 2.x](https://kustomize.io/)
 
 Openshift templates will require the use of `template` when sourcing your object resource(s). Use `params` to pass variables to the template.
 ```yaml
@@ -137,6 +138,17 @@ openshift_cluster_content:
 ```    
 Additional examples are available in the [helm charts test directory](https://github.com/redhat-cop/openshift-applier/tree/master/tests/files/helm-charts)
 
+Kustomize templates can be processed using the `kustomize` field.
+
+```
+- object: configmap generator
+  content:
+  - name: configmap
+    kustomize: "{{ inventory_dir }}/../../files/kustomize/"
+    namespace: "{{ namespace_metadata.NAMESPACE }}-template-dev"
+```
+
+**NOTE: Kustomize templates will be invoked using `oc/kubectl apply -k /path/to/kustomize/`, and a such, only Kustomize 2.x will be supported.**
 
 ### Using oc vs kubectl
 
