@@ -1,6 +1,6 @@
 ---
 apiVersion: project.openshift.io/v1
-kind: {{ if .Values.namespace.delete }} Project {{ else }} ProjectRequest {{ end }}
+kind: "{{- if .Values.namespace.delete }}Project{{- else }}ProjectRequest{{- end }}"
 metadata:
   name: "{{ .Values.namespace.name }}"
 description: '{{ .Values.namespace.description }} (template)'
