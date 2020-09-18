@@ -16,7 +16,6 @@
       with_items:
         - "{{ client }} version -o yaml"
         - "{{ client }} version"
-
     # Block to handle oc command output
     # - only proceed if the oc command returned any output
     - block:
@@ -50,5 +49,39 @@
         - client_vers_check is defined
         - client_vers_check.results[0].stdout is defined or client_vers_check.results[1].stdout is defined
         - client_vers_check.results[0].stdout|trim != "" or client_vers_check.results[1].stdout|trim != ""
+
+    - name: "Retrieve helm client version"
+      shell: "helm version --short"
+      ignore_errors: true
+      register: helm_version_check
+      when:
+        - openshift_cluster_content | join(', ') | regex_search('helm_chart')
+
+    # Block to handle helm command output
+    # - only proceed if the helm command returned any output
+    - block:
+
+        - name: "Filter out the helm version number from json output, removing '.' so it's just a full nuber, easier for comparison"
+          set_fact:
+            helm_version: "{{ helm_version_check.stdout | regex_replace('\\+.*') | regex_replace('v') | regex_replace('\\.') }}"
+          when:
+            - helm_version_check.stdout != ""
+
+        - name: "Debug: Check helm version"
+          debug:
+            msg: "Helm version is: {{ helm_version_check.stdout }}"
+            verbosity: 2
+
+        - name: "Fail when Helm version is less than v3.0.0"
+          fail:
+            msg: "{{ helm_version }} is less than v3.0.0"
+          when:
+            - helm_version is version('300','<')
+
+      when:
+        - helm_version_check is defined
+        - helm_version_check.stdout is defined
+        - helm_version_check.stdout|trim != ""
+
   when:
     - skip_version_checks is undefined

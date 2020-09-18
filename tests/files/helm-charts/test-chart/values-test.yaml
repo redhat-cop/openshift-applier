@@ -1,0 +1,8 @@
+# Default values for test-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+---
+namespace:
+  name: oa-ci-helm-charts-file
+  description: OpenShift Applier Helm Charts Test 3 (description)
+  display_name: OpenShift Applier Helm Charts Test 3 (displayName)
