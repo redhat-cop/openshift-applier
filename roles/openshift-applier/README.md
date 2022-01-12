@@ -74,10 +74,25 @@ openshift_cluster_content:
 - object: <object_type>
   content:
   - name: <definition_name>
-    helm_chart: <helm_chart_source>
-    helm_values:
-      KEY: Value # Optional: can only be done as key value pairs, collections and lists will not work
-    helm_values_file: <helm_values_file_source> # Optional: Defaults to use chart's values.yaml
+    helm
+      name: <helm chart name>  # Required
+      chart: <helm chart source> # Required
+      version: <chart version to use> # Optional
+      namespace: <namespace scope> # Optional 
+      repos: # Optional
+      - name: repo1
+        url: https://repo1.helm/...
+      - name: repo2
+        url: https://repo2.helm/...
+      set_param: # Optional: List of "--set " parameters. Defaults to use chart's values.
+      - 'key1=value1'
+      - 'key2=value2'
+      values_param: # Optional: List of files/URLs to values files. Defaults to use chart's values.
+      - <local file1>
+      - <url1>
+      - <local file2>
+      - <url2>
+      flags: '' # Optiona: String with additional flags to pass to the helm command
     action: <apply|create> # Optional: Defaults to 'apply'
     namespace: <target_openshift_namespace>
 ```

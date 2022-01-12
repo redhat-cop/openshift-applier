@@ -3,55 +3,40 @@
 - name: "Reset Command Line Options"
   set_fact:
     helm_set_option: ''
+    helm_values_option: ''
+    helm_version_option: "{{ (helm.version|d('')|trim == '') | ternary('', ' --version \"' + helm.version|d('') + '\"') }}"
+    helm_namespace_option: "{{ (helm.namespace|d('')|trim == '') | ternary('', ' --namespace \"' + helm.namespace|d('') + '\"') }}"
 
-- name: "Pre-process helm chart (if applicable)"
+- name: "Add helm repo(s) to be used (if applicable)"
   block:
-    - name: "Check whether helm folder exists"
-      stat:
-        path: "{{ helm_chart }}"
-      ignore_errors: true
-      register: helm_chart_result
-      delegate_to: localhost
-    - name: "Fail when helm folder does not exist"
-      fail:
-        msg: "{{ helm_chart }} - Helm Chart is not a directory"
-      when:
-        - helm_chart_result.stat.isdir == False
+    - shell: >
+        helm repo add "{{ item.name }}" "{{ item.url }}"
+      loop: "{{ helm.repos }}"
+    - shell: >
+        helm repo update
   when:
-    - helm_chart|trim != ''
+    - helm.repos is defined
+    - helm.repos|length > 0
 
-- name: "Pre-process helm values (if applicable)"
-  block:
-    - name: "Check whether helm values file exists"
-      stat:
-        path: "{{ helm_values_file }}"
-      ignore_errors: true
-      register: helm_values_file_result
-      delegate_to: localhost
-    - name: "Fail when helm values file does not exist"
-      fail:
-        msg: "{{ helm_values_file }} - Helm values file doesn't exist."
-      when:
-        - helm_values_file_result.stat.exists == False
-  when:
-    - helm_values_file|trim != ''
+- name: "Change 'helm.set_param' fact into command line parameters (if applicable)"
+  set_fact:
+    helm_set_option: "{{ helm_set_option }} --set '{{ item }}'"
+  loop: "{{ helm.set_param | default([]) }}"
 
-# CAN'T DO COLLECTIONS, SO BLOCKED: https://github.com/helm/helm/issues/5618
-# WORKAROUND: https://github.com/helm/helm/issues/1987#issuecomment-324341396
-# will need to be output and iterated through in either dot format for every single value in mapping
-# IF LIST will also need to use an index for every single value
-# - name: "Change 'helm_values' fact (if applicable) into command line parameters"
-#   set_fact:
-#     helm_set_option: "{{ helm_set_option }} --set='{{ item.key }}={{ item.value }}'"
-#   with_dict: "{{ helm_values }}"
+- name: "Change 'helm.values_param' fact into command line parameters (if applicable)"
+  set_fact:
+    helm_values_option: "{{ helm_values_option }} --values '{{ item }}'"
+  loop: "{{ helm.values_param | default([]) }}"
 
-- name: "{{ oc_action | capitalize }} OpenShift objects based on helm template for '{{ entry.object }} : {{ content.name | default(helm | basename) }}'"
+- name: "{{ oc_action | capitalize }} OpenShift objects based on helm template for '{{ entry.object }} : {{ content.name | default(helm.name) }}'"
   shell: >
     helm template \
-       {{ helm_chart }} \
+       {{ helm.name }} {{ helm.chart }} \
+       {{ helm_version_option }} \
+       {{ helm_namespace_option }} \
        {{ helm_set_option }} \
-       {{ (helm_values_file|trim == '') | ternary('', ' -f="' + helm_values_file + '"') }} \
-       {{ helm_flags }} \
+       {{ helm_values_option }} \
+       {{ helm.flags|d('') }} \
        | \
     {{ client }} {{ oc_action }} \
        {{ target_namespace }} \
