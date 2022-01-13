@@ -74,7 +74,7 @@ openshift_cluster_content:
 - object: <object_type>
   content:
   - name: <definition_name>
-    helm
+    helm:
       name: <helm chart name>  # Required
       chart: <helm chart source> # Required
       version: <chart version to use> # Optional

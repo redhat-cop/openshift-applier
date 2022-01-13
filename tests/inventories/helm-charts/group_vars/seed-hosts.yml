@@ -35,31 +35,15 @@ openshift_cluster_content:
       chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
       values_param:
         - "{{ inventory_dir }}/../../files/helm-charts/test-chart/values-test.yaml"
-
-- object: helm-repos
-  content:
   - name: helm-project-test-remote-repo
     helm:
       name: "test-chart-4"
       chart: "bitnami/mysql"
-      namespace: "{{ namespace_metadata.NAMESPACE }}-2"
       repos:
         - name: bitnami
           url: https://charts.bitnami.com/bitnami
       set_param:
         - 'auth.rootPassword=admin12345'
-
-- object: clean-up
-  content:
-  - name: helm-project-test-remote-repo
-    helm:
-      name: "test-chart-4"
-      chart: "bitnami/mysql"
-      namespace: "{{ namespace_metadata.NAMESPACE }}-2" 
-      repos:
-        - name: bitnami
-          url: https://charts.bitnami.com/bitnami
-    action: delete
 
   - name: delete helm-project-test-template
     helm:
@@ -84,3 +68,14 @@ openshift_cluster_content:
       values_param:
         - "{{ inventory_dir }}/../../files/helm-charts/test-chart/values-test-delete.yaml"
     action: delete
+  - name: helm-project-test-remote-repo
+    helm:
+      name: "test-chart-4"
+      chart: "bitnami/mysql"
+      repos:
+        - name: bitnami
+          url: https://charts.bitnami.com/bitnami
+      set_param:
+        - 'namespace.delete=true'
+    action: delete
+
