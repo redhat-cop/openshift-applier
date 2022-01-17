@@ -36,7 +36,14 @@
        {{ helm_namespace_option }} \
        {{ helm_set_option }} \
        {{ helm_values_option }} \
-       {{ helm.flags|d('') }} > /tmp/output.yml 
+       {{ helm.flags|d('') }} \
+       | \
+    {{ client }} {{ oc_action }} \
+       {{ target_namespace }} \
+       -f - \
+       {{ (oc_action | regex_search('delete')) | ternary(' --ignore-not-found', '') }} \
+       {{ (client == 'kubectl' and not (oc_action | regex_search('delete|patch'))) | ternary(' --validate=false', '') }} \
+       {{ flags }}
   register: command_result
   no_log: "{{ no_log }}"
   failed_when:
