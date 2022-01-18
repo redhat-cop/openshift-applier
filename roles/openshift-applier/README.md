@@ -142,14 +142,17 @@ Additional examples are available in the [test directory](https://github.com/red
 
 **NOTE: In order to use the jinja processing engine the file suffix must be '.j2'**
 
-Helm charts use their own `helm_chart` to source the chart into a `helm template` command. It will use the default `values.yaml` file. To override `helm_values_file` can be used, or `helm_values` for inline variables. `helm_flags` can also be used for any additional flags you wish to pass to helm.
+Helm charts use a `helm` dictionary to source the chart into a `helm template` command. It will use the default `values.yaml` file, but various overrides exists to feed custom values to the charts. The complete list of supported parameters is above, but the values file can be substituted by supplying one or more files (or URLS) with the `values_param`, and the `set_param` can be used to inject individual values during the processing of the charts.
 ```yaml
 openshift_cluster_content:
 - object:
   content:
   - name: Apply a Helm Chart
-    helm_chart: "{{ inventory_dir }}/../../helm-charts/test-chart/"
-    helm_values_file: "{{ inventory_dir }}/../../helm-charts/test-chart/values-test.yaml"
+    helm:
+      name: Test Chart
+      chart: "{{ inventory_dir }}/../../helm-charts/test-chart/"
+      values_param:
+        - "{{ inventory_dir }}/../../helm-charts/test-chart/values-test.yaml"
 ```    
 Additional examples are available in the [helm charts test directory](https://github.com/redhat-cop/openshift-applier/tree/master/tests/files/helm-charts)
 
