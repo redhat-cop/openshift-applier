@@ -4,47 +4,78 @@ environments:
 - dev
 - test
 - prod
+
 namespace_metadata:
   NAMESPACE: oa-ci-helm-charts
   NAMESPACE_DISPLAY_NAME: OpenShift Applier Helm Charts Test 1 (displayName)
   NAMESPACE_DESCRIPTION: OpenShift Applier Helm Charts Test 1 (description)
+
 openshift_applier_raw: "https://raw.githubusercontent.com/redhat-cop/openshift-applier"
-openshift_applier_ver: master
+openshift_applier_ver: main
 
 openshift_cluster_content:
 - object: projectrequest
   content:
   - name: helm-project-test-chart
-    helm_chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
+    helm:
+      name: "test-chart-1"
+      chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
     action: create
-  # BLOCKED: https://github.com/helm/helm/issues/5618
-  # WORKAROUND: https://github.com/helm/helm/issues/1987#issuecomment-324341396
-  #  - name: helm-project-test-chart-with-values
-  #    helm_chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
-  #    helm_values:
-  #      namespace:
-  #        name: "{{ namespace_metadata.NAMESPACE }}-2"
-  #        description: "{{ namespace_metadata.NAMESPACE_DISPLAY_NAME }}"
-  #        display_name: "{{ namespace_metadata.NAMESPACE_DESCRIPTION }}"
+  - name: helm-project-test-chart-with-values
+    helm:
+      name: "test-chart-2"
+      chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
+      set_param:
+        - "namespace.name={{ namespace_metadata.NAMESPACE }}-2"
+        - "namespace.description={{ namespace_metadata.NAMESPACE_DISPLAY_NAME }}"
+        - "namespace.display_name={{ namespace_metadata.NAMESPACE_DESCRIPTION }}"
   - name: helm-project-test-file-with-values
-    helm_chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
-    helm_values_file: "{{ inventory_dir }}/../../files/helm-charts/test-chart/values-test.yaml"
+    helm:
+      name: "test-chart-3"
+      chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
+      values_param:
+        - "{{ inventory_dir }}/../../files/helm-charts/test-chart/values-test.yaml"
+  - name: helm-project-test-remote-repo
+    helm:
+      name: "test-chart-4"
+      chart: "bitnami/mysql"
+      repos:
+        - name: bitnami
+          url: https://charts.bitnami.com/bitnami
+      set_param:
+        - 'auth.rootPassword=admin12345'
+
   - name: delete helm-project-test-template
-    helm_chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
-    helm_flags: "--set namespace.delete=true"
+    helm:
+      name: "test-chart-1"
+      chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
+      flags: "--set namespace.delete=true"
     action: delete
-  # BLOCKED: https://github.com/helm/helm/issues/5618
-  # WORKAROUND: https://github.com/helm/helm/issues/1987#issuecomment-324341396
-  #  - name: delete helm-project-test-file-with-values
-  #    helm_chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
-  #    helm_values:
-  #      namespace:
-  #        name: "{{ namespace_metadata.NAMESPACE }}-1"
-  #        description: "{{ namespace_metadata.NAMESPACE_DISPLAY_NAME }}"
-  #        display_name: "{{ namespace_metadata.NAMESPACE_DESCRIPTION }}"
-  #        delete: true
-  #    action: delete
+  - name: delete helm-project-test-file-with-values
+    helm:
+      name: "test-chart-2"
+      chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
+      set_param:
+        - "namespace.name={{ namespace_metadata.NAMESPACE }}-2"
+        - "namespace.description={{ namespace_metadata.NAMESPACE_DISPLAY_NAME }}"
+        - "namespace.display_name={{ namespace_metadata.NAMESPACE_DESCRIPTION }}"
+        - "namespace.delete=true"
+    action: delete
   - name: delete helm-project-test-file-with-values-file
-    helm_chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
-    helm_values_file: "{{ inventory_dir }}/../../files/helm-charts/test-chart/values-test-delete.yaml"
+    helm:
+      name: "test-chart-3"
+      chart: "{{ inventory_dir }}/../../files/helm-charts/test-chart/"
+      values_param:
+        - "{{ inventory_dir }}/../../files/helm-charts/test-chart/values-test-delete.yaml"
     action: delete
+  - name: helm-project-test-remote-repo
+    helm:
+      name: "test-chart-4"
+      chart: "bitnami/mysql"
+      repos:
+        - name: bitnami
+          url: https://charts.bitnami.com/bitnami
+      set_param:
+        - 'namespace.delete=true'
+    action: delete
+

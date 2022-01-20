@@ -4,12 +4,9 @@
   set_fact:
     target_namespace: ''
     oc_action: "{{ content.action | default(default_oc_action) }}"
-    helm_chart: "{{ content.helm_chart | default('') }}"
-    helm_values: "{{ content.helm_values | default({}) }}"
-    helm_values_file: "{{ content.helm_values_file | default('') }}"
-    helm_flags: "{{ content.helm_flags | default('') }}"
     file: "{{ content.file | default('') }}"
     template: "{{ content.template | default('') }}"
+    helm: "{{ content.helm | default({}) }}"
     kustomize: "{{ content.kustomize | default('') }}"
     params: "{{ content.params | default('') }}"
     params_from_vars: "{{ content.params_from_vars | default({}) }}"
@@ -60,7 +57,9 @@
 - name: "Process Helm chart (if applicable)"
   include_tasks: process-helm.yml
   when:
-    - helm_chart|trim != ''
+    - helm.keys()|length > 0
+    - helm.name|d('')|trim != ''
+    - helm.chart|d('')|trim != ''
 
 - name: "Process Kustomize (if applicable)"
   include_tasks: process-kustomize.yml

@@ -7,7 +7,7 @@ namespace_metadata:
   NAMESPACE_DISPLAY_NAME: OpenShift Applier Kustomize Test 1 (displayName)
   NAMESPACE_DESCRIPTION: OpenShift Applier Kustomize Test 1 (description)
 openshift_applier_raw: "https://raw.githubusercontent.com/redhat-cop/openshift-applier"
-openshift_applier_ver: master
+openshift_applier_ver: main
 
 openshift_cluster_content:
 - object: projectrequest

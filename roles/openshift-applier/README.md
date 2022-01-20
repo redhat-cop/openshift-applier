@@ -74,10 +74,25 @@ openshift_cluster_content:
 - object: <object_type>
   content:
   - name: <definition_name>
-    helm_chart: <helm_chart_source>
-    helm_values:
-      KEY: Value # Optional: can only be done as key value pairs, collections and lists will not work
-    helm_values_file: <helm_values_file_source> # Optional: Defaults to use chart's values.yaml
+    helm:
+      name: <helm chart name>  # Required
+      chart: <helm chart source> # Required
+      version: <chart version to use> # Optional
+      namespace: <namespace scope> # Optional 
+      repos: # Optional
+      - name: repo1
+        url: https://repo1.helm/...
+      - name: repo2
+        url: https://repo2.helm/...
+      set_param: # Optional: List of "--set " parameters. Defaults to use chart's values.
+      - 'key1=value1'
+      - 'key2=value2'
+      values_param: # Optional: List of files/URLs to values files. Defaults to use chart's values.
+      - <local file1>
+      - <url1>
+      - <local file2>
+      - <url2>
+      flags: '' # Optiona: String with additional flags to pass to the helm command
     action: <apply|create> # Optional: Defaults to 'apply'
     namespace: <target_openshift_namespace>
 ```
@@ -127,14 +142,17 @@ Additional examples are available in the [test directory](https://github.com/red
 
 **NOTE: In order to use the jinja processing engine the file suffix must be '.j2'**
 
-Helm charts use their own `helm_chart` to source the chart into a `helm template` command. It will use the default `values.yaml` file. To override `helm_values_file` can be used, or `helm_values` for inline variables. `helm_flags` can also be used for any additional flags you wish to pass to helm.
+Helm charts use a `helm` dictionary to source the chart into a `helm template` command. It will use the default `values.yaml` file, but various overrides exists to feed custom values to the charts. The complete list of supported parameters is above, but the values file can be substituted by supplying one or more files (or URLS) with the `values_param`, and the `set_param` can be used to inject individual values during the processing of the charts.
 ```yaml
 openshift_cluster_content:
 - object:
   content:
   - name: Apply a Helm Chart
-    helm_chart: "{{ inventory_dir }}/../../helm-charts/test-chart/"
-    helm_values_file: "{{ inventory_dir }}/../../helm-charts/test-chart/values-test.yaml"
+    helm:
+      name: Test Chart
+      chart: "{{ inventory_dir }}/../../helm-charts/test-chart/"
+      values_param:
+        - "{{ inventory_dir }}/../../helm-charts/test-chart/values-test.yaml"
 ```    
 Additional examples are available in the [helm charts test directory](https://github.com/redhat-cop/openshift-applier/tree/master/tests/files/helm-charts)
 
