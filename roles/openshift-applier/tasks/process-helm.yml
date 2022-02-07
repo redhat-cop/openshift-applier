@@ -11,10 +11,10 @@
 - name: "Add helm repo(s) to be used (if applicable)"
   block:
     - shell: >
-	helm repo add "{{ item.name }}" "{{ item.url }}"
+        helm repo add "{{ item.name }}" "{{ item.url }}"
       loop: "{{ helm.repos }}"
     - shell: >
-	helm repo update
+        helm repo update
   when:
     - helm.repos is defined
     - helm.repos|length > 0
