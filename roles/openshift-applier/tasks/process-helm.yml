@@ -29,7 +29,7 @@
     helm_values_option: "{{ helm_values_option }} --values '{{ item }}'"
   loop: "{{ helm.values_param | default([]) }}"
 
-- name: "{{ oc_action | capitalize }} OpenShift objects based on helm template for '{{ entry.object }} : {{ content.name | default(helm.name) }}'"
+- name: "Process OpenShift objects based on helm content for '{{ entry.object }} : {{ content.name | default(helm.name) }}'"
   shell: >
     helm {{ helm.action|d('template') }} \
        {{ helm.name }} {{ helm.chart }} \
