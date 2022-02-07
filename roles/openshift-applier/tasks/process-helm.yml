@@ -47,7 +47,7 @@
        {{ flags }}
   register: command_result
   no_log: "{{ no_log }}"
-  when: helm_command == "template"
+  when: helm.command == "template"
   failed_when:
     - command_result.rc != 0
     - "'AlreadyExists' not in command_result.stderr"
@@ -64,7 +64,7 @@
        {{ helm.flags|d('') }} 
   register: command_result
   no_log: "{{ no_log }}"
-  when: helm_command == "install"
+  when: helm.command == "install"
   failed_when:
     - command_result.rc != 0
     - "'AlreadyExists' not in command_result.stderr"
