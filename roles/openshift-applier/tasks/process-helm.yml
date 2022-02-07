@@ -6,6 +6,7 @@
     helm_values_option: ''
     helm_version_option: "{{ (helm.version|d('')|trim == '') | ternary('', ' --version \"' + helm.version|d('') + '\"') }}"
     helm_namespace_option: "{{ (helm.namespace|d('')|trim == '') | ternary('', ' --namespace \"' + helm.namespace|d('') + '\"') }}"
+    helm_timeout_option: "{{ (helm.timeout|d('')|trim == '') | ternary('', ' --timeout \"' + helm.timeout|d('') + '\"') }}"
 
 - name: "Add helm repo(s) to be used (if applicable)"
   block:
@@ -28,22 +29,17 @@
     helm_values_option: "{{ helm_values_option }} --values '{{ item }}'"
   loop: "{{ helm.values_param | default([]) }}"
 
-- name: "{{ oc_action | capitalize }} OpenShift objects based on helm template for '{{ entry.object }} : {{ content.name | default(helm.name) }}'"
+- name: "Process OpenShift objects based on helm content for '{{ entry.object }} : {{ content.name | default(helm.name) }}'"
   shell: >
-    helm template \
+    helm {{ helm.action|d('template') }} \
        {{ helm.name }} {{ helm.chart }} \
        {{ helm_version_option }} \
        {{ helm_namespace_option }} \
+       {{ helm_timeout_option }} \
        {{ helm_set_option }} \
        {{ helm_values_option }} \
        {{ helm.flags|d('') }} \
-       | \
-    {{ client }} {{ oc_action }} \
-       {{ target_namespace }} \
-       -f - \
-       {{ (oc_action | regex_search('delete')) | ternary(' --ignore-not-found', '') }} \
-       {{ (client == 'kubectl' and not (oc_action | regex_search('delete|patch'))) | ternary(' --validate=false', '') }} \
-       {{ flags }}
+       {{ (helm.action|d('template') == 'template') | ternary(oc_action_command, '') }}
   register: command_result
   no_log: "{{ no_log }}"
   failed_when:
