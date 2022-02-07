@@ -6,14 +6,15 @@
     helm_values_option: ''
     helm_version_option: "{{ (helm.version|d('')|trim == '') | ternary('', ' --version \"' + helm.version|d('') + '\"') }}"
     helm_namespace_option: "{{ (helm.namespace|d('')|trim == '') | ternary('', ' --namespace \"' + helm.namespace|d('') + '\"') }}"
+    helm_timeout_option: "{{ (helm.timeout|d('')|trim == '') | ternary('', ' --timeout \"' + helm.timeout|d('') + '\"') }}"
 
 - name: "Add helm repo(s) to be used (if applicable)"
   block:
     - shell: >
-        helm repo add "{{ item.name }}" "{{ item.url }}"
+	helm repo add "{{ item.name }}" "{{ item.url }}"
       loop: "{{ helm.repos }}"
     - shell: >
-        helm repo update
+	helm repo update
   when:
     - helm.repos is defined
     - helm.repos|length > 0
@@ -46,6 +47,25 @@
        {{ flags }}
   register: command_result
   no_log: "{{ no_log }}"
+  when: helm_command == "template"
   failed_when:
     - command_result.rc != 0
     - "'AlreadyExists' not in command_result.stderr"
+
+- name: "Helm Install Chart: '{{ helm.name }}'"
+  shell: >
+    helm install \
+       {{ helm.name }} {{ helm.chart }} \
+       {{ helm_version_option }} \
+       {{ helm_namespace_option }} \
+       {{ helm_timeout_option }} \
+       {{ helm_set_option }} \
+       {{ helm_values_option }} \
+       {{ helm.flags|d('') }} 
+  register: command_result
+  no_log: "{{ no_log }}"
+  when: helm_command == "install"
+  failed_when:
+    - command_result.rc != 0
+    - "'AlreadyExists' not in command_result.stderr"
+
