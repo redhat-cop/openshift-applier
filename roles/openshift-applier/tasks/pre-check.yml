@@ -55,7 +55,7 @@
       ignore_errors: true
       register: helm_version_check
       when:
-        - openshift_cluster_content | sum(attribute='content', start=[]) | selectattr('helm', 'defined') | list | count
+        - openshift_cluster_content | sum(attribute='content', start=[]) | selectattr('helm', 'defined') | list | count > 0
 
     # Block to handle helm command output
     # - only proceed if the helm command returned any output
