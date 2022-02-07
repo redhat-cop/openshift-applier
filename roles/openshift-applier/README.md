@@ -76,6 +76,7 @@ openshift_cluster_content:
   - name: <definition_name>
     helm:
       name: <helm chart name>  # Required
+      action: <template|install> # Optional: defaults to 'template'
       chart: <helm chart source> # Required
       version: <chart version to use> # Optional
       namespace: <namespace scope> # Optional 
