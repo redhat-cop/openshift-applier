@@ -29,30 +29,7 @@
     helm_values_option: "{{ helm_values_option }} --values '{{ item }}'"
   loop: "{{ helm.values_param | default([]) }}"
 
-- name: "{{ oc_action | capitalize }} OpenShift objects based on helm template for '{{ entry.object }} : {{ content.name | default(helm.name) }}'"
-  shell: >
-    helm template \
-       {{ helm.name }} {{ helm.chart }} \
-       {{ helm_version_option }} \
-       {{ helm_namespace_option }} \
-       {{ helm_set_option }} \
-       {{ helm_values_option }} \
-       {{ helm.flags|d('') }} \
-       | \
-    {{ client }} {{ oc_action }} \
-       {{ target_namespace }} \
-       -f - \
-       {{ (oc_action | regex_search('delete')) | ternary(' --ignore-not-found', '') }} \
-       {{ (client == 'kubectl' and not (oc_action | regex_search('delete|patch'))) | ternary(' --validate=false', '') }} \
-       {{ flags }}
-  register: command_result
-  no_log: "{{ no_log }}"
-  when: helm.command == "template"
-  failed_when:
-    - command_result.rc != 0
-    - "'AlreadyExists' not in command_result.stderr"
-
-- name: "Helm Install Chart: '{{ helm.name }}'"
+- name: "Helm install chart to target Openshift cluster: '{{ entry.object }} : {{ content.name | default(helm.name) }}'"
   shell: >
     helm install \
        {{ helm.name }} {{ helm.chart }} \
@@ -61,10 +38,9 @@
        {{ helm_timeout_option }} \
        {{ helm_set_option }} \
        {{ helm_values_option }} \
-       {{ helm.flags|d('') }} 
+       {{ helm.flags|d('') }} \
   register: command_result
   no_log: "{{ no_log }}"
-  when: helm.command == "install"
   failed_when:
     - command_result.rc != 0
     - "'AlreadyExists' not in command_result.stderr"
