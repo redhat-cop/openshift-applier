@@ -15,8 +15,8 @@ Defaults file has all the variables that can be used. These can be overridden to
 
 | Variable | Description | Required | Defaults |
 |:--------:|:-----------:|:--------:|:--------:|
-|**wait_for_api_retries**| number of seconds to wait between retries | no | 15 |
-|**wait_for_api_delay**| number of retries before the role gives up | no | 30 |
+|**wait_for_api_delay**| number of seconds to wait between retries | no | 15 |
+|**wait_for_api_retries**| number of retries before the role gives up | no | 30 |
 
 
 Example Playbook
