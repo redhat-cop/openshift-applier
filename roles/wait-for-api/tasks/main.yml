@@ -1,0 +1,12 @@
+---
+
+- name: Wait for the API call to be successful
+  k8s_info:
+    api_version: config.openshift.io/v1
+    kind: Ingress
+    name: cluster
+  register: ingress_info
+  retries: "{{ wait_for_api_retries }}" # Default value in defaults/main.yml
+  delay: "{{ wait_for_api_delay }}" # Default value in defaults/main.yml
+  until: not ingress_info.failed
+

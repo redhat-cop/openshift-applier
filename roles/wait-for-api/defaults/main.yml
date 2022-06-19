@@ -1,0 +1,5 @@
+---
+
+wait_for_api_retries: 30
+wait_for_api_delay: 10
+
