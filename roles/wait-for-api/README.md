@@ -6,7 +6,7 @@ Role used to wait for the k8s/Openshift API to be ready/available
 Requirements
 ------------
 
-Relies on the `k8s_info` Ansible module
+Relies on the k8s or OpenShift(oc) CLI client
 
 Role Variables
 --------------
