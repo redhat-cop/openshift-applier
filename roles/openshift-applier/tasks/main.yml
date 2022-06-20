@@ -16,7 +16,7 @@
   loop_control:
     loop_var: dependencies
   when:
-    - dependencies.galaxy_requirements is defined
+    - (dependencies.galaxy_requirements is defined or dependencies.galaxy_sources is defined)
 
 - name: "Prepare to copy content to remote host(s) if not running 'locally'"
   import_tasks: prep-copy-inventory-to-remote.yml
