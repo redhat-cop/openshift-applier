@@ -39,7 +39,7 @@
   command: >
     ansible-galaxy install -r "{{ item }}" -p "{{ tmp_dep_dir }}"
   with_items:
-    - "{{ dependencies.galaxy_requirements }}"
+    - "{{ galaxy_requirements }}"
 
 - name: "Clean-up temporary file from above - if needed"
   file:
