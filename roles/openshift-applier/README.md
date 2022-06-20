@@ -43,6 +43,11 @@ The variable definitions come in the form of an object, `openshift_cluster_conte
 openshift_cluster_content:
 - galaxy_requirements: # Optional: only needed if pre/post steps are specified below
     - "path/to/galaxy/requirements.yml" # Has to be a local file - e.g: with the inventory
+- galaxy_sources:      # Optional: only needed if pre/post steps are specified below
+    - src: https://github.com/....
+      version: v1.0.0
+    - src: https://github.com/....
+      version: main
 - object: <object_type>
   pre_steps: # Optional: pre-steps at object level can be added if desired
     - role: <path to an ansible role>
@@ -346,7 +351,7 @@ The `openshift-applier` supports the use of pre and post steps to allow for task
 
 The pre/post steps can be added at both the `object` level as well as the `content level`. See example at the top for more details.
 
-In essence, the pre/post steps are ansible roles that gets executed in the order they are found in the inventory. These roles are sourced from the `galaxy_requirements` file part of the inventory. See the official [Ansible Galaxy docs for more details on the requirements yaml file](http://docs.ansible.com/ansible/latest/galaxy.html#installing-multiple-roles-from-a-file).
+In essence, the pre/post steps are ansible roles that gets executed in the order they are found in the inventory. These roles are sourced from the `galaxy_sources` list, or `galaxy_requirements` file, part of the inventory. See the official [Ansible Galaxy docs for more details on the requirements yaml file](http://docs.ansible.com/ansible/latest/galaxy.html#installing-multiple-roles-from-a-file).
 
 **_NOTE:_** it is important that the repos used for pre/post roles have the `meta/main.yml` file setup correctly. See the [Ansible Galaxy docs](http://docs.ansible.com/ansible/latest/galaxy.html) for more details.
 
