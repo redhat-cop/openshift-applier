@@ -18,9 +18,6 @@
 - set_fact:
     galaxy_requirements: "{{ dependencies.galaxy_requirements | default([]) }}"
 
-- debug:
-    var: dependencies.galaxy_sources
-
 - name: "Compose galaxy_requirements file if galaxy_sources is set"
   block:
     - tempfile:
@@ -29,11 +26,11 @@
       register: tmp_galaxy_file
     - template:
         src: yaml_file.j2 
-        dest: "{{ tmp_galaxy_file }}"
+        dest: "{{ tmp_galaxy_file.path }}"
       vars:
         yaml_content: "{{ dependencies.galaxy_sources }}"
     - set_fact:
-        galaxy_requirements: "{{ galaxy_requirements + [ tmp_galaxy_file ] }}"
+        galaxy_requirements: "{{ galaxy_requirements + [ tmp_galaxy_file.path ] }}"
   when:
     - dependencies.galaxy_sources is defined
     - dependencies.galaxy_sources|length > 0
@@ -43,3 +40,12 @@
     ansible-galaxy install -r "{{ item }}" -p "{{ tmp_dep_dir }}"
   with_items:
     - "{{ dependencies.galaxy_requirements }}"
+
+- name: "Clean-up temporary file from above - if needed"
+  file:
+    path: "{{ tmp_galaxy_file.path }}"
+    state: absent
+  ignore_errors: True
+  when:
+    - tmp_galaxy_file is defined
+    - tmp_galaxy_file.path|trim != '' 
