@@ -18,11 +18,14 @@
 - set_fact:
     galaxy_requirements: "{{ dependencies.galaxy_requirements | default([]) }}"
 
+- debug:
+    var: dependencies.galaxy_sources
+
 - name: "Compose galaxy_requirements file if galaxy_sources is set"
   block:
     - tempfile:
         state: file
-        suffix: yml
+        suffix: .yml
       register: tmp_galaxy_file
     - template:
         src: yaml_file.j2 
