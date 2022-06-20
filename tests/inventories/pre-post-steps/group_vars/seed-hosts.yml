@@ -4,6 +4,9 @@ molecule_test_inventory_skip: true
 
 openshift_cluster_content:
 - galaxy_requirements: "{{ inventory_dir }}/../../files/dependency/galaxy_requirements.yml"
+- galaxy_sources: # Duplicate of above, just to show an alternative approach
+  - src: https://github.com/redhat-cop/casl-ansible
+    version: master
 - object: projectrequest
   content:
   - name: "label-test-project"
