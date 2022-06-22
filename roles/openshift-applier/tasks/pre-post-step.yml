@@ -10,13 +10,26 @@
   loop_control:
     loop_var: var
 
+- set_fact:
+    saved_ansible_roles_path: "{{ lookup('env', 'ANSIBLE_ROLES_PATH') }}"
+
+- name: "Add temporary path to the ANSIBLE_ROLES_PATH to let it find pre/post steps roles"
+  setup:
+  environment:
+    ANSIBLE_ROLES_PATH: "{{ tmp_dep_dir + ':' + saved_ansible_roles_path }}"
+
 - name: "Include the pre/post step role"
   include_role:
-    name: "{{ tmp_dep_dir }}{{ step.role }}"
+    name: "{{ step.role }}"
   when:
     - step is defined
     - step.role is defined
     - step.role|trim != ''
+
+- name: "Restore ANSIBLE_ROLES_PATH to remove temporary location"
+  setup:
+  environment:
+    ANSIBLE_ROLES_PATH: "{{ saved_ansible_roles_path }}"
 
 - name: "Clear facts to ensure that they don't carry over"
   set_fact:
