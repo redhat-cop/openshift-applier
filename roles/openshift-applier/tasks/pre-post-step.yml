@@ -17,6 +17,9 @@
   setup:
   environment:
     ANSIBLE_ROLES_PATH: "{{ tmp_dep_dir + ':' + saved_ansible_roles_path }}"
+  when:
+    - tmp_dep_dir is defined
+    - tmp_dep_dir|trim != ''
 
 - name: "Include the pre/post step role"
   include_role:
