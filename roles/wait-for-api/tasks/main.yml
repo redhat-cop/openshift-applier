@@ -1,10 +1,24 @@
 ---
 
-- name: Wait for the API call to be successful
-  command: >
-    {{ client | default(oc) }} get Ingress.config/cluster
-  register: ingress_info
-  retries: "{{ wait_for_api_retries }}" # Default value in defaults/main.yml
-  delay: "{{ wait_for_api_delay }}" # Default value in defaults/main.yml
-  until: not ingress_info.failed
+- name: Wait for the API call to be successful (ignore X509 warnings)
+  block:
+    - command: >
+         {{ client | default("oc") }} get Ingress.config/cluster
+      register: ingress_info
+      retries: "{{ wait_for_api_retries }}" # Default value in defaults/main.yml
+      delay: "{{ wait_for_api_delay }}" # Default value in defaults/main.yml
+      until:
+           - not ingress_info.failed
+  when: ignore_ssl_warnings
 
+- name: Wait for the API call to be successful (not ignoring X509 warnings)
+  block:
+    - command: >
+         {{ client | default("oc") }} get Ingress.config/cluster
+      register: ingress_info
+      retries: "{{ wait_for_api_retries }}" # Default value in defaults/main.yml
+      delay: "{{ wait_for_api_delay }}" # Default value in defaults/main.yml
+      until:
+           - "'certificate signed by unknown authority' not in ingress_info.stdout"
+           - not ingress_info.failed
+  when: not ignore_ssl_warnings
